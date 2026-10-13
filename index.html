@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Ride Garage</title>
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#e5322d">
+<link rel="apple-touch-icon" href="icon-192.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Ride Garage">
+
+<style>
+:root{--bg:#f4f4f1;--card:#fff;--tx:#17181a;--mu:#6b6f76;--ac:#e5322d;--bd:#e2e2dd;--ok:#1f9d55;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#101113;--card:#1a1c1f;--tx:#f1f1ee;--mu:#9a9ea6;--bd:#2c2f34}}
+:root[data-theme="dark"]{--bg:#101113;--card:#1a1c1f;--tx:#f1f1ee;--mu:#9a9ea6;--bd:#2c2f34}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--tx);font:15px/1.45 system-ui,-apple-system,Segoe UI,Roboto,sans-serif}
+main{max-width:640px;margin:0 auto;padding:16px}
+h1{font-size:22px;margin:0}h1 span{color:var(--ac)}
+header{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+.tabs{display:flex;gap:6px;margin-bottom:14px}
+.tabs button{flex:1;padding:10px;border:1px solid var(--bd);background:var(--card);color:var(--tx);border-radius:10px;font-weight:600;font-size:15px}
+.tabs button.on{background:var(--ac);border-color:var(--ac);color:#fff}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:14px;padding:14px;margin-bottom:12px}
+.row{display:flex;gap:8px;flex-wrap:wrap}.row>*{flex:1;min-width:110px}
+input,select,textarea,button{font:inherit;color:inherit}
+input,select,textarea{width:100%;padding:9px;border:1px solid var(--bd);border-radius:8px;background:var(--bg);margin-top:6px}
+.btn{background:var(--ac);color:#fff;border:0;border-radius:10px;padding:10px 14px;font-weight:600;cursor:pointer}
+.btn.alt{background:var(--bg);color:var(--tx);border:1px solid var(--bd)}
+.btn.sm{padding:5px 9px;font-size:13px;border-radius:8px}
+.bar{height:10px;background:var(--bd);border-radius:6px;overflow:hidden;margin:8px 0}
+.bar i{display:block;height:100%;background:var(--ok)}
+.mu{color:var(--mu);font-size:13px}
+.big{font-size:30px;font-weight:700}
+.stats{display:flex;gap:10px;text-align:center}.stats>div{flex:1}
+.pill{display:inline-block;padding:2px 9px;border-radius:99px;font-size:12px;font-weight:600;border:1px solid var(--bd)}
+.s-done{color:var(--ok);border-color:var(--ok)}.s-doing{color:#d98a00;border-color:#d98a00}
+.ph{display:flex;gap:6px;overflow-x:auto;margin:8px 0}
+.ph img{height:90px;border-radius:8px;cursor:pointer;flex:none}
+.top{display:flex;justify-content:space-between;gap:8px;align-items:flex-start}
+svg.trk{width:100%;height:160px;background:var(--bg);border-radius:10px;border:1px solid var(--bd)}
+a.btn{text-decoration:none;display:inline-block}
+.tabs button{padding:10px 2px;font-size:13px}
+.s-bad{color:var(--ac);border-color:var(--ac)}
+#lb{position:fixed;inset:0;background:rgba(0,0,0,.92);display:none;align-items:center;justify-content:center;z-index:9}
+#lb img{max-width:96%;max-height:92%}
+</style></head><body>
+<main>
+<header><h1>Ride <span>Garage</span></h1><div class="mu" id="bike"></div></header>
+<div class="tabs"><button id="t-build" onclick="tab('build')">Build</button><button id="t-trips" onclick="tab('trips')">Trips</button><button id="t-places" onclick="tab('places')">Places</button><button id="t-svc" onclick="tab('svc')">Service</button><button id="t-fuel" onclick="tab('fuel')">Fuel</button></div>
+<div id="v"></div>
+<details class="card" style="margin-top:8px"><summary><b>Backup &amp; restore</b></summary>
+<p class="mu">Your data lives only on this device and web address. Back it up before clearing your browser or moving to the installed app. Restoring replaces what is on this device. Photos make the backup large.</p>
+<div class="row"><button class="btn" onclick="expFile()">Download backup file</button><button class="btn alt" onclick="expText()">Show backup text</button></div>
+<textarea id="bt" rows="4" placeholder="Backup text appears here. To restore, paste it here and tap Restore from text." style="margin-top:10px"></textarea>
+<div class="row" style="margin-top:6px"><button class="btn alt" onclick="impText()">Restore from text</button><label class="btn alt" style="text-align:center">Restore from file<input type="file" accept=".json,application/json" hidden onchange="impFile(this.files[0])"></label></div>
+<div class="mu" id="bm" style="margin-top:6px"></div></details>
+</main>
+<div id="lb" onclick="this.style.display='none'"><img id="lbi" alt=""></div>
+<script>
+let S={mods:[],trips:[],places:[],svc:[],slog:[],fuel:[],odo:0,unit:'km',tab:'build',bike:''};
+const CATS=['Engine','Exhaust','Suspension','Brakes','Wheels & tires','Bodywork','Electronics','Other'];
+const $=id=>document.getElementById(id);
+const esc=s=>String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+function idb(){return new Promise((res,rej)=>{try{const r=indexedDB.open('ridegarage',1);r.onupgradeneeded=()=>r.result.createObjectStore('kv');r.onsuccess=()=>res(r.result);r.onerror=()=>rej(r.error)}catch(e){rej(e)}})}
+async function load(){try{const d=await idb();return await new Promise((res,rej)=>{const q=d.transaction('kv').objectStore('kv').get('s');q.onsuccess=()=>res(q.result);q.onerror=()=>rej(q.error)})}catch(e){return null}}
+async function save(){try{const d=await idb();d.transaction('kv','readwrite').objectStore('kv').put(JSON.parse(JSON.stringify(S)),'s')}catch(e){}}
+function tab(t){S.tab=t;render()}
+function render(){
+  $('t-build').className=S.tab=='build'?'on':'';$('t-trips').className=S.tab=='trips'?'on':'';$('t-places').className=S.tab=='places'?'on':'';$('t-svc').className=S.tab=='svc'?'on':'';$('t-fuel').className=S.tab=='fuel'?'on':'';
+  $('bike').textContent=S.bike||'';
+  S.tab=='build'?renderBuild():S.tab=='trips'?renderTrips():S.tab=='places'?renderPlaces():S.tab=='svc'?renderSvc():renderFuel();
+}
+/* ---------- BUILD ---------- */
+function resize(file){return new Promise(res=>{const r=new FileReader();r.onload=()=>{const im=new Image();im.onload=()=>{const m=1000,k=Math.min(1,m/Math.max(im.width,im.height));const c=document.createElement('canvas');c.width=im.width*k;c.height=im.height*k;c.getContext('2d').drawImage(im,0,0,c.width,c.height);res(c.toDataURL('image/jpeg',.72))};im.onerror=()=>res(null);im.src=r.result};r.onerror=()=>res(null);r.readAsDataURL(file)})}
+async function readPhotos(files){const o=[];for(const f of files){const d=await resize(f);if(d)o.push(d)}return o}
+function renderBuild(){
+  const m=S.mods,done=m.filter(x=>x.status=='done').length,pct=m.length?Math.round(done/m.length*100):0;
+  const spent=m.reduce((a,x)=>a+(+x.cost||0),0);
+  $('v').innerHTML=`
+  <div class="card">
+    <input id="bk" placeholder="Your bike (e.g. 2019 Yamaha R6)" value="${esc(S.bike)}" onchange="S.bike=this.value;save();render()">
+    <div class="stats" style="margin-top:12px"><div><div class="big">${pct}%</div><div class="mu">complete</div></div><div><div class="big">${done}/${m.length}</div><div class="mu">mods done</div></div><div><div class="big">$${spent.toLocaleString()}</div><div class="mu">spent</div></div></div>
+    <div class="bar"><i style="width:${pct}%"></i></div>
+  </div>
+  <details class="card"><summary><b>+ Add mod / build step</b></summary>
+    <input id="mt" placeholder="What are you doing? (e.g. Slip-on exhaust)">
+    <div class="row"><select id="mc">${CATS.map(c=>`<option>${c}</option>`).join('')}</select>
+    <select id="ms"><option value="planned">Planned</option><option value="doing">In progress</option><option value="done">Done</option></select>
+    <input id="mp" type="number" inputmode="decimal" placeholder="Cost $"></div>
+    <textarea id="mn" rows="2" placeholder="Notes: parts, torque specs, tips"></textarea>
+    <input id="mf" type="file" accept="image/*" multiple>
+    <button class="btn" style="margin-top:10px" onclick="addMod()">Save</button>
+  </details>
+  ${m.length?m.slice().reverse().map(modCard).join(''):'<p class="mu" style="text-align:center">No mods yet. Add your first build step and upload photos.</p>'}`;
+}
+function modCard(x){
+  return `<div class="card"><div class="top"><div><b>${esc(x.title)}</b><div class="mu">${esc(x.cat)} · ${new Date(x.date).toLocaleDateString()}${x.cost?' · $'+esc(x.cost):''}</div></div>
+  <select style="width:auto;margin:0" onchange="setSt('${x.id}',this.value)">${[['planned','Planned'],['doing','In progress'],['done','Done']].map(o=>`<option value="${o[0]}"${x.status==o[0]?' selected':''}>${o[1]}</option>`).join('')}</select></div>
+  ${x.notes?`<p style="margin:8px 0">${esc(x.notes)}</p>`:''}
+  ${x.photos.length?`<div class="ph">${x.photos.map((p,i)=>`<img src="${p}" alt="" onclick="zoom('${x.id}',${i})">`).join('')}</div>`:''}
+  <label class="btn alt sm" style="display:inline-block">+ Photos<input type="file" accept="image/*" multiple hidden onchange="addPh('${x.id}',this.files)"></label>
+  <button class="btn alt sm" onclick="delMod('${x.id}')">Delete</button></div>`;
+}
+async function addMod(){
+  const t=$('mt').value.trim();if(!t){$('mt').focus();return}
+  const photos=await readPhotos($('mf').files);
+  S.mods.push({id:'m'+Date.now(),title:t,cat:$('mc').value,status:$('ms').value,cost:$('mp').value,notes:$('mn').value.trim(),date:Date.now(),photos});
+  save();render();
+}
+async function addPh(id,files){const m=S.mods.find(x=>x.id==id);m.photos.push(...await readPhotos(files));save();render()}
+function setSt(id,v){S.mods.find(x=>x.id==id).status=v;save();render()}
+function delMod(id){if(confirm('Delete this entry?')){S.mods=S.mods.filter(x=>x.id!=id);save();render()}}
+function zoom(id,i){$('lbi').src=S.mods.find(x=>x.id==id).photos[i];$('lb').style.display='flex'}
+/* ---------- TRIPS ---------- */
+let cur=null,watch=null,tick=null;
+const R=6371;
+function hav(a,b){const r=Math.PI/180,dl=(b[0]-a[0])*r,dn=(b[1]-a[1])*r,x=Math.sin(dl/2)**2+Math.cos(a[0]*r)*Math.cos(b[0]*r)*Math.sin(dn/2)**2;return 2*R*Math.asin(Math.sqrt(x))}
+const U=()=>S.unit=='km'?{k:1,d:'km',s:'km/h'}:{k:0.621371,d:'mi',s:'mph'};
+const fd=km=>(km*U().k).toFixed(1)+' '+U().d;
+const fdur=ms=>{const s=Math.floor(ms/1000),h=Math.floor(s/3600),m=Math.floor(s%3600/60);return h?h+'h '+m+'m':m+'m '+(s%60)+'s'};
+function trackSVG(p){
+  if(!p||p.length<2)return '<svg class="trk" viewBox="0 0 300 160"><text x="150" y="85" text-anchor="middle" fill="currentColor" opacity=".5" font-size="13">Route appears here</text></svg>';
+  const la=p.map(a=>a[0]),lo=p.map(a=>a[1]),mnA=Math.min(...la),mxA=Math.max(...la),mnO=Math.min(...lo),mxO=Math.max(...lo);
+  const kx=Math.cos((mnA+mxA)/2*Math.PI/180),w=Math.max((mxO-mnO)*kx,1e-5),h=Math.max(mxA-mnA,1e-5),s=Math.min(270/w,130/h),ox=(300-w*s)/2,oy=(160-h*s)/2;
+  const pt=a=>[(ox+(a[1]-mnO)*kx*s).toFixed(1),(oy+(mxA-a[0])*s).toFixed(1)];
+  const q=p.map(pt),e=q[q.length-1];
+  return `<svg class="trk" viewBox="0 0 300 160"><polyline points="${q.map(a=>a.join(',')).join(' ')}" fill="none" stroke="#e5322d" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/><circle cx="${q[0][0]}" cy="${q[0][1]}" r="5" fill="#1f9d55"/><circle cx="${e[0]}" cy="${e[1]}" r="5" fill="#e5322d"/></svg>`;
+}
+function renderTrips(){
+  const tot=S.trips.reduce((a,t)=>a+t.dist,0);
+  $('v').innerHTML=`
+  <div class="card">
+    <div class="top"><b>Record a ride</b><button class="btn alt sm" onclick="S.unit=S.unit=='km'?'mi':'km';save();render()">Units: ${U().d}</button></div>
+    <div class="row" style="margin:6px 0 10px"><input id="tn" placeholder="Trip name (e.g. Copper Canyon run)"><select id="tc"><option>🇲🇽 Mexico</option><option>🇺🇸 USA</option><option>🇲🇽🇺🇸 Both</option></select></div>
+    <div id="live" class="stats"><div><div class="big" id="ld">0.0</div><div class="mu">${U().d}</div></div><div><div class="big" id="ls">0</div><div class="mu">${U().s}</div></div><div><div class="big" id="lt">0m</div><div class="mu">time</div></div></div>
+    <div id="map" style="margin:10px 0">${trackSVG(cur&&cur.pts)}</div>
+    <div class="mu" id="msg">${cur?'Recording… keep this screen open.':'GPS needs location permission and an open screen.'}</div>
+    <div style="margin-top:10px">${cur?'<button class="btn" onclick="stopTrack()">Stop &amp; save</button>':'<button class="btn" onclick="startTrack()">Start ride</button>'}</div>
+  </div>
+  <div class="mu" style="margin:4px 2px 8px">${S.trips.length} trips · ${fd(tot)} total</div>
+  ${S.trips.slice().reverse().map(t=>`<div class="card"><div class="top"><div><b>${esc(t.name)}</b><div class="mu">${esc(t.country)} · ${new Date(t.date).toLocaleDateString()}</div></div><button class="btn alt sm" onclick="delTrip('${t.id}')">Delete</button></div>
+  ${trackSVG(t.pts)}<div class="stats" style="margin-top:8px"><div><b>${fd(t.dist)}</b><div class="mu">distance</div></div><div><b>${fdur(t.dur)}</b><div class="mu">ride time</div></div><div><b>${(t.max*U().k).toFixed(0)} ${U().s}</b><div class="mu">top speed</div></div></div></div>`).join('')}`;
+  if(cur)upd();
+}
+function msg(t){const e=$('msg');if(e)e.textContent=t}
+function startTrack(){
+  if(!navigator.geolocation){msg('GPS is not available in this browser.');return}
+  cur={pts:[],dist:0,max:0,sp:0,t0:Date.now()};
+  watch=navigator.geolocation.watchPosition(onPos,e=>{msg(e.code==1?'Location permission denied. Allow it in your browser settings.':'Could not get GPS signal.')},{enableHighAccuracy:true,maximumAge:2000,timeout:20000});
+  tick=setInterval(upd,1000);renderTrips();
+}
+function onPos(p){
+  const c=p.coords;if(c.accuracy>60)return;
+  const pt=[c.latitude,c.longitude],l=cur.pts[cur.pts.length-1];
+  if(l){const d=hav(l,pt);if(d<0.01)return;cur.dist+=d}
+  cur.pts.push(pt);cur.sp=c.speed!=null?c.speed*3.6:0;cur.max=Math.max(cur.max,cur.sp);upd();
+}
+function upd(){
+  if(!cur||S.tab!='trips'||!$('ld'))return;
+  $('ld').textContent=(cur.dist*U().k).toFixed(1);$('ls').textContent=Math.round(cur.sp*U().k);$('lt').textContent=fdur(Date.now()-cur.t0);
+  $('map').innerHTML=trackSVG(cur.pts);
+}
+function stopTrack(){
+  navigator.geolocation.clearWatch(watch);clearInterval(tick);
+  if(cur.pts.length>1){
+    const step=Math.ceil(cur.pts.length/400);
+    S.trips.push({id:'t'+Date.now(),name:($('tn').value.trim()||'Ride '+new Date().toLocaleDateString()),country:$('tc').value,date:cur.t0,dist:cur.dist,dur:Date.now()-cur.t0,max:cur.max,pts:cur.pts.filter((_,i)=>i%step==0)});S.odo=(S.odo||0)+cur.dist;
+    save();
+  }
+  cur=null;renderTrips();
+}
+function delTrip(id){if(confirm('Delete this trip?')){S.trips=S.trips.filter(t=>t.id!=id);save();render()}}
+/* ---------- PLACES ---------- */
+const PC=['Gas','Food','Hotel','Parts / mechanic','Scenic road','Border crossing','Other'];
+const COORD=/^-?\d+(\.\d+)?\s*,\s*-?\d+(\.\d+)?$/;
+function navURL(p,app){
+  const q=encodeURIComponent(p.coords||p.addr);
+  if(app=='g')return 'https://www.google.com/maps/dir/?api=1&destination='+q+'&travelmode=driving';
+  if(app=='w')return p.coords?'https://waze.com/ul?ll='+q+'&navigate=yes':'https://waze.com/ul?q='+q+'&navigate=yes';
+  return 'https://maps.apple.com/?daddr='+q;
+}
+function renderPlaces(){
+  $('v').innerHTML=`
+  <details class="card"${S.places.length?'':' open'}><summary><b>+ Save a place</b></summary>
+    <input id="pn" placeholder="Name (e.g. Pemex Ciudad Delicias)">
+    <div class="row"><input id="pa" placeholder="Address or coordinates (28.19,-105.47)"><button class="btn alt" style="margin-top:6px" onclick="myLoc()">📍 Use my location</button></div>
+    <div class="row"><select id="pt">${PC.map(c=>`<option>${c}</option>`).join('')}</select><select id="pc"><option>🇲🇽 Mexico</option><option>🇺🇸 USA</option></select></div>
+    <textarea id="pk" rows="2" placeholder="Notes: hours, fuel type, road conditions"></textarea>
+    <button class="btn" style="margin-top:10px" onclick="addPlace()">Save place</button>
+    <div class="mu" id="pm" style="margin-top:6px"></div>
+  </details>
+  ${S.places.length?S.places.slice().reverse().map(p=>`<div class="card"><div class="top"><div><b>${esc(p.name)}</b><div class="mu">${esc(p.cat)} · ${esc(p.country)}</div></div><button class="btn alt sm" onclick="delPlace('${p.id}')">Delete</button></div>
+  <div class="mu" style="margin:6px 0">${esc(p.coords||p.addr)}</div>${p.notes?`<p style="margin:6px 0">${esc(p.notes)}</p>`:''}
+  <div class="row" style="gap:6px"><a class="btn sm" href="${navURL(p,'g')}" target="_blank" rel="noopener">Google Maps</a><a class="btn alt sm" href="${navURL(p,'w')}" target="_blank" rel="noopener">Waze</a><a class="btn alt sm" href="${navURL(p,'a')}" target="_blank" rel="noopener">Apple Maps</a></div></div>`).join(''):'<p class="mu" style="text-align:center">Save gas stops, hotels, shops and favorite roads, then tap Navigate to ride there.</p>'}`;
+}
+function myLoc(){
+  const m=$('pm');
+  if(!navigator.geolocation){m.textContent='GPS is not available in this browser.';return}
+  m.textContent='Getting location…';
+  navigator.geolocation.getCurrentPosition(p=>{$('pa').value=p.coords.latitude.toFixed(5)+','+p.coords.longitude.toFixed(5);m.textContent='Location filled in.'},e=>{m.textContent=e.code==1?'Location permission denied.':'Could not get GPS signal.'},{enableHighAccuracy:true,timeout:15000});
+}
+function addPlace(){
+  const n=$('pn').value.trim(),a=$('pa').value.trim();
+  if(!n){$('pn').focus();return}
+  if(!a){$('pa').focus();return}
+  S.places.push({id:'p'+Date.now(),name:n,cat:$('pt').value,country:$('pc').value,notes:$('pk').value.trim(),coords:COORD.test(a)?a.replace(/\s+/g,''):'',addr:COORD.test(a)?'':a});
+  save();render();
+}
+function delPlace(id){if(confirm('Delete this place?')){S.places=S.places.filter(p=>p.id!=id);save();render()}}
+/* ---------- SERVICE ---------- */
+const PRE=[['Oil & filter',6000,6],['Chain clean & lube',600,0],['Chain adjust / wear check',1500,0],['Brake pads check',10000,12],['Brake fluid',0,24],['Coolant',0,24],['Air filter',12000,12],['Spark plugs',20000,0],['Valve clearance check',24000,0],['Tires check / replace',10000,24]];
+const DAY=864e5;
+function svcStat(t){
+  const r=[];let bad=0,soon=0;
+  if(t.km){const left=t.lastOdo+t.km-(S.odo||0),v=Math.round(Math.abs(left)*U().k).toLocaleString()+' '+U().d;r.push(left<0?'overdue by '+v:'in '+v);if(left<0)bad=1;else if(left<=t.km*.15)soon=1}
+  if(t.mo){const d=Math.round((t.lastDate+t.mo*30.44*DAY-Date.now())/DAY);r.push(d<0?'overdue by '+(-d)+' days':'in '+d+' days');if(d<0)bad=1;else if(d<=30)soon=1}
+  return {txt:r.join(' · ')||'no interval',cls:bad?'s-bad':soon?'s-doing':'s-done',bad,soon};
+}
+function renderSvc(){
+  const rows=S.svc.map(t=>({t,s:svcStat(t)})).sort((a,b)=>(b.s.bad-a.s.bad)||(b.s.soon-a.s.soon));
+  const nb=rows.filter(r=>r.s.bad).length;
+  $('v').innerHTML=`
+  <div class="card"><b>Odometer</b>
+    <div class="row"><input id="od" type="number" inputmode="decimal" value="${Math.round((S.odo||0)*U().k)}"><button class="btn" style="margin-top:6px" onclick="setOdo()">Update (${U().d})</button></div>
+    <div class="mu" style="margin-top:6px">${nb?nb+' overdue.':'Nothing overdue.'} Recorded trips add to your odometer automatically.</div>
+  </div>
+  ${S.svc.length?'':`<div class="card"><p style="margin-top:0">Start with common sport-bike items. They count from your current odometer and today, so edit each one to when you actually did it last.</p><button class="btn" onclick="seedSvc()">Add common items</button></div>`}
+  <details class="card"><summary><b>+ Add service item</b></summary>
+    <input id="sn" placeholder="Item (e.g. Fork oil)">
+    <div class="row"><input id="si" type="number" inputmode="decimal" placeholder="Every (${U().d}), blank = none"><input id="sm" type="number" inputmode="numeric" placeholder="Every (months), blank = none"></div>
+    <button class="btn" style="margin-top:10px" onclick="addSvc()">Save item</button>
+  </details>
+  ${rows.map(({t,s})=>`<div class="card"><div class="top"><div><b>${esc(t.name)}</b><div class="mu">${t.km?'every '+Math.round(t.km*U().k).toLocaleString()+' '+U().d:''}${t.km&&t.mo?' / ':''}${t.mo?'every '+t.mo+' mo':''}</div></div><span class="pill ${s.cls}">${s.txt}</span></div>
+  <div class="mu" style="margin:6px 0">Last done: ${Math.round(t.lastOdo*U().k).toLocaleString()} ${U().d} · ${new Date(t.lastDate).toLocaleDateString()}</div>
+  <button class="btn sm" onclick="doneSvc('${t.id}')">Mark done now</button> <button class="btn alt sm" onclick="delSvc('${t.id}')">Delete</button>
+  <details style="margin-top:8px"><summary class="mu">Edit last service</summary><div class="row"><input id="lo_${t.id}" type="number" inputmode="decimal" placeholder="Odometer (${U().d})" value="${Math.round(t.lastOdo*U().k)}"><input id="ld_${t.id}" type="date" value="${new Date(t.lastDate).toISOString().slice(0,10)}"></div><button class="btn alt sm" style="margin-top:8px" onclick="saveLast('${t.id}')">Save</button></details></div>`).join('')}
+  ${S.slog.length?`<div class="card"><b>Service history</b>${S.slog.slice(-10).reverse().map(l=>`<div class="mu" style="margin-top:6px">${new Date(l.date).toLocaleDateString()} · ${esc(l.n)} · ${Math.round(l.odo*U().k).toLocaleString()} ${U().d}</div>`).join('')}</div>`:''}`;
+}
+function setOdo(){S.odo=(+$('od').value||0)/U().k;save();render()}
+function seedSvc(){PRE.forEach((p,i)=>S.svc.push({id:'s'+Date.now()+i,name:p[0],km:p[1],mo:p[2],lastOdo:S.odo||0,lastDate:Date.now()}));save();render()}
+function addSvc(){
+  const n=$('sn').value.trim();if(!n){$('sn').focus();return}
+  const km=(+$('si').value||0)/U().k,mo=+$('sm').value||0;
+  S.svc.push({id:'s'+Date.now(),name:n,km:Math.round(km),mo,lastOdo:S.odo||0,lastDate:Date.now()});save();render();
+}
+function doneSvc(id){const t=S.svc.find(x=>x.id==id);t.lastOdo=S.odo||0;t.lastDate=Date.now();S.slog.push({n:t.name,odo:S.odo||0,date:Date.now()});save();render()}
+function delSvc(id){S.svc=S.svc.filter(x=>x.id!=id);save();render()}
+function saveLast(id){
+  const t=S.svc.find(x=>x.id==id),o=$('lo_'+id).value,d=$('ld_'+id).value;
+  if(o!=='')t.lastOdo=(+o)/U().k;if(d)t.lastDate=new Date(d+'T12:00:00').getTime();
+  save();render();
+}
+/* ---------- FUEL ---------- */
+const VU=()=>S.unit=='km'?{f:1,n:'L'}:{f:0.264172,n:'gal'};
+const effU=()=>S.unit=='km'?'km/L':'mpg';
+const effN=(d,l)=>S.unit=='km'?d/l:(d*0.621371)/(l*0.264172);
+function fuelCalc(){
+  const f=S.fuel.slice().sort((a,b)=>a.odo-b.odo),out={};
+  let last=-1,acc=0;
+  f.forEach((e,i)=>{
+    if(last>=0)acc+=e.l;
+    if(e.full){
+      if(last>=0&&e.odo>f[last].odo&&acc>0)out[e.id]={d:e.odo-f[last].odo,l:acc};
+      last=i;acc=0;
+    }
+  });
+  return out;
+}
+function bars(s){
+  if(s.length<2)return '';
+  const mx=Math.max(...s),w=300/s.length;
+  return `<svg class="trk" viewBox="0 0 300 80" style="height:80px;margin-top:10px">${s.map((v,i)=>`<rect x="${(i*w+2).toFixed(1)}" y="${(76-v/mx*70).toFixed(1)}" width="${Math.max(w-4,2).toFixed(1)}" height="${(v/mx*70).toFixed(1)}" rx="2" fill="#e5322d"/>`).join('')}</svg>`;
+}
+function renderFuel(){
+  const c=fuelCalc(),segs=Object.values(c),td=segs.reduce((a,s)=>a+s.d,0),tl=segs.reduce((a,s)=>a+s.l,0);
+  const sp={};S.fuel.forEach(e=>{sp[e.cur]=(sp[e.cur]||0)+e.cost});
+  const ord=S.fuel.slice().sort((a,b)=>a.odo-b.odo);
+  const series=ord.filter(e=>c[e.id]).map(e=>effN(c[e.id].d,c[e.id].l));
+  const fm=v=>v.toFixed(1)+' '+effU();
+  $('v').innerHTML=`
+  <div class="card">
+    <div class="stats"><div><div class="big">${series.length?fm(effN(td,tl)).split(' ')[0]:'—'}</div><div class="mu">avg ${effU()}</div></div><div><div class="big">${series.length?series[series.length-1].toFixed(1):'—'}</div><div class="mu">last tank</div></div><div><div class="big">${series.length?Math.max(...series).toFixed(1):'—'}</div><div class="mu">best</div></div></div>
+    ${bars(series.slice(-20))}
+    <div class="mu" style="margin-top:8px">${Object.keys(sp).length?'Spent: '+Object.entries(sp).map(([k,v])=>k+' '+Math.round(v).toLocaleString()).join(' · '):'Log two full-tank fill-ups to see your mileage.'}</div>
+  </div>
+  <details class="card"${S.fuel.length?'':' open'}><summary><b>+ Log a fill-up</b></summary>
+    <div class="row"><input id="fd" type="date" value="${new Date().toISOString().slice(0,10)}"><input id="fo" type="number" inputmode="decimal" placeholder="Odometer (${U().d})" value="${S.odo?Math.round(S.odo*U().k):''}"></div>
+    <div class="row"><input id="fv" type="number" inputmode="decimal" placeholder="${S.unit=='km'?'Liters':'Gallons'}"><input id="fc" type="number" inputmode="decimal" placeholder="Total cost"><select id="fr"><option>MXN</option><option>USD</option></select></div>
+    <label class="mu" style="display:block;margin-top:8px"><input type="checkbox" id="fu" checked style="width:auto;margin-right:6px">Filled to full (needed to calculate mileage)</label>
+    <button class="btn" style="margin-top:10px" onclick="addFuel()">Save fill-up</button>
+  </details>
+  ${ord.slice().reverse().map(e=>`<div class="card"><div class="top"><div><b>${(e.l*VU().f).toFixed(2)} ${VU().n}</b> · ${esc(e.cur)} ${e.cost.toFixed(2)}<div class="mu">${new Date(e.date).toLocaleDateString()} · ${Math.round(e.odo*U().k).toLocaleString()} ${U().d}${e.full?'':' · partial'}</div></div><button class="btn alt sm" onclick="delFuel('${e.id}')">Delete</button></div>
+  <div class="mu" style="margin-top:6px">${e.cost&&e.l?esc(e.cur)+' '+(e.cost/(e.l*VU().f)).toFixed(2)+'/'+VU().n:''}${c[e.id]?' · <b>'+fm(effN(c[e.id].d,c[e.id].l))+'</b>'+(S.unit=='km'?' ('+(100*c[e.id].l/c[e.id].d).toFixed(1)+' L/100km)':''):''}</div></div>`).join('')}`;
+}
+function addFuel(){
+  const o=(+$('fo').value||0)/U().k,l=(+$('fv').value||0)/VU().f;
+  if(!$('fo').value){$('fo').focus();return}
+  if(!l){$('fv').focus();return}
+  S.fuel.push({id:'f'+Date.now(),date:new Date(($('fd').value||new Date().toISOString().slice(0,10))+'T12:00:00').getTime(),odo:o,l,cost:+$('fc').value||0,cur:$('fr').value,full:$('fu').checked});
+  if(o>(S.odo||0))S.odo=o;
+  save();render();
+}
+function delFuel(id){S.fuel=S.fuel.filter(e=>e.id!=id);save();render()}
+/* ---------- BACKUP ---------- */
+const bkJSON=()=>JSON.stringify(S);
+function bmsg(t){$('bm').textContent=t}
+function expFile(){
+  try{const b=new Blob([bkJSON()],{type:'application/json'}),a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='ride-garage-backup-'+new Date().toISOString().slice(0,10)+'.json';document.body.appendChild(a);a.click();a.remove();bmsg('Backup file requested. If nothing downloaded, use Show backup text.')}
+  catch(e){bmsg('Download blocked here. Use Show backup text.')}
+}
+function expText(){const t=$('bt');t.value=bkJSON();t.focus();t.select();bmsg('Backup text ready ('+Math.round(t.value.length/1024)+' KB). Copy all of it and save it somewhere safe.')}
+function applyBk(txt){
+  try{const d=JSON.parse(txt);if(!d||typeof d!='object'||!Array.isArray(d.mods))throw 0;
+    S=Object.assign({mods:[],trips:[],places:[],svc:[],slog:[],fuel:[],odo:0,unit:'km',bike:''},d);S.tab='build';save();render();bmsg('Backup restored.')}
+  catch(e){bmsg('That does not look like a Ride Garage backup.')}
+}
+function impText(){applyBk($('bt').value)}
+function impFile(f){if(!f)return;const r=new FileReader();r.onload=()=>applyBk(r.result);r.readAsText(f)}
+load().then(d=>{if(d)S=Object.assign(S,d);S.tab='build';render()});
+</script>
+<script>if('serviceWorker' in navigator)addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(()=>{}))</script>
+</body></html>
