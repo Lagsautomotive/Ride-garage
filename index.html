@@ -2,20 +2,21 @@
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Ride Garage</title>
+<link rel="icon" href="icon-192.png">
 <link rel="manifest" href="manifest.webmanifest">
-<meta name="theme-color" content="#e5322d">
+<meta name="theme-color" content="#1e6fff">
 <link rel="apple-touch-icon" href="icon-192.png">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Ride Garage">
 
 <style>
-:root{--bg:#f4f4f1;--card:#fff;--tx:#17181a;--mu:#6b6f76;--ac:#e5322d;--bd:#e2e2dd;--ok:#1f9d55;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+:root{--bg:#101113;--card:#1a1c1f;--tx:#f1f1ee;--mu:#9a9ea6;--ac:#1e6fff;--bd:#2c2f34;color-scheme:dark;--ok:#1f9d55;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
 @media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#101113;--card:#1a1c1f;--tx:#f1f1ee;--mu:#9a9ea6;--bd:#2c2f34}}
 :root[data-theme="dark"]{--bg:#101113;--card:#1a1c1f;--tx:#f1f1ee;--mu:#9a9ea6;--bd:#2c2f34}
 html{scroll-padding-top:env(safe-area-inset-top,0px)}
 *{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--tx);font:15px/1.45 system-ui,-apple-system,Segoe UI,Roboto,sans-serif}
+body{margin:0;background:linear-gradient(27deg,#151515 5px,transparent 5px) 0 5px,linear-gradient(207deg,#151515 5px,transparent 5px) 10px 0,linear-gradient(27deg,#222 5px,transparent 5px) 0 10px,linear-gradient(207deg,#222 5px,transparent 5px) 10px 5px,linear-gradient(90deg,#1b1b1b 10px,transparent 10px),linear-gradient(#1d1d1d 25%,#1a1a1a 25%,#1a1a1a 50%,transparent 50%,transparent 75%,#242424 75%,#242424);background-color:#131313;background-size:20px 20px;color:var(--tx);font:15px/1.45 system-ui,-apple-system,Segoe UI,Roboto,sans-serif}
 main{max-width:640px;margin:0 auto;padding:16px}
 h1{font-size:22px;margin:0}h1 span{color:var(--ac)}
 header{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
@@ -42,12 +43,12 @@ input,select,textarea{width:100%;padding:9px;border:1px solid var(--bd);border-r
 svg.trk{width:100%;height:160px;background:var(--bg);border-radius:10px;border:1px solid var(--bd)}
 a.btn{text-decoration:none;display:inline-block}
 .tabs button{padding:10px 2px;font-size:13px}
-.s-bad{color:var(--ac);border-color:var(--ac)}
+.s-bad{color:#ff453a;border-color:#ff453a}
 #lb{position:fixed;inset:0;background:rgba(0,0,0,.92);display:none;align-items:center;justify-content:center;z-index:9}
 #lb img{max-width:96%;max-height:92%}
 </style></head><body>
 <main>
-<header><h1>Ride <span>Garage</span></h1><div class="mu" id="bike"></div></header>
+<header><h1 style="display:flex;align-items:center;gap:8px"><svg width="36" height="31" viewBox="10 12 86 70" aria-hidden="true"><path d="M18 62 C14 38 30 18 54 18 C74 18 88 32 88 52 L88 66 C88 72 84 76 78 76 L34 76 C24 76 19 70 18 62 Z" fill="#1e6fff"/><path d="M56 36 L85 40 C88 44 88 50 87 54 L60 52 C54 50 52 40 56 36 Z" fill="#0d0f12"/><path d="M26 34 C40 22 62 20 76 28" fill="none" stroke="#fff" stroke-width="3.4" stroke-linecap="round"/><path d="M72 66 L82 66 M72 70 L82 70" fill="none" stroke="#0d0f12" stroke-width="2.2" stroke-linecap="round"/></svg>Ride <span>Garage</span></h1><div class="mu" id="bike"></div></header>
 <div class="tabs"><button id="t-build" onclick="tab('build')">Build</button><button id="t-trips" onclick="tab('trips')">Trips</button><button id="t-places" onclick="tab('places')">Places</button><button id="t-svc" onclick="tab('svc')">Service</button><button id="t-fuel" onclick="tab('fuel')">Fuel</button></div>
 <div id="v"></div>
 <details class="card" style="margin-top:8px"><summary><b>Backup &amp; restore</b></summary>
@@ -126,7 +127,7 @@ function trackSVG(p){
   const kx=Math.cos((mnA+mxA)/2*Math.PI/180),w=Math.max((mxO-mnO)*kx,1e-5),h=Math.max(mxA-mnA,1e-5),s=Math.min(270/w,130/h),ox=(300-w*s)/2,oy=(160-h*s)/2;
   const pt=a=>[(ox+(a[1]-mnO)*kx*s).toFixed(1),(oy+(mxA-a[0])*s).toFixed(1)];
   const q=p.map(pt),e=q[q.length-1];
-  return `<svg class="trk" viewBox="0 0 300 160"><polyline points="${q.map(a=>a.join(',')).join(' ')}" fill="none" stroke="#e5322d" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/><circle cx="${q[0][0]}" cy="${q[0][1]}" r="5" fill="#1f9d55"/><circle cx="${e[0]}" cy="${e[1]}" r="5" fill="#e5322d"/></svg>`;
+  return `<svg class="trk" viewBox="0 0 300 160"><polyline points="${q.map(a=>a.join(',')).join(' ')}" fill="none" stroke="#1e6fff" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/><circle cx="${q[0][0]}" cy="${q[0][1]}" r="5" fill="#1f9d55"/><circle cx="${e[0]}" cy="${e[1]}" r="5" fill="#1e6fff"/></svg>`;
 }
 function renderTrips(){
   const tot=S.trips.reduce((a,t)=>a+t.dist,0);
@@ -271,7 +272,7 @@ function fuelCalc(){
 function bars(s){
   if(s.length<2)return '';
   const mx=Math.max(...s),w=300/s.length;
-  return `<svg class="trk" viewBox="0 0 300 80" style="height:80px;margin-top:10px">${s.map((v,i)=>`<rect x="${(i*w+2).toFixed(1)}" y="${(76-v/mx*70).toFixed(1)}" width="${Math.max(w-4,2).toFixed(1)}" height="${(v/mx*70).toFixed(1)}" rx="2" fill="#e5322d"/>`).join('')}</svg>`;
+  return `<svg class="trk" viewBox="0 0 300 80" style="height:80px;margin-top:10px">${s.map((v,i)=>`<rect x="${(i*w+2).toFixed(1)}" y="${(76-v/mx*70).toFixed(1)}" width="${Math.max(w-4,2).toFixed(1)}" height="${(v/mx*70).toFixed(1)}" rx="2" fill="#1e6fff"/>`).join('')}</svg>`;
 }
 function renderFuel(){
   const c=fuelCalc(),segs=Object.values(c),td=segs.reduce((a,s)=>a+s.d,0),tl=segs.reduce((a,s)=>a+s.l,0);
