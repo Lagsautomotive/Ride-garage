@@ -4,6 +4,7 @@
 <title>Ride Garage</title>
 <link rel="icon" href="icon-192.png">
 <link rel="manifest" href="manifest.webmanifest">
+<script src="config.js"></script>
 <meta name="theme-color" content="#1e6fff">
 <link rel="apple-touch-icon" href="icon-192.png">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -68,7 +69,7 @@ main{max-width:920px;padding-left:112px;padding-right:20px;padding-bottom:40px}
 </style></head><body>
 <main>
 <header><h1 style="display:flex;align-items:center;gap:8px"><svg width="36" height="31" viewBox="10 12 86 70" aria-hidden="true"><path d="M18 62 C14 38 30 18 54 18 C74 18 88 32 88 52 L88 66 C88 72 84 76 78 76 L34 76 C24 76 19 70 18 62 Z" fill="#1e6fff"/><path d="M56 36 L85 40 C88 44 88 50 87 54 L60 52 C54 50 52 40 56 36 Z" fill="#0d0f12"/><path d="M26 34 C40 22 62 20 76 28" fill="none" stroke="#fff" stroke-width="3.4" stroke-linecap="round"/><path d="M72 66 L82 66 M72 70 L82 70" fill="none" stroke="#0d0f12" stroke-width="2.2" stroke-linecap="round"/></svg>Ride <span>Garage</span></h1><div class="mu" id="bike"></div></header>
-<div class="tabs"><button id="t-build" onclick="tab('build')"><span class="ic">🛠️</span>Build</button><button id="t-trips" onclick="tab('trips')"><span class="ic">🏍️</span>Trips</button><button id="t-places" onclick="tab('places')"><span class="ic">📍</span>Places</button><button id="t-svc" onclick="tab('svc')"><span class="ic">🔧</span>Service</button><button id="t-fuel" onclick="tab('fuel')"><span class="ic">⛽</span>Fuel</button></div>
+<div class="tabs"><button id="t-build" onclick="tab('build')"><span class="ic">🛠️</span>Build</button><button id="t-trips" onclick="tab('trips')"><span class="ic">🏍️</span>Trips</button><button id="t-places" onclick="tab('places')"><span class="ic">📍</span>Places</button><button id="t-svc" onclick="tab('svc')"><span class="ic">🔧</span>Service</button><button id="t-fuel" onclick="tab('fuel')"><span class="ic">⛽</span>Fuel</button><button id="t-social" onclick="tab('social')"><span class="ic">👥</span>Social</button></div>
 <div id="v"></div>
 <details class="card" style="margin-top:8px"><summary><b>Backup &amp; restore</b></summary>
 <p class="mu">Your data lives only on this device and web address. Back it up before clearing your browser or moving to the installed app. Restoring replaces what is on this device. Photos make the backup large.</p>
@@ -88,9 +89,9 @@ async function load(){try{const d=await idb();return await new Promise((res,rej)
 async function save(){try{const d=await idb();d.transaction('kv','readwrite').objectStore('kv').put(JSON.parse(JSON.stringify(S)),'s')}catch(e){}}
 function tab(t){S.tab=t;render();window.scrollTo(0,0);const v=$('v');v.classList.remove('fi');void v.offsetWidth;v.classList.add('fi')}
 function render(){
-  $('t-build').className=S.tab=='build'?'on':'';$('t-trips').className=S.tab=='trips'?'on':'';$('t-places').className=S.tab=='places'?'on':'';$('t-svc').className=S.tab=='svc'?'on':'';$('t-fuel').className=S.tab=='fuel'?'on':'';
+  $('t-build').className=S.tab=='build'?'on':'';$('t-trips').className=S.tab=='trips'?'on':'';$('t-places').className=S.tab=='places'?'on':'';$('t-svc').className=S.tab=='svc'?'on':'';$('t-fuel').className=S.tab=='fuel'?'on':'';$('t-social').className=S.tab=='social'?'on':'';
   $('bike').textContent=S.bike||'';
-  S.tab=='build'?renderBuild():S.tab=='trips'?renderTrips():S.tab=='places'?renderPlaces():S.tab=='svc'?renderSvc():renderFuel();
+  S.tab=='build'?renderBuild():S.tab=='trips'?renderTrips():S.tab=='places'?renderPlaces():S.tab=='svc'?renderSvc():S.tab=='fuel'?renderFuel():renderSocial();
 }
 /* ---------- BUILD ---------- */
 function resize(file){return new Promise(res=>{const r=new FileReader();r.onload=()=>{const im=new Image();im.onload=()=>{const m=1000,k=Math.min(1,m/Math.max(im.width,im.height));const c=document.createElement('canvas');c.width=im.width*k;c.height=im.height*k;c.getContext('2d').drawImage(im,0,0,c.width,c.height);res(c.toDataURL('image/jpeg',.72))};im.onerror=()=>res(null);im.src=r.result};r.onerror=()=>res(null);r.readAsDataURL(file)})}
@@ -121,7 +122,7 @@ function modCard(x){
   ${x.notes?`<p style="margin:8px 0">${esc(x.notes)}</p>`:''}
   ${x.photos.length?`<div class="ph">${x.photos.map((p,i)=>`<img src="${p}" alt="" onclick="zoom('${x.id}',${i})">`).join('')}</div>`:''}
   <label class="btn alt sm" style="display:inline-block">+ Photos<input type="file" accept="image/*" multiple hidden onchange="addPh('${x.id}',this.files)"></label>
-  <button class="btn alt sm" onclick="delMod('${x.id}')">Delete</button></div>`;
+  <button class="btn alt sm" onclick="delMod('${x.id}')">Delete</button> <button class="btn alt sm" onclick="shareMod('${x.id}')">Share</button></div>`;
 }
 async function addMod(){
   const t=$('mt').value.trim();if(!t){$('mt').focus();return}
@@ -338,7 +339,187 @@ function applyBk(txt){
 }
 function impText(){applyBk($('bt').value)}
 function impFile(f){if(!f)return;const r=new FileReader();r.onload=()=>applyBk(r.result);r.readAsText(f)}
+/* ---------- SOCIAL ---------- */
+let SB=null,lastUid,ME=null,PROF=null,FEED=[],MYLIKES=new Set(),BLOCKS=new Set(),OPEN=null,MENU=null,ARM=null,CMTS={},draft=null;
+const RULES="Community rules (starter text, review before launch): Post motorcycle-related content only. No harassment, hate, nudity, violence or illegal activity. Do not post other people's private information or your home address. You can report posts and block riders. Posts or accounts that break these rules may be removed. You keep ownership of what you post and allow this app to show it to other riders.";
+function loadSB(){return new Promise((res,rej)=>{if(window.supabase)return res();const x=document.createElement('script');x.src='https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.49.4/dist/umd/supabase.js';x.onload=res;x.onerror=()=>rej(new Error('Could not load the community service. Check your connection.'));document.head.appendChild(x)})}
+function toast(t){let e=$('toast');if(!e){e=document.createElement('div');e.id='toast';e.style.cssText='position:fixed;left:50%;transform:translateX(-50%);bottom:calc(96px + env(safe-area-inset-bottom,0px));background:rgba(0,0,0,.85);color:#fff;padding:10px 16px;border-radius:12px;z-index:20;max-width:90%;font-size:14px';document.body.appendChild(e)}e.textContent=t;e.style.display='block';clearTimeout(e._t);e._t=setTimeout(()=>{e.style.display='none'},3500)}
+function smsg(t){const m=$('sm');if(m&&m.offsetParent)m.textContent=t;else toast(t)}
+function ago(t){const s=(Date.now()-new Date(t))/1000;if(s<60)return 'now';if(s<3600)return Math.floor(s/60)+'m';if(s<86400)return Math.floor(s/3600)+'h';return Math.floor(s/86400)+'d'}
+const cnt=a=>a&&a[0]?a[0].count:0;
+function socErr(e){$('v').innerHTML=`<div class="card"><b>Community error</b><p class="mu">${esc((e&&e.message)||e)}</p><p class="mu">If this mentions a missing table, run community.sql in Supabase. If you are offline, try again with a connection.</p><button class="btn" onclick="renderSocial()">Try again</button></div>`}
+async function renderSocial(){
+  const C=window.RG_CONFIG||{};
+  if(!C.SUPABASE_URL||!C.SUPABASE_KEY){$('v').innerHTML='<div class="card"><b>Community is not set up yet</b><p class="mu">Put your Supabase URL and public key in config.js and upload it.</p></div>';return}
+  $('v').innerHTML='<p class="mu" style="text-align:center">Loading...</p>';
+  try{
+    if(!SB){
+      await loadSB();SB=supabase.createClient(C.SUPABASE_URL,C.SUPABASE_KEY);
+      SB.auth.onAuthStateChange((ev,ses)=>{if(ev=='INITIAL_SESSION')return;const u=ses&&ses.user?ses.user.id:null;if(u!==lastUid){lastUid=u;ME=null;PROF=null;if(S.tab=='social')renderSocial()}});
+    }
+    const {data:{session}}=await SB.auth.getSession();
+    if(!session){ME=null;lastUid=null;return authView()}
+    ME=session.user;lastUid=ME.id;
+    const pr=await SB.from('profiles').select('*').eq('id',ME.id).maybeSingle();
+    if(pr.error)throw pr.error;
+    if(!pr.data)return setupView();
+    PROF=pr.data;
+    const [b,l,f]=await Promise.all([
+      SB.from('blocks').select('blocked_id').eq('blocker_id',ME.id),
+      SB.from('likes').select('post_id').eq('user_id',ME.id),
+      SB.from('posts').select('id,user_id,caption,image_path,bike,created_at,profiles(username),likes(count),comments(count)').order('created_at',{ascending:false}).limit(40)]);
+    if(f.error)throw f.error;
+    BLOCKS=new Set((b.data||[]).map(x=>x.blocked_id));MYLIKES=new Set((l.data||[]).map(x=>x.post_id));FEED=f.data||[];
+    if(S.tab=='social')drawSocial();
+  }catch(e){socErr(e)}
+}
+function authView(){
+  $('v').innerHTML=`<div class="card"><b>Join the community</b><p class="mu">Share your build, follow other riders and swap routes.</p>
+  <input id="ae" type="email" placeholder="Email" autocomplete="email"><input id="ap" type="password" placeholder="Password (6+ characters)" autocomplete="current-password">
+  <label class="mu" style="display:block;margin-top:8px"><input type="checkbox" id="at" style="width:auto;margin-right:6px">I agree to the community rules</label>
+  <details class="mu" style="margin-top:6px"><summary>Read the rules</summary><p>${esc(RULES)}</p></details>
+  <div class="row" style="margin-top:10px"><button class="btn" onclick="socAuth('in')">Sign in</button><button class="btn alt" onclick="socAuth('up')">Create account</button></div>
+  <div class="mu" id="sm" style="margin-top:8px"></div></div>`;
+}
+async function socAuth(mode){
+  const e=$('ae').value.trim(),p=$('ap').value;
+  if(!e||p.length<6){smsg('Enter your email and a password of at least 6 characters.');return}
+  if(mode=='up'&&!$('at').checked){smsg('Please agree to the community rules first.');return}
+  smsg('Working...');
+  try{
+    const r=mode=='up'?await SB.auth.signUp({email:e,password:p}):await SB.auth.signInWithPassword({email:e,password:p});
+    if(r.error){smsg(r.error.message);return}
+    if(mode=='up'&&!r.data.session){smsg('Check your email to confirm your account, then sign in.')}
+  }catch(x){smsg(x.message)}
+}
+function setupView(){
+  $('v').innerHTML=`<div class="card"><b>Pick your rider name</b><input id="un" placeholder="username (letters, numbers, _)" maxlength="20" autocapitalize="none" autocorrect="off"><input id="ub" placeholder="Your bike (optional)" maxlength="80" value="${esc(S.bike)}"><button class="btn" style="margin-top:10px" onclick="socProfile()">Continue</button><div class="mu" id="sm" style="margin-top:8px"></div></div>`;
+}
+async function socProfile(){
+  const u=$('un').value.trim().toLowerCase();
+  if(!/^[a-z0-9_]{3,20}$/.test(u)){smsg('Use 3 to 20 letters, numbers or underscores.');return}
+  const r=await SB.from('profiles').insert({id:ME.id,username:u,bike:$('ub').value.trim()});
+  if(r.error){smsg(r.error.code=='23505'?'That name is taken.':r.error.message);return}
+  renderSocial();
+}
+function drawSocial(){
+  $('v').innerHTML=`<div class="card"><div class="top"><div><b>@${esc(PROF.username)}</b><div class="mu">${esc(PROF.bike||'')}</div></div><button class="btn alt sm" onclick="SB.auth.signOut()">Sign out</button></div></div>
+  <details class="card"${draft?' open':''}><summary><b>+ New post</b></summary>
+    ${draft&&draft.img?`<img src="${draft.img}" alt="" style="width:100%;border-radius:10px;margin-top:8px">`:''}
+    <input id="pf" type="file" accept="image/*">
+    <textarea id="pc" rows="3" maxlength="1000" placeholder="What are you working on?">${esc(draft?draft.cap:'')}</textarea>
+    <input id="pb" placeholder="Bike" maxlength="80" value="${esc(PROF.bike||'')}">
+    <button class="btn" style="margin-top:10px" onclick="postSubmit()">Post</button>
+    <div class="mu" id="sm" style="margin-top:8px"></div></details>
+  <div id="feed"></div>
+  <details class="card"><summary class="mu">Community rules and blocked riders</summary><p class="mu">${esc(RULES)}</p><button class="btn alt sm" onclick="socBlocked()">Show blocked riders</button><div id="bl"></div></details>`;
+  drawFeed();
+}
+function drawFeed(){
+  const f=$('feed');if(!f)return;
+  const posts=FEED.filter(p=>!BLOCKS.has(p.user_id));
+  f.innerHTML=posts.length?posts.map(postCard).join(''):'<p class="mu" style="text-align:center">No posts yet. Be the first to share your build.</p>';
+}
+function postCard(p){
+  const un=p.profiles?p.profiles.username:'rider',mine=p.user_id==ME.id,liked=MYLIKES.has(p.id);
+  const url=p.image_path?SB.storage.from('post-images').getPublicUrl(p.image_path).data.publicUrl:'';
+  return `<div class="card"><div class="top"><div><b>@${esc(un)}</b><div class="mu">${esc(p.bike||'')}${p.bike?' \u00b7 ':''}${ago(p.created_at)}</div></div>
+  ${mine?`<button class="btn alt sm" style="flex:none" onclick="socDel('${p.id}')">${ARM==p.id?'Tap again to delete':'Delete'}</button>`:`<button class="btn alt sm" style="flex:none" onclick="socMenu('${p.id}')">\u22ef</button>`}</div>
+  ${url?`<img src="${esc(url)}" alt="" loading="lazy" style="width:100%;border-radius:10px;margin-top:8px">`:''}
+  ${p.caption?`<p style="margin:8px 0">${esc(p.caption)}</p>`:''}
+  <div style="display:flex;gap:6px;margin-top:6px"><button class="btn alt sm" onclick="socLike('${p.id}')">${liked?'\u2665':'\u2661'} ${cnt(p.likes)}</button><button class="btn alt sm" onclick="socCmts('${p.id}')">\ud83d\udcac ${cnt(p.comments)}</button></div>
+  ${OPEN==p.id?cmtBox(p):''}${MENU==p.id?menuBox(p):''}</div>`;
+}
+function cmtBox(p){
+  const c=(CMTS[p.id]||[]).filter(x=>!BLOCKS.has(x.user_id));
+  return `<div style="margin-top:8px">${c.map(x=>`<div style="padding:6px 0;border-top:1px solid var(--bd)"><b>@${esc(x.profiles?x.profiles.username:'rider')}</b> ${esc(x.body)} <span class="mu">${ago(x.created_at)}</span>${x.user_id==ME.id?` <button class="btn alt sm" style="flex:none" onclick="socDelC('${x.id}','${p.id}')">\u2715</button>`:''}</div>`).join('')}
+  <div style="display:flex;gap:6px;margin-top:6px"><input id="ci_${p.id}" placeholder="Add a comment" maxlength="500" style="margin-top:0"><button class="btn sm" style="flex:none" onclick="socSend('${p.id}')">Send</button></div></div>`;
+}
+function menuBox(p){
+  const un=p.profiles?p.profiles.username:'rider';
+  return `<div style="margin-top:8px;padding:10px;border:1px solid var(--bd);border-radius:10px"><select id="rr_${p.id}"><option>Spam</option><option>Offensive or harassing</option><option>Not motorcycle related</option><option>Shares private info</option><option>Other</option></select>
+  <div style="display:flex;gap:6px;margin-top:8px;flex-wrap:wrap"><button class="btn alt sm" onclick="socReport('${p.id}')">Report post</button><button class="btn alt sm" onclick="socBlock('${p.user_id}')">${ARM==p.user_id?'Tap again to block @'+esc(un):'Block @'+esc(un)}</button></div></div>`;
+}
+async function postSubmit(){
+  const cap=$('pc').value.trim();let img=draft&&draft.img;
+  const f=$('pf').files;
+  if(f&&f.length){const a=await readPhotos([f[0]]);if(a[0])img=a[0]}
+  if(!img&&!cap){smsg('Add a photo or a caption.');return}
+  smsg('Posting...');
+  try{
+    let path=null;
+    if(img){
+      const blob=await (await fetch(img)).blob();path=ME.id+'/'+Date.now()+'.jpg';
+      const u=await SB.storage.from('post-images').upload(path,blob,{contentType:'image/jpeg'});
+      if(u.error){smsg(u.error.message);return}
+    }
+    const r=await SB.from('posts').insert({user_id:ME.id,caption:cap,bike:$('pb').value.trim(),image_path:path});
+    if(r.error){smsg(r.error.message);return}
+    draft=null;renderSocial();
+  }catch(e){smsg(e.message)}
+}
+async function socLike(id){
+  const p=FEED.find(x=>x.id==id),on=MYLIKES.has(id);
+  p.likes=[{count:Math.max(0,cnt(p.likes)+(on?-1:1))}];on?MYLIKES.delete(id):MYLIKES.add(id);drawFeed();
+  const r=on?await SB.from('likes').delete().match({post_id:id,user_id:ME.id}):await SB.from('likes').insert({post_id:id,user_id:ME.id});
+  if(r.error)toast(r.error.message);
+}
+async function loadC(id){
+  const r=await SB.from('comments').select('id,user_id,body,created_at,profiles(username)').eq('post_id',id).order('created_at').limit(100);
+  if(r.error){toast(r.error.message);return}
+  CMTS[id]=r.data||[];
+}
+async function socCmts(id){
+  if(OPEN==id){OPEN=null;drawFeed();return}
+  OPEN=id;MENU=null;drawFeed();await loadC(id);drawFeed();
+}
+async function socSend(id){
+  const i=$('ci_'+id),t=i.value.trim();if(!t)return;
+  const r=await SB.from('comments').insert({post_id:id,user_id:ME.id,body:t});
+  if(r.error){toast(r.error.message);return}
+  const p=FEED.find(x=>x.id==id);p.comments=[{count:cnt(p.comments)+1}];
+  await loadC(id);drawFeed();
+}
+async function socDelC(cid,pid){
+  const r=await SB.from('comments').delete().eq('id',cid);
+  if(r.error){toast(r.error.message);return}
+  const p=FEED.find(x=>x.id==pid);p.comments=[{count:Math.max(0,cnt(p.comments)-1)}];
+  await loadC(pid);drawFeed();
+}
+function socMenu(id){MENU=MENU==id?null:id;ARM=null;drawFeed()}
+async function socReport(id){
+  const r=await SB.from('reports').insert({post_id:id,reporter_id:ME.id,reason:$('rr_'+id).value});
+  MENU=null;drawFeed();toast(r.error?r.error.message:'Thanks. We will review this post.');
+}
+async function socBlock(uid){
+  if(ARM!=uid){ARM=uid;drawFeed();return}
+  const r=await SB.from('blocks').insert({blocker_id:ME.id,blocked_id:uid});
+  ARM=null;MENU=null;
+  if(r.error){toast(r.error.message);drawFeed();return}
+  BLOCKS.add(uid);drawFeed();toast('Rider blocked.');
+}
+async function socBlocked(){
+  const b=await SB.from('blocks').select('blocked_id').eq('blocker_id',ME.id);
+  const ids=(b.data||[]).map(x=>x.blocked_id);
+  if(!ids.length){$('bl').innerHTML='<p class="mu">No blocked riders.</p>';return}
+  const p=await SB.from('profiles').select('id,username').in('id',ids);
+  $('bl').innerHTML=(p.data||[]).map(x=>`<div class="top" style="margin-top:6px"><span>@${esc(x.username)}</span><button class="btn alt sm" onclick="socUnblock('${x.id}')">Unblock</button></div>`).join('');
+}
+async function socUnblock(id){
+  await SB.from('blocks').delete().match({blocker_id:ME.id,blocked_id:id});
+  BLOCKS.delete(id);renderSocial();
+}
+async function socDel(id){
+  if(ARM!=id){ARM=id;drawFeed();return}
+  ARM=null;const p=FEED.find(x=>x.id==id);
+  const r=await SB.from('posts').delete().eq('id',id);
+  if(r.error){toast(r.error.message);drawFeed();return}
+  if(p&&p.image_path)SB.storage.from('post-images').remove([p.image_path]);
+  FEED=FEED.filter(x=>x.id!=id);drawFeed();
+}
+function shareMod(id){const m=S.mods.find(x=>x.id==id);draft={cap:m.title+(m.notes?' - '+m.notes:''),img:m.photos[0]||null};tab('social')}
 load().then(d=>{if(d)S=Object.assign(S,d);S.tab='build';render()});
 </script>
 <script>if('serviceWorker' in navigator)addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(()=>{}))</script>
 </body></html>
+
