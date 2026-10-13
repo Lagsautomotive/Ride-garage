@@ -367,7 +367,7 @@ async function renderSocial(){
     const [b,l,f]=await Promise.all([
       SB.from('blocks').select('blocked_id').eq('blocker_id',ME.id),
       SB.from('likes').select('post_id').eq('user_id',ME.id),
-      SB.from('posts').select('id,user_id,caption,image_path,bike,created_at,profiles(username),likes(count),comments(count)').order('created_at',{ascending:false}).limit(40)]);
+      SB.from('posts').select('id,user_id,caption,image_path,bike,created_at,profiles!user_id(username),likes(count),comments(count)').order('created_at',{ascending:false}).limit(40)]);
     if(f.error)throw f.error;
     BLOCKS=new Set((b.data||[]).map(x=>x.blocked_id));MYLIKES=new Set((l.data||[]).map(x=>x.post_id));FEED=f.data||[];
     if(S.tab=='social')drawSocial();
@@ -465,7 +465,7 @@ async function socLike(id){
   if(r.error)toast(r.error.message);
 }
 async function loadC(id){
-  const r=await SB.from('comments').select('id,user_id,body,created_at,profiles(username)').eq('post_id',id).order('created_at').limit(100);
+  const r=await SB.from('comments').select('id,user_id,body,created_at,profiles!user_id(username)').eq('post_id',id).order('created_at').limit(100);
   if(r.error){toast(r.error.message);return}
   CMTS[id]=r.data||[];
 }
