@@ -9,4 +9,3 @@ self.addEventListener('fetch',e=>{
   if(u.pathname.endsWith('/config.js'))return;
   e.respondWith(caches.match(e.request,{ignoreSearch:true}).then(r=>r||fetch(e.request).then(res=>{const copy=res.clone();caches.open(CACHE).then(c=>c.put(e.request,copy));return res}).catch(()=>caches.match('index.html'))));
 });
-
