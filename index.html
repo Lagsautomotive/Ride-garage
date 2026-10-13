@@ -9,6 +9,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Ride Garage">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 
 <style>
 :root{--bg:#101113;--card:#1a1c1f;--tx:#f1f1ee;--mu:#9a9ea6;--ac:#1e6fff;--bd:#2c2f34;color-scheme:dark;--ok:#1f9d55;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
@@ -46,10 +47,28 @@ a.btn{text-decoration:none;display:inline-block}
 .s-bad{color:#ff453a;border-color:#ff453a}
 #lb{position:fixed;inset:0;background:rgba(0,0,0,.92);display:none;align-items:center;justify-content:center;z-index:9}
 #lb img{max-width:96%;max-height:92%}
+html,body{overscroll-behavior-y:none;-webkit-tap-highlight-color:transparent;-webkit-text-size-adjust:100%}
+body{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;touch-action:manipulation}
+input,textarea,select{-webkit-user-select:text;user-select:text;font-size:16px}
+button,.btn{touch-action:manipulation;transition:transform .08s,opacity .08s;cursor:pointer}
+button:active,.btn:active{transform:scale(.96);opacity:.85}
+main{padding-bottom:calc(92px + env(safe-area-inset-bottom,0px))}
+.tabs{position:fixed;left:0;right:0;bottom:0;margin:0;gap:0;padding:6px 6px calc(6px + env(safe-area-inset-bottom,0px));background:rgba(16,17,19,.88);-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px);border-top:1px solid var(--bd);z-index:5}
+.tabs button{display:flex;flex-direction:column;align-items:center;gap:2px;padding:6px 2px;border:0;border-radius:10px;background:none;color:var(--mu);font-size:11px;font-weight:600}
+.tabs button .ic{font-size:22px;line-height:1;filter:grayscale(1) opacity(.7)}
+.tabs button.on{background:none;color:var(--ac)}
+.tabs button.on .ic{filter:none}
+.fi{animation:fi .2s ease}
+@keyframes fi{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+@media(min-width:820px){
+.tabs{top:0;right:auto;width:96px;flex-direction:column;justify-content:flex-start;gap:6px;padding:calc(24px + env(safe-area-inset-top,0px)) 8px 20px;border-top:0;border-right:1px solid var(--bd)}
+.tabs button{flex:none;padding:12px 2px;font-size:12px}
+main{max-width:920px;padding-left:112px;padding-right:20px;padding-bottom:40px}
+}
 </style></head><body>
 <main>
 <header><h1 style="display:flex;align-items:center;gap:8px"><svg width="36" height="31" viewBox="10 12 86 70" aria-hidden="true"><path d="M18 62 C14 38 30 18 54 18 C74 18 88 32 88 52 L88 66 C88 72 84 76 78 76 L34 76 C24 76 19 70 18 62 Z" fill="#1e6fff"/><path d="M56 36 L85 40 C88 44 88 50 87 54 L60 52 C54 50 52 40 56 36 Z" fill="#0d0f12"/><path d="M26 34 C40 22 62 20 76 28" fill="none" stroke="#fff" stroke-width="3.4" stroke-linecap="round"/><path d="M72 66 L82 66 M72 70 L82 70" fill="none" stroke="#0d0f12" stroke-width="2.2" stroke-linecap="round"/></svg>Ride <span>Garage</span></h1><div class="mu" id="bike"></div></header>
-<div class="tabs"><button id="t-build" onclick="tab('build')">Build</button><button id="t-trips" onclick="tab('trips')">Trips</button><button id="t-places" onclick="tab('places')">Places</button><button id="t-svc" onclick="tab('svc')">Service</button><button id="t-fuel" onclick="tab('fuel')">Fuel</button></div>
+<div class="tabs"><button id="t-build" onclick="tab('build')"><span class="ic">🛠️</span>Build</button><button id="t-trips" onclick="tab('trips')"><span class="ic">🏍️</span>Trips</button><button id="t-places" onclick="tab('places')"><span class="ic">📍</span>Places</button><button id="t-svc" onclick="tab('svc')"><span class="ic">🔧</span>Service</button><button id="t-fuel" onclick="tab('fuel')"><span class="ic">⛽</span>Fuel</button></div>
 <div id="v"></div>
 <details class="card" style="margin-top:8px"><summary><b>Backup &amp; restore</b></summary>
 <p class="mu">Your data lives only on this device and web address. Back it up before clearing your browser or moving to the installed app. Restoring replaces what is on this device. Photos make the backup large.</p>
@@ -67,7 +86,7 @@ const esc=s=>String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;',
 function idb(){return new Promise((res,rej)=>{try{const r=indexedDB.open('ridegarage',1);r.onupgradeneeded=()=>r.result.createObjectStore('kv');r.onsuccess=()=>res(r.result);r.onerror=()=>rej(r.error)}catch(e){rej(e)}})}
 async function load(){try{const d=await idb();return await new Promise((res,rej)=>{const q=d.transaction('kv').objectStore('kv').get('s');q.onsuccess=()=>res(q.result);q.onerror=()=>rej(q.error)})}catch(e){return null}}
 async function save(){try{const d=await idb();d.transaction('kv','readwrite').objectStore('kv').put(JSON.parse(JSON.stringify(S)),'s')}catch(e){}}
-function tab(t){S.tab=t;render()}
+function tab(t){S.tab=t;render();window.scrollTo(0,0);const v=$('v');v.classList.remove('fi');void v.offsetWidth;v.classList.add('fi')}
 function render(){
   $('t-build').className=S.tab=='build'?'on':'';$('t-trips').className=S.tab=='trips'?'on':'';$('t-places').className=S.tab=='places'?'on':'';$('t-svc').className=S.tab=='svc'?'on':'';$('t-fuel').className=S.tab=='fuel'?'on':'';
   $('bike').textContent=S.bike||'';
