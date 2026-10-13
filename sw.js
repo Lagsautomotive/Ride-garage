@@ -1,4 +1,4 @@
-const CACHE='ride-garage-v3';
+const CACHE='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRydGpxZGZ1bmdnenNia3NleXN4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTY5MjQxNjEsImV4cCI6MjA3MjUwMDE2MX0.TCgvpjG69PgEcHuCFJOoQcUMGUIWphtnOPyc5eJ19cA';
 const FILES=['./','index.html','manifest.webmanifest','icon-192.png','icon-512.png'];
 self.addEventListener('install',e=>{e.waitUntil(caches.open(CACHE).then(c=>c.addAll(FILES)).then(()=>self.skipWaiting()))});
 self.addEventListener('activate',e=>{e.waitUntil(caches.keys().then(k=>Promise.all(k.filter(n=>n!==CACHE).map(n=>caches.delete(n)))).then(()=>self.clients.claim()))});
