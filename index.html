@@ -801,7 +801,7 @@ function drawSocial(){
     <button class="btn" style="margin-top:10px" onclick="postSubmit()">Post</button>
     <div class="mu" id="sm" style="margin-top:8px"></div></details>
   <div id="feed"></div>
-  <details class="card"><summary class="mu">Rules, terms and blocked riders</summary><p class="mu">${esc(RULES)}</p><p class="mu"><a href="terms.html" target="_blank" rel="noopener">Terms of Use</a> \u00b7 <a href="privacy.html" target="_blank" rel="noopener">Privacy Policy</a> \u00b7 ridegarageapp@gmail.com</p><button class="btn alt sm" onclick="socBlocked()">Show blocked riders</button><div id="bl"></div></details>`;
+  <details class="card"><summary class="mu">Rules, terms and blocked riders</summary><p class="mu">${esc(RULES)}</p><p class="mu"><a href="terms.html" target="_blank" rel="noopener">Terms of Use</a> \u00b7 <a href="privacy.html" target="_blank" rel="noopener">Privacy Policy</a> \u00b7 ridegarageapp@gmail.com</p><button class="btn alt sm" onclick="socBlocked()">Show blocked riders</button><div id="bl"></div></details><details class="card"><summary><b>Account &amp; privacy</b></summary><p class="mu">Request deletion of your community account, posts and associated account data. This sends an email request; deletion is not automatic yet. Local garage entries stay on this device unless you remove them separately.</p><p class="mu"><a href="privacy.html" target="_blank" rel="noopener">Privacy Policy</a> · <a href="terms.html" target="_blank" rel="noopener">Terms</a></p><a class="btn alt" href="mailto:ridegarageapp@gmail.com?subject=Ride%20Garage%20account%20deletion%20request">Request account deletion</a></details>`;
   drawFeed();
 }
 function drawFeed(){
