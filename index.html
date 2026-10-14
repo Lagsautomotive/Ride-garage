@@ -765,7 +765,7 @@ async function renderSocial(){
 function authView(){
   $('v').innerHTML=`<div class="card"><b>Join the community</b><p class="mu">Share your build, follow other riders and swap routes.</p>
   <input id="ae" type="email" placeholder="Email" autocomplete="email"><input id="ap" type="password" placeholder="Password (6+ characters)" autocomplete="current-password">
-  <label class="mu" style="display:block;margin-top:8px"><input type="checkbox" id="at" style="width:auto;margin-right:6px">I am 18 or older and agree to the <a href="terms.html" target="_blank" rel="noopener">Terms</a> and <a href="privacy.html" target="_blank" rel="noopener">Privacy Policy</a></label>
+  <label class="mu" style="display:block;margin-top:8px"><input type="checkbox" id="at" style="width:auto;margin-right:6px">I am 18 or older and agree to the <a href="terms.html">Terms</a> and <a href="privacy.html">Privacy Policy</a></label>
   <details class="mu" style="margin-top:6px"><summary>Read the rules</summary><p>${esc(RULES)}</p></details>
   <div class="row" style="margin-top:10px"><button class="btn" onclick="socAuth('in')">Sign in</button><button class="btn alt" onclick="socAuth('up')">Create account</button></div>
   <div class="mu" id="sm" style="margin-top:8px"></div></div>`;
@@ -801,7 +801,7 @@ function drawSocial(){
     <button class="btn" style="margin-top:10px" onclick="postSubmit()">Post</button>
     <div class="mu" id="sm" style="margin-top:8px"></div></details>
   <div id="feed"></div>
-  <details class="card"><summary class="mu">Rules, terms and blocked riders</summary><p class="mu">${esc(RULES)}</p><p class="mu"><a href="terms.html" target="_blank" rel="noopener">Terms of Use</a> \u00b7 <a href="privacy.html" target="_blank" rel="noopener">Privacy Policy</a> \u00b7 ridegarageapp@gmail.com</p><button class="btn alt sm" onclick="socBlocked()">Show blocked riders</button><div id="bl"></div></details><details class="card"><summary><b>Account &amp; privacy</b></summary><p class="mu">Request deletion of your community account, posts and associated account data. This sends an email request; deletion is not automatic yet. Local garage entries stay on this device unless you remove them separately.</p><p class="mu"><a href="privacy.html" target="_blank" rel="noopener">Privacy Policy</a> · <a href="terms.html" target="_blank" rel="noopener">Terms</a></p><a class="btn alt" href="mailto:ridegarageapp@gmail.com?subject=Ride%20Garage%20account%20deletion%20request">Request account deletion</a></details>`;
+  <details class="card"><summary class="mu">Rules, terms and blocked riders</summary><p class="mu">${esc(RULES)}</p><p class="mu"><a href="terms.html">Terms of Use</a> \u00b7 <a href="privacy.html">Privacy Policy</a> \u00b7 ridegarageapp@gmail.com</p><button class="btn alt sm" onclick="socBlocked()">Show blocked riders</button><div id="bl"></div></details><details class="card"><summary><b>Account &amp; privacy</b></summary><p class="mu">Request deletion of your community account, posts and associated account data. This sends an email request; deletion is not automatic yet. Local garage entries stay on this device unless you remove them separately.</p><p class="mu"><a href="privacy.html">Privacy Policy</a> · <a href="terms.html">Terms</a></p><a class="btn alt" href="mailto:ridegarageapp@gmail.com?subject=Ride%20Garage%20account%20deletion%20request">Request account deletion</a></details>`;
   drawFeed();
 }
 function drawFeed(){
