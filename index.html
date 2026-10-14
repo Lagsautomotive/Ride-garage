@@ -18,7 +18,7 @@
 :root[data-theme="dark"]{--bg:#101113;--card:#1a1c1f;--tx:#f1f1ee;--mu:#9a9ea6;--bd:#2c2f34}
 html{scroll-padding-top:env(safe-area-inset-top,0px)}
 *{box-sizing:border-box}
-body{margin:0;background:linear-gradient(27deg,#151515 5px,transparent 5px) 0 5px,linear-gradient(207deg,#151515 5px,transparent 5px) 10px 0,linear-gradient(27deg,#222 5px,transparent 5px) 0 10px,linear-gradient(207deg,#222 5px,transparent 5px) 10px 5px,linear-gradient(90deg,#1b1b1b 10px,transparent 10px),linear-gradient(#1d1d1d 25%,#1a1a1a 25%,#1a1a1a 50%,transparent 50%,transparent 75%,#242424 75%,#242424);background-color:#131313;background-size:20px 20px;color:var(--tx);font:15px/1.45 system-ui,-apple-system,Segoe UI,Roboto,sans-serif}
+body{margin:0;background:#07080b;color:var(--tx);font:15px/1.45 system-ui,-apple-system,Segoe UI,Roboto,sans-serif}
 main{max-width:640px;margin:0 auto;padding:16px}
 h1{font-size:22px;margin:0}h1 span{color:var(--ac)}
 header{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
@@ -66,6 +66,21 @@ main{padding-bottom:calc(92px + env(safe-area-inset-bottom,0px))}
 .tabs button{flex:none;padding:12px 2px;font-size:12px}
 main{max-width:920px;padding-left:112px;padding-right:20px;padding-bottom:40px}
 }
+body::before{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;background:
+url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20400%20200'%3E%3Cg%20fill='%23fff'%20fill-opacity='.055'%20stroke='%23fff'%20stroke-opacity='.055'%3E%3Cpath%20d='M62%2096%20L78%2084%20C100%2078%20130%2082%20160%2088%20C180%2070%20215%2062%20240%2066%20L262%2058%20C272%2048%20284%2046%20292%2050%20L318%2084%20C330%2090%20338%2098%20336%20106%20L318%20116%20L290%20122%20L215%20130%20L165%20128%20C140%20124%20120%20124%20100%20118%20C80%20112%2066%20104%2062%2096%20Z'%20stroke='none'/%3E%3Ccircle%20cx='95'%20cy='140'%20r='38'%20fill='none'%20stroke-width='9'/%3E%3Ccircle%20cx='305'%20cy='140'%20r='38'%20fill='none'%20stroke-width='9'/%3E%3Cpath%20d='M292%2070L305%20140M165%20125L95%20140'%20fill='none'%20stroke-width='7'/%3E%3C/g%3E%3C/svg%3E") no-repeat right -30px bottom 96px / min(620px,95vw) auto,
+linear-gradient(115deg,transparent 56%,rgba(30,111,255,.16) 56% 60%,transparent 60% 62%,rgba(255,255,255,.06) 62% 63%,transparent 63%),
+repeating-linear-gradient(115deg,transparent 0 44px,rgba(255,255,255,.022) 44px 46px),
+radial-gradient(900px 520px at 8% -8%,rgba(30,111,255,.30),transparent 62%),
+radial-gradient(700px 520px at 100% 100%,rgba(30,111,255,.18),transparent 60%),
+linear-gradient(180deg,#0b0d12,#06070a)}
+h1{font-style:italic;font-weight:800;letter-spacing:.6px;text-transform:uppercase}
+.big{font-style:italic;font-weight:800}
+.card{background:rgba(18,21,28,.74);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);border:1px solid rgba(255,255,255,.09);border-radius:16px;box-shadow:0 8px 24px rgba(0,0,0,.35)}
+.btn{background:linear-gradient(135deg,#2f80ff,#1858e6);box-shadow:0 4px 14px rgba(30,111,255,.38)}
+.btn.alt{background:rgba(255,255,255,.07);box-shadow:none}
+.bar i{background:linear-gradient(90deg,#1e6fff,#38c6ff)}
+.tabs button.on{text-shadow:0 0 12px rgba(30,111,255,.8)}
+.tabs{background:rgba(8,10,14,.82)}
 </style></head><body>
 <main>
 <header><h1 style="display:flex;align-items:center;gap:8px"><svg width="36" height="31" viewBox="10 12 86 70" aria-hidden="true"><path d="M18 62 C14 38 30 18 54 18 C74 18 88 32 88 52 L88 66 C88 72 84 76 78 76 L34 76 C24 76 19 70 18 62 Z" fill="#1e6fff"/><path d="M56 36 L85 40 C88 44 88 50 87 54 L60 52 C54 50 52 40 56 36 Z" fill="#0d0f12"/><path d="M26 34 C40 22 62 20 76 28" fill="none" stroke="#fff" stroke-width="3.4" stroke-linecap="round"/><path d="M72 66 L82 66 M72 70 L82 70" fill="none" stroke="#0d0f12" stroke-width="2.2" stroke-linecap="round"/></svg>Ride <span>Garage</span></h1><div class="mu" id="bike"></div></header>
@@ -522,4 +537,3 @@ load().then(d=>{if(d)S=Object.assign(S,d);S.tab='build';render()});
 </script>
 <script>if('serviceWorker' in navigator)addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(()=>{}))</script>
 </body></html>
-
