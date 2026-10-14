@@ -36,11 +36,6 @@ Deno.serve(async (req) => {
     if (auth.error || !auth.data.user)
       return reply(401, { error: 'Session invalid. Sign in again.' });
     const id = auth.data.user.id;
-    // TEMPORARY PRIVATE TEST GATE: remove after validation.
-    // Even valid sessions belonging to any other rider are denied.
-    if (id !== 'd3286f74-47bd-4791-8a5d-9f11f6aada3b') {
-      return reply(403, { error: 'Account deletion is currently restricted to a test account.' });
-    }
 
     // Require a recently issued user access token (not the public anon token).
     // Fresh login is needed if the current access token was issued > 10 minutes ago.
