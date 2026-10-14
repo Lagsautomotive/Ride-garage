@@ -381,6 +381,79 @@ a { overflow-wrap: anywhere; }
     transition-duration: .01ms !important;
   }
 }
+/* Final Ride Garage responsive refinements */
+
+/* Keep the header balanced on all screen sizes */
+header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+}
+
+header h1 {
+  min-width: 0;
+}
+
+#bike {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+/* Prevent long content from widening the screen */
+#v,
+.card,
+.top {
+  min-width: 0;
+}
+
+.card {
+  overflow-wrap: break-word;
+}
+
+.ph {
+  max-width: 100%;
+}
+
+/* Smaller phones */
+@media (max-width: 420px) {
+  .tabs button {
+    gap: 3px;
+    padding: 7px 1px;
+    letter-spacing: -0.2px;
+  }
+
+  .tabs button .ic {
+    font-size: 19px;
+  }
+
+  .stats {
+    flex-wrap: wrap;
+  }
+
+  .stats > div {
+    flex: 1 1 90px;
+  }
+}
+
+/* Tablet and desktop */
+@media (min-width: 600px) {
+  .tabs {
+    flex-wrap: wrap;
+  }
+
+  .tabs button {
+    min-width: 82px;
+  }
+}
+
+/* Extra-wide desktop screens */
+@media (min-width: 1200px) {
+  main {
+    max-width: 1180px;
+  }
+}
+
 
 </style></head><body>
 <main>
