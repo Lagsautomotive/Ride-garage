@@ -536,5 +536,5 @@ async function socDel(id){
 function shareMod(id){const m=S.mods.find(x=>x.id==id);draft={cap:m.title+(m.notes?' - '+m.notes:''),img:m.photos[0]||null};tab('social')}
 load().then(d=>{if(d)S=Object.assign(S,d);S.tab='build';render()});
 </script>
-<script>if('serviceWorker' in navigator)addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(()=>{}))</script>
+<script>if('serviceWorker' in navigator)addEventListener('load',()=>navigator.serviceWorker.register('sw.js',{updateViaCache:'none'}).catch(()=>{}))</script>
 </body></html>
