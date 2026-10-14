@@ -807,13 +807,8 @@ function drawSocial(){
 async function socDeleteAccount(){
   const status=$('delStatus');
   const cfg=window.RG_CONFIG||{};
-  // Temporary test-only UI gate. Server independently restricts deletion to this UID.
-  const testAccountId='d3286f74-47bd-4791-8a5d-9f11f6aada3b';
-  if(!ME || ME.id!==testAccountId){
-    if(status)status.textContent='Automatic deletion is not available. Please use the email request link below.';
-    return;
-  }
-  if(!cfg.ACCOUNT_DELETION_ENABLED && ME.id!==testAccountId){
+  // Public rollout remains off until Supabase deployment and checks finish.
+  if(!cfg.ACCOUNT_DELETION_ENABLED){
     if(status)status.textContent='Automatic deletion is not active yet. Please use the email request link below.';
     return;
   }
