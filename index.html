@@ -801,8 +801,33 @@ function drawSocial(){
     <button class="btn" style="margin-top:10px" onclick="postSubmit()">Post</button>
     <div class="mu" id="sm" style="margin-top:8px"></div></details>
   <div id="feed"></div>
-  <details class="card"><summary class="mu">Rules, terms and blocked riders</summary><p class="mu">${esc(RULES)}</p><p class="mu"><a href="terms.html">Terms of Use</a> \u00b7 <a href="privacy.html">Privacy Policy</a> \u00b7 ridegarageapp@gmail.com</p><button class="btn alt sm" onclick="socBlocked()">Show blocked riders</button><div id="bl"></div></details><details class="card"><summary><b>Account &amp; privacy</b></summary><p class="mu">Request deletion of your community account, posts and associated account data. This sends an email request; deletion is not automatic yet. Local garage entries stay on this device unless you remove them separately.</p><p class="mu"><a href="privacy.html">Privacy Policy</a> · <a href="terms.html">Terms</a></p><a class="btn alt" href="mailto:ridegarageapp@gmail.com?subject=Ride%20Garage%20account%20deletion%20request">Request account deletion</a></details>`;
+  <details class="card"><summary class="mu">Rules, terms and blocked riders</summary><p class="mu">${esc(RULES)}</p><p class="mu"><a href="terms.html">Terms of Use</a> \u00b7 <a href="privacy.html">Privacy Policy</a> \u00b7 ridegarageapp@gmail.com</p><button class="btn alt sm" onclick="socBlocked()">Show blocked riders</button><div id="bl"></div></details><details class="card"><summary><b>Account &amp; privacy</b></summary><p class="mu">Request deletion of your community account, posts and associated account data. Deletion is permanent once confirmed and the secure service is enabled. Local garage entries stay on this device unless you remove them separately.</p><p class="mu"><a href="privacy.html">Privacy Policy</a> · <a href="terms.html">Terms</a></p><button class="btn alt" onclick="socDeleteAccount()">Delete my community account</button><p class="mu" id="delStatus"></p><a href="mailto:ridegarageapp@gmail.com?subject=Ride%20Garage%20account%20deletion%20request">Request deletion by email</a></details>`;
   drawFeed();
+}
+async function socDeleteAccount(){
+  const status=$('delStatus');
+  const cfg=window.RG_CONFIG||{};
+  if(!cfg.ACCOUNT_DELETION_ENABLED){
+    if(status)status.textContent='Automatic deletion is not active yet. Please use the email request link below.';
+    return;
+  }
+  if(!SB||!ME){if(status)status.textContent='Sign in to delete your account.';return}
+  if(!confirm('Permanently delete your Ride Garage community account, posts, comments and uploaded photos? This cannot be undone. Local garage records remain on this device.'))return;
+  const confirmation=prompt('To confirm, type DELETE MY ACCOUNT exactly:');
+  if(confirmation!=='DELETE MY ACCOUNT'){if(status)status.textContent='Deletion cancelled: confirmation did not match.';return}
+  if(status)status.textContent='Deleting community account...';
+  try{
+    const {data:{session},error:sessionError}=await SB.auth.getSession();
+    if(sessionError||!session)throw new Error('Please sign in again.');
+    const {data,error}=await SB.functions.invoke('delete-account',{body:{confirm:confirmation}});
+    if(error||!data?.success)throw new Error(data?.error||error?.message||'Deletion did not complete.');
+    await SB.auth.signOut();
+    ME=null;PROF=null;
+    toast('Community account deleted. Your local garage records were not changed.');
+    if(S.tab==='social')renderSocial();
+  }catch(e){
+    if(status)status.textContent='Could not finish deletion. Please email ridegarageapp@gmail.com. '+(e?.message||'');
+  }
 }
 function drawFeed(){
   const f=$('feed');if(!f)return;
