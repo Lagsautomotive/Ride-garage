@@ -81,7 +81,309 @@ h1{font-style:italic;font-weight:800;letter-spacing:.6px;text-transform:uppercas
 .bar i{background:linear-gradient(90deg,#1e6fff,#38c6ff)}
 .tabs button.on{text-shadow:0 0 12px rgba(30,111,255,.8)}
 .tabs{background:rgba(8,10,14,.82)}
-.mu a,label a{color:#6aa3ff}
+.mu a,label a{color:#6aa3ff}/* Ride Garage — black + racing orange responsive redesign
+   Paste this block at the END of the existing <style> section in index.html,
+   immediately before </style>. It changes presentation only; leave all JavaScript intact. */
+
+:root {
+  --bg: #0b0c0e;
+  --card: #151719;
+  --tx: #f5f5f2;
+  --mu: #a4a8ae;
+  --ac: #ff6a00;
+  --bd: #303238;
+  --ok: #36c879;
+  color-scheme: dark;
+  accent-color: var(--ac);
+}
+
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 18px;
+  background: var(--bg);
+}
+
+body {
+  min-height: 100vh;
+  background: #090a0c;
+  color: var(--tx);
+  font: 15px/1.5 system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+body::before {
+  background:
+    radial-gradient(ellipse at 88% 0%, rgba(255,106,0,.13), transparent 42%),
+    radial-gradient(ellipse at 0% 35%, rgba(255,106,0,.055), transparent 36%),
+    repeating-linear-gradient(135deg, transparent 0 54px, rgba(255,255,255,.018) 54px 56px),
+    linear-gradient(180deg, #0d0e10, #08090a 75%);
+}
+
+main {
+  width: 100%;
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 18px 18px calc(100px + env(safe-area-inset-bottom, 0px));
+}
+
+header {
+  gap: 14px;
+  padding: 8px 2px 18px;
+  margin-bottom: 10px;
+  border-bottom: 1px solid rgba(255,255,255,.08);
+}
+
+h1 {
+  font-size: clamp(22px, 3vw, 30px);
+  line-height: 1.1;
+  letter-spacing: 1px;
+}
+
+h1 span { color: var(--ac); }
+
+.card {
+  padding: clamp(14px, 2.3vw, 22px);
+  margin-bottom: 14px;
+  border: 1px solid rgba(255,255,255,.09);
+  border-radius: 18px;
+  background: linear-gradient(145deg, rgba(25,27,30,.97), rgba(17,18,20,.97));
+  box-shadow: 0 10px 28px rgba(0,0,0,.24);
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+}
+
+.card > :first-child { margin-top: 0; }
+.card > :last-child { margin-bottom: 0; }
+
+.row {
+  align-items: stretch;
+  gap: 10px;
+}
+
+.row > * {
+  flex: 1 1 180px;
+  min-width: 0;
+}
+
+input, select, textarea {
+  min-height: 44px;
+  margin-top: 7px;
+  padding: 11px 12px;
+  border: 1px solid #393c42;
+  border-radius: 11px;
+  background: #0c0d0f;
+  color: var(--tx);
+  outline: none;
+}
+
+textarea { resize: vertical; }
+
+input:focus, select:focus, textarea:focus {
+  border-color: var(--ac);
+  box-shadow: 0 0 0 3px rgba(255,106,0,.16);
+}
+
+button, .btn {
+  min-height: 42px;
+  border-radius: 11px;
+  font-weight: 700;
+  transition: transform .12s ease, filter .12s ease, border-color .12s ease;
+}
+
+.btn {
+  border: 1px solid transparent;
+  background: linear-gradient(135deg, #ff7a1a, #e94f00);
+  color: #17100b;
+  box-shadow: 0 5px 16px rgba(255,90,0,.17);
+}
+
+.btn.alt {
+  background: #202226;
+  color: var(--tx);
+  border: 1px solid #3a3d43;
+  box-shadow: none;
+}
+
+.btn:hover, button:hover { filter: brightness(1.08); }
+.btn:active, button:active { transform: translateY(1px) scale(.985); }
+
+button:focus-visible, .btn:focus-visible, a:focus-visible {
+  outline: 3px solid rgba(255,106,0,.75);
+  outline-offset: 3px;
+}
+
+.big {
+  color: #fff;
+  font-size: clamp(25px, 4vw, 34px);
+  font-variant-numeric: tabular-nums;
+}
+
+.stats {
+  gap: 8px;
+  align-items: stretch;
+}
+
+.stats > div {
+  min-width: 0;
+  padding: 10px 6px;
+  border: 1px solid rgba(255,255,255,.055);
+  border-radius: 12px;
+  background: rgba(255,255,255,.025);
+}
+
+.bar {
+  height: 9px;
+  background: #303238;
+  border-radius: 99px;
+}
+
+.bar i {
+  background: linear-gradient(90deg, #ff4d00, #ff9b36);
+  border-radius: inherit;
+}
+
+.pill { padding: 4px 10px; }
+.s-doing { color: #ffb454; border-color: #b96b1d; }
+.s-bad { color: #ff716b; border-color: #ff453a; }
+.ph img {
+  height: clamp(76px, 12vw, 110px);
+  border: 1px solid rgba(255,255,255,.12);
+  object-fit: cover;
+}
+
+svg.trk {
+  min-height: 160px;
+  background: #0b0c0e;
+  border-color: #34363b;
+}
+
+details > summary {
+  cursor: pointer;
+  padding: 3px 0;
+}
+details > summary::marker { color: var(--ac); }
+
+.mu a, label a { color: #ff9a52; }
+a { overflow-wrap: anywhere; }
+
+/* Mobile bottom navigation: safe-area aware, readable, and easy to tap. */
+.tabs {
+  position: fixed;
+  z-index: 20;
+  left: 0;
+  right: 0;
+  top: auto;
+  bottom: 0;
+  width: auto;
+  flex-direction: row;
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 3px;
+  padding: 7px 7px calc(7px + env(safe-area-inset-bottom, 0px));
+  border-top: 1px solid rgba(255,255,255,.12);
+  background: rgba(12,13,15,.94);
+  box-shadow: 0 -8px 28px rgba(0,0,0,.32);
+  -webkit-backdrop-filter: blur(18px);
+  backdrop-filter: blur(18px);
+}
+
+.tabs button {
+  min-width: 0;
+  min-height: 55px;
+  padding: 7px 2px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  border: 1px solid transparent;
+  border-radius: 12px;
+  background: transparent;
+  color: #a6a9af;
+  font-size: clamp(10px, 2.7vw, 12px);
+  line-height: 1.1;
+  white-space: nowrap;
+}
+
+.tabs button .ic {
+  font-size: 20px;
+  line-height: 1;
+  filter: grayscale(1) opacity(.72);
+}
+
+.tabs button.on {
+  color: #ff8a36;
+  background: rgba(255,106,0,.12);
+  border-color: rgba(255,106,0,.22);
+  text-shadow: none;
+}
+
+.tabs button.on .ic { filter: none; }
+
+/* Medium screens */
+@media (min-width: 600px) {
+  main { padding: 24px 24px 42px; }
+  .tabs {
+    position: sticky;
+    left: auto;
+    right: auto;
+    bottom: auto;
+    top: 10px;
+    width: auto;
+    flex-direction: row;
+    z-index: 10;
+    display: flex;
+    justify-content: flex-start;
+    gap: 7px;
+    margin: 0 0 18px;
+    padding: 8px;
+    border: 1px solid var(--bd);
+    border-radius: 15px;
+    background: rgba(15,16,18,.92);
+  }
+  .tabs button {
+    flex: 1 1 0;
+    min-height: 48px;
+    flex-direction: row;
+    gap: 7px;
+    padding: 10px 8px;
+    font-size: 13px;
+  }
+  .tabs button .ic { font-size: 18px; }
+}
+
+/* Desktop: wider content and a compact horizontal navigation bar. */
+@media (min-width: 900px) {
+  main {
+    max-width: 1180px;
+    padding: 28px 32px 48px;
+  }
+  header { margin-bottom: 18px; }
+  .tabs { top: 12px; }
+  .card { border-radius: 20px; }
+}
+
+/* Narrow phones: avoid cramped stat labels and buttons. */
+@media (max-width: 380px) {
+  main { padding-left: 11px; padding-right: 11px; }
+  .card { padding: 12px; border-radius: 15px; }
+  .stats { gap: 4px; }
+  .stats > div { padding: 8px 3px; }
+  .stats .mu { font-size: 11px; }
+  .tabs { padding-left: 3px; padding-right: 3px; gap: 1px; }
+  .tabs button { font-size: 10px; }
+  .tabs button .ic { font-size: 18px; }
+}
+
+/* Respect reduced-motion preferences. */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    scroll-behavior: auto !important;
+    animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .01ms !important;
+  }
+}
+
 </style></head><body>
 <main>
 <header><h1 style="display:flex;align-items:center;gap:8px"><svg width="36" height="31" viewBox="10 12 86 70" aria-hidden="true"><path d="M18 62 C14 38 30 18 54 18 C74 18 88 32 88 52 L88 66 C88 72 84 76 78 76 L34 76 C24 76 19 70 18 62 Z" fill="#1e6fff"/><path d="M56 36 L85 40 C88 44 88 50 87 54 L60 52 C54 50 52 40 56 36 Z" fill="#0d0f12"/><path d="M26 34 C40 22 62 20 76 28" fill="none" stroke="#fff" stroke-width="3.4" stroke-linecap="round"/><path d="M72 66 L82 66 M72 70 L82 70" fill="none" stroke="#0d0f12" stroke-width="2.2" stroke-linecap="round"/></svg>Ride <span>Garage</span></h1><div class="mu" id="bike"></div></header>
