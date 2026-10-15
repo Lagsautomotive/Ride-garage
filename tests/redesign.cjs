@@ -109,7 +109,7 @@ async function stored(page){
   assert.deepEqual(await stored(page),fixture);
   console.log(name+': checking offline shell');
   await page.evaluate(async()=>{await navigator.serviceWorker.register('sw.js',{updateViaCache:'none'})});
-  try { await page.waitForFunction(()=>!!navigator.serviceWorker.controller); }
+  try { await page.waitForFunction(async()=>(await navigator.serviceWorker.getRegistration())?.active?.state==='activated'); }
   catch(error){
     console.log(name+': worker diagnostics',await page.evaluate(async()=>({
       controller:!!navigator.serviceWorker.controller,
@@ -118,8 +118,9 @@ async function stored(page){
     })));
     throw error;
   }
-  await page.reload();
+  await page.goto('http://127.0.0.1:8080/?worker-ready='+Date.now());
   await page.locator('#t-home[aria-current="page"]').waitFor();
+  await page.waitForFunction(()=>!!navigator.serviceWorker.controller);
   // Stop the real HTTP server instead of using the engine's offline emulation.
   // A fresh document + unique URL proves this is a cached navigation, not stale DOM.
   await page.evaluate(()=>{window.__beforeOfflineNavigation=true});
