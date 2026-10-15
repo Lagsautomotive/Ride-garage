@@ -1,4 +1,4 @@
-const CACHE = 'ride-garage-v16';
+const CACHE = 'ride-garage-v17';
 const APP_SHELL = ['./', 'index.html', 'manifest.webmanifest', 'icon-192.png', 'icon-512.png', 'privacy.html', 'terms.html', 'install.html', 'landing.html', 'feedback.html', 'admin.html'];
 
 self.addEventListener('install', event => {
