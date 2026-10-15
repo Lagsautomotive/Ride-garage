@@ -471,10 +471,27 @@ header h1 {
 .rg-map-row{margin:8px 0 4px;justify-content:flex-start}
 .rg-map-row .btn{flex:0 1 auto;max-width:100%}
 @media(max-width:480px){.rg-map-host{height:260px}.rg-map-row .btn{width:100%;flex:1}}
+/* Mobile clarity: less crowded navigation, readable controls, accessible focus. */
+.tabs{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:5px}
+.tabs button{min-width:0;white-space:normal;overflow-wrap:anywhere}
+@media(max-width:620px){
+  .tabs{grid-template-columns:repeat(3,minmax(0,1fr));gap:7px;margin-bottom:14px}
+  .tabs button{min-height:49px;padding:8px 5px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;line-height:1.2;font-size:12px}
+  .tabs .ic{font-size:19px;line-height:1.2}
+  header{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:8px}
+  header h1{min-width:0;margin:0}
+  .rg-header-actions{margin-left:auto}
+  .row{flex-wrap:wrap}
+  .card{overflow-wrap:anywhere}
+  input,select,textarea{max-width:100%;min-width:0}
+}
+@media(max-width:350px){.rg-header-actions #bike{display:none}.rg-cloud-tab{font-size:12px}}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;animation-duration:.01ms!important;transition-duration:.01ms!important}}
 </style><link rel="stylesheet" href="premium.css"><link rel="stylesheet" href="welcome.css"></head><body class="rg-app">
 <main>
 <header><h1 style="display:flex;align-items:center;gap:8px"><img class="app-wordmark" src="ride-garage-premium-logo.png" alt="Ride Garage"></h1><div class="rg-header-actions"><div class="mu" id="bike"></div><a href="cloud.html" class="rg-cloud-tab" aria-label="Open Cloud Garage Sync page"><span aria-hidden="true">☁️</span> Cloud</a></div></header>
-<div class="tabs"><button id="t-build" onclick="tab('build')"><span class="ic">🛠️</span>Build</button><button id="t-trips" onclick="tab('trips')"><span class="ic">🏍️</span>Trips</button><button id="t-places" onclick="tab('places')"><span class="ic">📍</span>Places</button><button id="t-svc" onclick="tab('svc')"><span class="ic">🔧</span>Service</button><button id="t-fuel" onclick="tab('fuel')"><span class="ic">⛽</span>Fuel</button><button id="t-social" onclick="tab('social')"><span class="ic">👥</span>Social</button></div>
+<nav aria-label="Ride Garage sections" class="rg-primary-nav"><div class="tabs"><button id="t-build" onclick="tab('build')"><span class="ic">🛠️</span>Build</button><button id="t-trips" onclick="tab('trips')"><span class="ic">🏍️</span>Trips</button><button id="t-places" onclick="tab('places')"><span class="ic">📍</span>Places</button><button id="t-svc" onclick="tab('svc')"><span class="ic">🔧</span>Service</button><button id="t-fuel" onclick="tab('fuel')"><span class="ic">⛽</span>Fuel</button><button id="t-social" onclick="tab('social')"><span class="ic">👥</span>Social</button></div>
+</nav>
 <div id="v"></div>
 <details class="card" style="margin-top:8px"><summary><b>Backup &amp; restore</b></summary>
 <p class="mu">Your garage lives on this device by default. Cloud Garage Sync is optional and never runs automatically. Back up your local records before clearing your browser or moving to another device. Restoring from a file replaces local records after confirmation. Export your current garage first and check that the backup downloaded successfully. Photos make the backup large. Social accounts/posts are not included.</p>
@@ -532,6 +549,10 @@ async function save(){try{const d=await idb();d.transaction('kv','readwrite').ob
 function tab(t){S.tab=t;render();window.scrollTo(0,0);const v=$('v');v.classList.remove('fi');void v.offsetWidth;v.classList.add('fi')}
 function render(){
   if(window.RGMaps)window.RGMaps.destroy();
+  for(const name of ['build','trips','places','svc','fuel','social']){
+    const el=$('t-'+name);
+    if(el)el.setAttribute('aria-current',S.tab===name?'page':'false');
+  }
   $('t-build').className=S.tab=='build'?'on':'';$('t-trips').className=S.tab=='trips'?'on':'';$('t-places').className=S.tab=='places'?'on':'';$('t-svc').className=S.tab=='svc'?'on':'';$('t-fuel').className=S.tab=='fuel'?'on':'';$('t-social').className=S.tab=='social'?'on':'';
   $('bike').textContent=S.bike||'';
   S.tab=='build'?renderBuild():S.tab=='trips'?renderTrips():S.tab=='places'?renderPlaces():S.tab=='svc'?renderSvc():S.tab=='fuel'?renderFuel():renderSocial();
