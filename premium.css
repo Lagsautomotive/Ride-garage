@@ -1,0 +1,213 @@
+/* Ride Garage — Luxury / Premium visual skin
+   Visual-only overrides. Application data, IDs and JavaScript stay unchanged. */
+:root{--rg-gold:#d3b47e;--rg-bronze:#a67c4b;--rg-ink:#0c0c0b;--rg-panel:#191816;--rg-edge:#41392f;--rg-cream:#f5efe5;--rg-soft:#bcb1a4}
+::selection{background:#9c7745;color:#fff}
+body.rg-app,body.rg-landing,body.rg-install,body.rg-feedback,body.rg-admin,body.rg-legal{
+  color:var(--rg-cream);
+  background-color:var(--rg-ink);
+}
+body.rg-app a:focus-visible,body.rg-landing a:focus-visible,
+body.rg-install a:focus-visible,body.rg-feedback a:focus-visible,
+body.rg-admin a:focus-visible,body.rg-legal a:focus-visible,
+body.rg-app button:focus-visible,body.rg-feedback button:focus-visible,
+body.rg-admin button:focus-visible{
+  outline:2px solid var(--rg-gold);outline-offset:3px;
+}
+
+/* Garage application */
+body.rg-app{
+  --bg:#11100f;--card:#1c1a18;--tx:#f5efe5;--mu:#bfb4a7;
+  --ac:#d3b47e;--bd:#40382f;--ok:#7fba8a;
+  background:#0a0a09;
+}
+body.rg-app::before{
+  background:
+    radial-gradient(750px 430px at 95% -12%,rgba(191,150,88,.15),transparent 69%),
+    radial-gradient(580px 390px at 4% 84%,rgba(142,104,65,.095),transparent 70%),
+    linear-gradient(145deg,rgba(255,255,255,.013) 0 1px,transparent 1px 120px),
+    linear-gradient(180deg,#10100f,#090909 75%);
+}
+body.rg-app header{border-bottom:1px solid #4b3e2c;padding-bottom:18px}
+body.rg-app header h1{
+  font:700 clamp(27px,3.5vw,38px)/1.08 Georgia,"Times New Roman",serif;
+  letter-spacing:-.035em;text-transform:none;font-style:normal;
+  color:var(--rg-cream);
+}
+body.rg-app header h1 span{color:var(--rg-gold)}
+body.rg-app header h1 svg{filter:drop-shadow(0 3px 10px rgba(194,144,76,.24))}
+body.rg-app #bike{color:#ceb990}
+body.rg-app .card{
+  background:linear-gradient(150deg,rgba(31,28,25,.98),rgba(20,19,18,.98));
+  border:1px solid #41392f;border-radius:18px;
+  box-shadow:0 12px 29px rgba(0,0,0,.31),inset 0 1px rgba(242,217,175,.035);
+}
+body.rg-app .card b{letter-spacing:.005em}
+body.rg-app .mu{color:#c1b6a8}
+body.rg-app .big{
+  color:#f9ecd9;font-style:normal;
+  font-weight:750;letter-spacing:-.035em;
+}
+body.rg-app .btn{
+  color:#18140f;
+  background:linear-gradient(140deg,#e4cb9d,#c7a16d 58%,#aa8352);
+  border:1px solid #e0bd84;box-shadow:0 5px 16px rgba(140,100,55,.2);
+  font-weight:750;letter-spacing:.01em;
+}
+body.rg-app .btn.alt{
+  color:#ebddc8;background:linear-gradient(180deg,#282521,#1b1a18);
+  border:1px solid #534735;box-shadow:none;
+}
+body.rg-app .btn:hover{filter:brightness(1.08)}
+body.rg-app input,body.rg-app select,body.rg-app textarea{
+  background:#121211;color:#f5efe5;border-color:#54493b;border-radius:11px;
+}
+body.rg-app input:focus,body.rg-app select:focus,body.rg-app textarea:focus{
+  border-color:#d3b47e;box-shadow:0 0 0 3px rgba(211,180,126,.16);
+}
+body.rg-app .tabs{
+  background:rgba(17,16,15,.96);border-color:#4b4032;
+  box-shadow:0 -7px 32px rgba(0,0,0,.38);
+}
+body.rg-app .tabs button{color:#bdad99;border-color:transparent}
+body.rg-app .tabs button.on{
+  background:rgba(204,167,108,.13);border-color:rgba(211,180,126,.36);
+  color:#eed09d;text-shadow:none;
+}
+body.rg-app .tabs button.on .ic{filter:none}
+body.rg-app .stats>div{
+  background:rgba(210,172,117,.04);border-color:#40372d;
+}
+body.rg-app .bar{background:#383128}
+body.rg-app .bar i{background:linear-gradient(90deg,#8c714a,#ddbe88)}
+body.rg-app .pill{background:#28241e;border-color:#5a4c3b}
+body.rg-app .s-doing{color:#e9bd75}
+body.rg-app .s-done{color:#9ec8a4}
+body.rg-app details>summary::marker{color:#d3b47e}
+body.rg-app .mu a,body.rg-app label a,body.rg-app a:not(.btn){
+  color:#d8bc8e;
+}
+body.rg-app .ph img{border:1px solid #594630;box-shadow:0 5px 14px #0004}
+body.rg-app svg.trk{background:#141311;border-color:#453b2f}
+body.rg-app .fi{animation-duration:.17s}
+@media(min-width:600px){
+  body.rg-app .tabs{
+    background:rgba(21,20,18,.95);border-color:#4c4031;
+  }
+}
+
+/* Marketing page */
+body.rg-landing{
+  --bg:#0a0a09;--panel:#1c1a17;--line:#3e362c;
+  --orange:var(--rg-gold);--muted:var(--rg-soft);--white:var(--rg-cream);
+  background:#0a0a09;
+}
+body.rg-landing nav{
+  background:rgba(13,12,11,.94);border-bottom:1px solid #423729;
+}
+body.rg-landing .brand{font-family:Georgia,serif;letter-spacing:.03em;font-size:21px}
+body.rg-landing .brand strong{color:#d3b47e}
+body.rg-landing .btn{
+  border-color:#d2ad77;
+  color:#19150f;
+  background:linear-gradient(140deg,#eddbb7,#c7a36d 55%,#ac8553);
+  box-shadow:0 9px 28px rgba(151,115,65,.16);
+  font-weight:800;letter-spacing:.025em;
+}
+body.rg-landing .btn.outline{
+  background:transparent;color:#e8d9bf;border:1px solid #756147;box-shadow:none;
+}
+body.rg-landing .hero{
+  background:
+    radial-gradient(ellipse at 75% 38%,rgba(163,124,69,.21),transparent 48%),
+    linear-gradient(135deg,#211e19,#0d0c0b 60%);
+  border-color:#43382b;
+}
+body.rg-landing .hero:after{background:#bd9b64;opacity:.1}
+body.rg-landing .eyebrow{
+  color:#d2b586;letter-spacing:.24em;
+}
+body.rg-landing h1{
+  font:700 clamp(50px,7.6vw,96px)/.99 Georgia,"Times New Roman",serif;
+  letter-spacing:-.06em;
+}
+body.rg-landing h1 span{color:#d4b47e}
+body.rg-landing .lede{color:#d0c6b6}
+body.rg-landing .note{color:#ad9f8b}
+body.rg-landing .visual:before{
+  border-color:rgba(220,183,128,.48);
+  box-shadow:0 0 0 29px rgba(218,178,119,.05),0 0 0 78px rgba(218,178,119,.025);
+}
+body.rg-landing .helmet{
+  background:linear-gradient(145deg,#3c342b,#191715 65%);
+  border-color:#7b6548;border-radius:25px;
+  box-shadow:0 40px 80px #000a,0 0 65px rgba(194,151,90,.18);
+}
+body.rg-landing .helmet img{
+  box-shadow:0 0 45px rgba(209,171,110,.14);
+}
+body.rg-landing .corner{color:#dcc39b}
+body.rg-landing .sectiontitle,body.rg-landing .split h2,body.rg-landing .cta h2{
+  font-family:Georgia,"Times New Roman",serif;font-weight:700;letter-spacing:-.045em;
+}
+body.rg-landing .feature{
+  border-color:#463b2e;
+  background:linear-gradient(145deg,#26221c,#171615 72%);
+  box-shadow:0 10px 25px rgba(0,0,0,.23);
+  border-radius:15px;
+}
+body.rg-landing .feature h3{color:#efe2cb}
+body.rg-landing .symbol{
+  color:#e7c995;background:rgba(205,162,99,.13);
+  border:1px solid rgba(209,173,123,.21);
+}
+body.rg-landing .split{background:#141311;border-color:#433728}
+body.rg-landing .step{background:#211e1a;border-color:#504231}
+body.rg-landing .num{
+  color:#191510;background:linear-gradient(150deg,#e9d4ac,#b38b56);
+}
+body.rg-landing .cta{
+  background:radial-gradient(ellipse at center,rgba(132,98,53,.24),transparent 67%);
+}
+body.rg-landing footer{border-color:#413528}
+@media(max-width:580px){
+  body.rg-landing .brand{font-size:16px}
+  body.rg-landing h1{font-size:clamp(47px,12.2vw,73px)}
+  body.rg-landing .hero-grid{gap:18px}
+}
+
+/* Supporting pages */
+body.rg-install,body.rg-feedback,body.rg-admin,body.rg-legal{
+  background:radial-gradient(ellipse at 50% -10%,#33291c,#0d0c0b 65%);
+  color:#f4eee5;
+}
+body.rg-install h1,body.rg-feedback h1,body.rg-admin h1,
+body.rg-legal h1,body.rg-legal h2{
+  font-family:Georgia,"Times New Roman",serif;letter-spacing:-.03em;
+}
+body.rg-install .card,body.rg-feedback .panel,body.rg-admin .item,
+body.rg-admin .stat{
+  background:linear-gradient(145deg,#25211c,#181715);
+  border-color:#504131;box-shadow:0 9px 24px #0003;
+}
+body.rg-install{--orange:var(--rg-gold)}
+body.rg-install h1 span,body.rg-feedback .brand span{color:#d3b47e}
+body.rg-install a:not(.btn),body.rg-feedback a,body.rg-admin a,
+body.rg-legal a{color:#d9bc8a}
+body.rg-install .btn,body.rg-feedback button,body.rg-admin button.primary{
+  background:linear-gradient(145deg,#e6cfa5,#b38a55);
+  border-color:#caa674;color:#16120e;font-weight:800;
+}
+body.rg-feedback select,body.rg-feedback textarea,
+body.rg-admin select{border-color:#61513f;background:#161411}
+body.rg-feedback select:focus,body.rg-feedback textarea:focus,
+body.rg-admin select:focus{outline:2px solid #cba773;outline-offset:2px}
+body.rg-admin .stat b{color:#d5b887}
+body.rg-admin .tag{background:rgba(202,169,116,.15);color:#e8cd9d}
+body.rg-admin #notice{color:#d9bb87}
+body.rg-legal{line-height:1.7}
+body.rg-legal h1{color:#e2c28c}
+body.rg-legal h2{color:#eadcc7}
+@media(prefers-reduced-motion:reduce){
+  body.rg-app *,body.rg-landing *,body.rg-install *,body.rg-feedback *,
+  body.rg-admin *,body.rg-legal *{scroll-behavior:auto!important;transition:none!important}
+}
