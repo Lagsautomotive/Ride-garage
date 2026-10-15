@@ -642,6 +642,7 @@ function upd(){
   if(!cur||S.tab!='trips'||!$('ld'))return;
   $('ld').textContent=(cur.dist*U().k).toFixed(1);$('ls').textContent=Math.round(cur.sp*U().k);$('lt').textContent=fdur(Date.now()-cur.t0);
   $('map').innerHTML=trackSVG(cur.pts);
+  if(window.RGMaps)window.RGMaps.updateLive(cur);
 }
 function stopTrack(){
   navigator.geolocation.clearWatch(watch);clearInterval(tick);
