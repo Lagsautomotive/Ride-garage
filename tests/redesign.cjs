@@ -101,6 +101,7 @@ async function stored(page){
   const exported=JSON.parse(await page.locator('#bt').inputValue());
   assert.deepEqual(exported.mods,fixture.mods);
   assert.deepEqual(exported.trips,fixture.trips);
+  await require('./ride-tracking.cjs')(page,stored);
   page.once('dialog',dialog=>dialog.accept());
   await page.evaluate(data=>applyBk(JSON.stringify(data)),fixture);
   await page.locator('#t-build[aria-current="page"]').waitFor();
