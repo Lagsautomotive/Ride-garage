@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#d3b47e">
+  <title>Cloud Garage Sync | Ride Garage</title>
+  <link rel="icon" href="icon-premium-192.png">
+  <link rel="stylesheet" href="premium.css">
+  <script src="config.js"></script>
+  <style>
+    :root{color-scheme:dark;--bg:#11100f;--card:#1c1a18;--tx:#f5efe5;--mu:#c1b6a8;--ac:#d3b47e;--bd:#40382f}
+    *{box-sizing:border-box}
+    body{margin:0;background:#090909;color:var(--tx);font:15px/1.5 system-ui,-apple-system,Segoe UI,Roboto,sans-serif}
+    main{max-width:740px;margin:auto;padding:calc(18px + env(safe-area-inset-top,0px)) 16px calc(38px + env(safe-area-inset-bottom,0px))}
+    .topbar{display:flex;align-items:center;justify-content:space-between;gap:14px;padding-bottom:18px;border-bottom:1px solid var(--bd);margin-bottom:20px}
+    .topbar img{display:block;width:min(230px,50vw);height:auto;max-height:68px;object-fit:contain;object-position:left}
+    h1{font:700 clamp(25px,5vw,34px)/1.2 Georgia,"Times New Roman",serif;letter-spacing:-.025em;margin:0 0 10px}
+    h2{font-size:17px;margin:0 0 8px}
+    .subtitle{font-size:15px;color:var(--mu);margin:0 0 20px}
+    .card{background:linear-gradient(150deg,#201d19,#151413);border:1px solid #41392f;border-radius:18px;padding:18px;margin:0 0 15px;box-shadow:0 12px 28px rgba(0,0,0,.25)}
+    .mu{font-size:13px;color:var(--mu);line-height:1.55}
+    .btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;background:linear-gradient(140deg,#e4cb9d,#c7a16d 58%,#aa8352);color:#19150f;border:1px solid #e0bd84;border-radius:11px;padding:11px 14px;font:750 14px/1.2 system-ui,-apple-system,sans-serif;cursor:pointer;text-decoration:none;min-height:44px;text-align:center}
+    .btn.alt{background:linear-gradient(180deg,#292521,#1b1a18);color:#ebddc8;border-color:#534735}
+    .btn.sm{padding:8px 12px;min-height:40px;font-size:13px}
+    .btn:disabled{opacity:.5;cursor:wait}
+    .row{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+    .row>*{flex:1 1 148px}
+    .back{flex:0 0 auto;white-space:nowrap}
+    .cloud-intro{display:flex;gap:10px;align-items:center}
+    .cloud-intro .icon{font-size:27px}
+    .rg-cloud-copy{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;padding:12px 0;border-top:1px solid var(--bd)}
+    .rg-cloud-copy>div{flex:1 1 180px;min-width:0;overflow-wrap:anywhere}
+    .rg-cloud-copy button{flex:0 1 auto;max-width:100%}
+    .rg-cloud-copy b{font-size:14px}
+    #rgCloudStatus{min-height:18px;overflow-wrap:anywhere}
+    #rgCloudAuth{overflow-wrap:anywhere}
+    #rgCloudCopies{margin-top:18px}
+    .softline{border:0;border-top:1px solid var(--bd);margin:16px 0}
+    .good{color:#a6d1ad}
+    a{color:#e6cb98}
+    a:focus-visible,button:focus-visible{outline:2px solid #d3b47e;outline-offset:3px}
+    @media(max-width:420px){.card{padding:15px}.row>*{flex:1 1 100%}.rg-cloud-copy button{flex:1 1 100%}.topbar img{width:min(190px,46vw)}}
+  </style>
+</head>
+<body class="rg-app rg-cloud-page">
+<main>
+  <div class="topbar">
+    <a href="index.html" aria-label="Ride Garage home"><img src="ride-garage-premium-logo.png" alt="Ride Garage"></a>
+    <a class="btn alt back" href="index.html">← Garage</a>
+  </div>
+  <div class="cloud-intro"><span class="icon" aria-hidden="true">☁️</span><h1>Cloud Garage Sync</h1></div>
+  <p class="subtitle">A separate home for your private garage copies. Your motorcycles, photos, modifications, trips, service and fuel stay on your device unless you choose to save a cloud copy.</p>
+  <section class="card" aria-labelledby="rgCloudDeviceTitle">
+    <h2 id="rgCloudDeviceTitle">On this device</h2>
+    <p id="rgCloudLocal" class="mu" role="status" aria-live="polite">Loading your local garage…</p>
+    <button type="button" class="btn alt sm" id="rgCloudBackup" disabled>Download local backup</button>
+    <p class="mu">Downloading a backup does not modify your garage. The original Restore from file option remains in the main app.</p>
+  </section>
+  <section class="card" id="rgCloudSection" aria-labelledby="rgCloudTitle">
+    <h2 id="rgCloudTitle">Private cloud copies <span class="mu">· Beta</span></h2>
+    <p id="rgCloudAuth" class="mu" role="status" aria-live="polite">Checking your account…</p>
+    <div class="row">
+      <button type="button" class="btn" id="rgCloudUpload" disabled>Save a cloud copy</button>
+      <button type="button" class="btn alt" id="rgCloudRefresh" disabled>View cloud copies</button>
+    </div>
+    <div class="row" style="margin-top:10px">
+      <button type="button" class="btn alt sm" id="rgCloudLogin" disabled>Open Social / Sign in</button>
+    </div>
+    <p class="mu" id="rgCloudStatus" role="status" aria-live="polite">Your existing garage and cloud copies are unchanged.</p>
+    <div id="rgCloudCopies"></div>
+  </section>
+  <section class="card" aria-label="Cloud Sync safety">
+    <h2>How syncing works</h2>
+    <p class="mu">Cloud copies are made only when you tap Save. Merging adds missing records to the current device and keeps differing versions. No automatic uploading, deleting or overwriting occurs.</p>
+    <p class="mu">Cloud copies can include GPS routes, saved places and motorcycle photos. A copy has an approximately 7.8 MB upload limit. Download a local backup before merging on another device.</p>
+    <hr class="softline">
+    <p class="mu"><a href="privacy.html">Privacy policy</a> · <a href="index.html#social">Social sign-in</a> · <a href="index.html">Return to Garage</a></p>
+  </section>
+</main>
+<script src="cloud-sync.js"></script>
+<script src="cloud-page.js"></script>
+</body>
+</html>
