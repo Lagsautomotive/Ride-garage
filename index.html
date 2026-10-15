@@ -883,7 +883,7 @@ async function socProfile(){
 }
 function drawSocial(){
   $('v').innerHTML=`<div class="card"><div class="top"><div><b>@${esc(PROF.username)}</b><div class="mu">${esc(PROF.bike||'')}</div></div><button class="btn alt sm" onclick="SB.auth.signOut()">Sign out</button></div></div>
-  <section class="card" aria-label="Volunteer beta tester program">
+  <section class="card" id="rgBetaSection" aria-label="Volunteer beta tester program" hidden>
     <div class="top"><div><b>🏍️ Help build Ride Garage</b><p class="mu" style="margin:6px 0">Join the beta program to help us measure participation and improve the app. Optional and free.</p></div></div>
     <div id="rgBetaStatus" class="mu" role="status" aria-live="polite">Checking enrollment…</div>
     <div id="rgBetaActions" class="row" style="margin-top:10px"></div>
@@ -910,10 +910,11 @@ async function rgBetaRenderEnrollment(uid){
     const {data,error}=await SB.rpc('rg_beta_is_joined');
     if(!ME||ME.id!==uid||S.tab!=='social')return;
     if(error){
-      status.textContent='Beta enrollment is not enabled yet.';
+      const section=$('rgBetaSection');if(section)section.hidden=true;
       actions.innerHTML='';
       return;
     }
+    const section=$('rgBetaSection');if(section)section.hidden=false;
     if(data===true){
       status.textContent='You are an enrolled beta tester. Thanks for helping! Check-ins happen when you open Social, at most once every 30 minutes.';
       actions.innerHTML='<a class="btn alt sm" href="feedback.html">Send feedback</a><button type="button" class="btn alt sm" onclick="rgBetaLeave()">Leave beta</button>';
@@ -923,7 +924,7 @@ async function rgBetaRenderEnrollment(uid){
       status.textContent='Your participation is optional. An account is required; no private garage data will be shared.';
       actions.innerHTML='<button type="button" class="btn sm" onclick="rgBetaJoin()">Join beta testing</button><a class="btn alt sm" href="feedback.html">Send feedback</a>';
     }
-  }catch(e){status.textContent='Beta enrollment is temporarily unavailable.';actions.innerHTML=''}
+  }catch(e){const section=$('rgBetaSection');if(section)section.hidden=true;actions.innerHTML=''}
 }
 async function rgBetaJoin(){
   if(!SB||!ME)return;
