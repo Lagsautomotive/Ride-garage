@@ -8,6 +8,13 @@
   let api=null, busy=false, saved=[];
   const $=id=>document.getElementById(id);
   const copy=x=>JSON.parse(JSON.stringify(x));
+  // Postgres JSONB can reorder object keys; compare canonical JSON to avoid false conflicts.
+  const stable=x=>JSON.stringify(x,(key,value)=>{
+    if(value&&typeof value==='object'&&!Array.isArray(value)){
+      const sorted={};Object.keys(value).sort().forEach(k=>{sorted[k]=value[k]});return sorted;
+    }
+    return value;
+  });
   const html=x=>String(x==null?'':x).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
   const size=x=>new TextEncoder().encode(JSON.stringify(x)).length;
   function status(message){const el=$('rgCloudStatus');if(el)el.textContent=message;}
@@ -107,9 +114,9 @@
       const incoming=Array.isArray(remote[key])?remote[key]:[];
       const ids=new Map();
       own.forEach(item=>{if(item.id!=null)ids.set(String(item.id),item)});
-      const noIds=new Set(own.map(item=>JSON.stringify(item)));
+      const noIds=new Set(own.map(item=>stable(item)));
       incoming.forEach((item,i)=>{
-        const raw=JSON.stringify(item);
+        const raw=stable(item);
         if(noIds.has(raw))return;
         const id=item.id==null?null:String(item.id);
         if(id==null||!ids.has(id)){
@@ -122,12 +129,12 @@
         let alt=base, n=1;
         while(ids.has(alt)){
           const existing=ids.get(alt);
-          if(JSON.stringify(existing)===JSON.stringify(Object.assign({},item,{id:alt})))return;
+          if(stable(existing)===stable(Object.assign({},item,{id:alt})))return;
           alt=base+'-'+(++n);
         }
         const other=Object.assign({},copy(item),{id:alt});
         own.push(other);ids.set(alt,other);
-        noIds.add(JSON.stringify(other));stats.added++;stats.conflicts++;
+        noIds.add(stable(other));stats.added++;stats.conflicts++;
       });
       output[key]=own;
     });
