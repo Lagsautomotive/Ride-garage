@@ -92,7 +92,8 @@
     setBusy(true);
     try{
       const {client,user}=await auth();
-      const garage=snapshot(api.getState()),json=JSON.stringify(garage);
+      const source=api.readState?await api.readState():api.getState();
+      const garage=snapshot(source),json=JSON.stringify(garage);
       const bytes=new TextEncoder().encode(json).length;
       if(bytes>MAX_BYTES)throw Error('Your garage is '+Math.ceil(bytes/1024/1024)+' MB, over the cloud beta limit. Your photos are safe locally. Use Download backup file until larger uploads are supported.');
       const ok=confirm('Create a PRIVATE cloud copy of this device\'s garage?\n\nThis includes motorcycle records, maintenance, fuel, GPS trip points, saved places and embedded photos. It stays tied to your signed-in account.\n\nThis does not delete or replace anything on your device.');
@@ -155,13 +156,17 @@
       if(error)throw error;
       if(!data||!data.garage)throw Error('The cloud copy is missing.');
       const remote=api.validate(JSON.stringify(data.garage));
-      const {output,stats}=mergeGarages(api.getState(),remote,id);
+      const initialLocal=api.readState?await api.readState():api.getState();
+      const {stats}=mergeGarages(initialLocal,remote,id);
       const notice='Merge cloud copy into this device?\n\n'+describe(counts(remote))+
         '\n\nAdds '+stats.added+' records, including '+stats.conflicts+' differing versions kept separately. Existing records are NEVER deleted or overwritten. Your local bike name and unit stay the same; the larger odometer is kept.\n\nDownload a backup file first for extra protection. Continue?';
       if(!confirm(notice)){status('Merge cancelled. Local records are unchanged.');return}
-      await api.persist(output);
-      api.setState(output);
-      status('Cloud merge saved locally. '+stats.added+' records added; '+stats.conflicts+' differing versions retained. Your cloud copy was not modified. Save a new cloud copy to share these changes with another device.');
+      // Re-read after confirmation to avoid using a stale page-load snapshot.
+      const latest=api.readState?await api.readState():api.getState();
+      const merged=mergeGarages(latest,remote,id);
+      await api.persist(merged.output);
+      api.setState(merged.output);
+      status('Cloud merge saved locally. '+merged.stats.added+' records added; '+merged.stats.conflicts+' differing versions retained. Your cloud copy was not modified. Save a new cloud copy to share these changes with another device.');
     }catch(e){status('Cloud merge failed (existing local data is unchanged): '+(e.message||String(e)))}
     finally{setBusy(false)}
   }
