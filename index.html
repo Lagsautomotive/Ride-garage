@@ -461,7 +461,7 @@ header h1 {
 <div class="tabs"><button id="t-build" onclick="tab('build')"><span class="ic">🛠️</span>Build</button><button id="t-trips" onclick="tab('trips')"><span class="ic">🏍️</span>Trips</button><button id="t-places" onclick="tab('places')"><span class="ic">📍</span>Places</button><button id="t-svc" onclick="tab('svc')"><span class="ic">🔧</span>Service</button><button id="t-fuel" onclick="tab('fuel')"><span class="ic">⛽</span>Fuel</button><button id="t-social" onclick="tab('social')"><span class="ic">👥</span>Social</button></div>
 <div id="v"></div>
 <details class="card" style="margin-top:8px"><summary><b>Backup &amp; restore</b></summary>
-<p class="mu">Your data lives only on this device and web address. Back it up before clearing your browser or moving to the installed app. Restoring replaces what is on this device. Photos make the backup large.</p>
+<p class="mu">Your data lives only on this device and web address. Back it up before clearing your browser or moving to the installed app. Restoring replaces what is on this device after confirmation. Export your current garage first and check that the backup downloaded successfully. Photos make the backup large. Social accounts/posts are not included.</p>
 <div class="row"><button class="btn" onclick="expFile()">Download backup file</button><button class="btn alt" onclick="expText()">Show backup text</button></div>
 <textarea id="bt" rows="4" placeholder="Backup text appears here. To restore, paste it here and tap Restore from text." style="margin-top:10px"></textarea>
 <div class="row" style="margin-top:6px"><button class="btn alt" onclick="impText()">Restore from text</button><label class="btn alt" style="text-align:center">Restore from file<input type="file" accept=".json,application/json" hidden onchange="impFile(this.files[0])"></label></div>
@@ -751,18 +751,72 @@ function delFuel(id){S.fuel=S.fuel.filter(e=>e.id!=id);save();render()}
 /* ---------- BACKUP ---------- */
 const bkJSON=()=>JSON.stringify(S);
 function bmsg(t){$('bm').textContent=t}
-function expFile(){
-  try{const b=new Blob([bkJSON()],{type:'application/json'}),a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='ride-garage-backup-'+new Date().toISOString().slice(0,10)+'.json';document.body.appendChild(a);a.click();a.remove();bmsg('Backup file requested. If nothing downloaded, use Show backup text.')}
-  catch(e){bmsg('Download blocked here. Use Show backup text.')}
+function backupCounts(d){
+  return ['mods','trips','places','svc','slog','fuel'].map(k=>d[k].length).join(', ');
 }
-function expText(){const t=$('bt');t.value=bkJSON();t.focus();t.select();bmsg('Backup text ready ('+Math.round(t.value.length/1024)+' KB). Copy all of it and save it somewhere safe.')}
-function applyBk(txt){
-  try{const d=JSON.parse(txt);if(!d||typeof d!='object'||!Array.isArray(d.mods))throw 0;
-    S=Object.assign({mods:[],trips:[],places:[],svc:[],slog:[],fuel:[],odo:0,unit:'km',bike:''},d);S.tab='build';save();render();bmsg('Backup restored.')}
-  catch(e){bmsg('That does not look like a Ride Garage backup.')}
+function expFile(){
+  try{
+    const b=new Blob([bkJSON()],{type:'application/json'}),url=URL.createObjectURL(b),a=document.createElement('a');
+    a.href=url;a.download='ride-garage-backup-'+new Date().toISOString().slice(0,10)+'.json';
+    document.body.appendChild(a);a.click();a.remove();
+    setTimeout(()=>URL.revokeObjectURL(url),60000);
+    bmsg('Backup download requested ('+Math.ceil(b.size/1024)+' KB). Check your Files/Downloads before relying on it. If nothing saved, use Show backup text.');
+  }catch(e){bmsg('Download unavailable. Use Show backup text.')}
+}
+function expText(){
+  const t=$('bt');t.value=bkJSON();t.focus();t.select();
+  bmsg('Backup text ready ('+Math.ceil(t.value.length/1024)+' KB). Copy all of it and save it somewhere safe.');
+}
+function validBackup(txt){
+  if(typeof txt!=='string'||!txt.trim()||txt.length>50*1024*1024)throw Error('The file is empty or exceeds 50 MB.');
+  const d=JSON.parse(txt);
+  if(!d||typeof d!=='object'||Array.isArray(d))throw Error('Not a Ride Garage backup.');
+  const fields=['mods','trips','places','svc','slog','fuel'];
+  if(!Array.isArray(d.mods))throw Error('Missing motorcycle build records.');
+  for(const k of fields){
+    if(d[k]!==undefined&&!Array.isArray(d[k]))throw Error('Invalid '+k+' records.');
+    if(Array.isArray(d[k])&&!d[k].every(x=>x&&typeof x==='object'&&!Array.isArray(x)))throw Error('Invalid '+k+' item.');
+  }
+  if(d.unit!==undefined&&!['km','mi'].includes(d.unit))throw Error('Invalid distance unit.');
+  if(d.bike!==undefined&&typeof d.bike!=='string')throw Error('Invalid bike name.');
+  if(d.odo!==undefined&&(!Number.isFinite(d.odo)||d.odo<0))throw Error('Invalid odometer.');
+  return {
+    mods:d.mods,trips:d.trips||[],places:d.places||[],svc:d.svc||[],
+    slog:d.slog||[],fuel:d.fuel||[],odo:d.odo??0,
+    unit:d.unit||'km',bike:d.bike||'',tab:'build'
+  };
+}
+function persistBackup(d){
+  return idb().then(db=>new Promise((resolve,reject)=>{
+    const tx=db.transaction('kv','readwrite');
+    tx.oncomplete=()=>{db.close();resolve()};
+    tx.onerror=()=>{db.close();reject(tx.error||Error('Storage error'))};
+    tx.onabort=()=>{db.close();reject(tx.error||Error('Storage aborted'))};
+    tx.objectStore('kv').put(d,'s');
+  }));
+}
+async function applyBk(txt){
+  let restored;
+  try{restored=validBackup(txt)}
+  catch(e){bmsg('Backup not restored: '+(e.message||'invalid backup'));return}
+  const summary='Builds: '+restored.mods.length+', trips: '+restored.trips.length+', places: '+restored.places.length+', service: '+restored.svc.length+', fuel: '+restored.fuel.length+'.';
+  if(!confirm('This will REPLACE your current garage records on this device.\n\nImported backup: '+summary+'\n\nDownload a copy of your current garage first. Continue?')){
+    bmsg('Restore cancelled. Your current garage was not replaced.');return;
+  }
+  try{
+    await persistBackup(restored);
+    S=restored;render();bmsg('Backup restored and saved. '+summary);
+  }catch(e){bmsg('Restore failed: unable to save to device storage. Your current garage was kept.')}
 }
 function impText(){applyBk($('bt').value)}
-function impFile(f){if(!f)return;const r=new FileReader();r.onload=()=>applyBk(r.result);r.readAsText(f)}
+function impFile(f){
+  if(!f)return;
+  if(f.size>50*1024*1024){bmsg('File is larger than the 50 MB restore limit.');return}
+  const r=new FileReader();
+  r.onload=()=>applyBk(r.result);
+  r.onerror=()=>bmsg('Could not read the selected backup file.');
+  r.readAsText(f);
+}
 /* ---------- SOCIAL ---------- */
 let SB=null,lastUid,ME=null,PROF=null,FEED=[],MYLIKES=new Set(),BLOCKS=new Set(),OPEN=null,MENU=null,ARM=null,CMTS={},draft=null;
 const RULES="Community rules: Post motorcycle-related content only. No harassment, hate, nudity, violence or illegal activity. Do not post other people's private information or your home address. You can report posts and block riders. Posts or accounts that break these rules may be removed. You keep ownership of what you post and allow this app to show it to other riders.";
