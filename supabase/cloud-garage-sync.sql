@@ -17,7 +17,7 @@ create table if not exists public.ride_garage_cloud_snapshots (
 create index if not exists rg_cloud_snapshots_user_created
   on public.ride_garage_cloud_snapshots(user_id, created_at desc);
 alter table public.ride_garage_cloud_snapshots enable row level security;
-revoke all on public.ride_garage_cloud_snapshots from public, anon;
+revoke all on public.ride_garage_cloud_snapshots from public, anon, authenticated;
 grant select, insert on public.ride_garage_cloud_snapshots to authenticated;
 drop policy if exists "rg_cloud_owner_read" on public.ride_garage_cloud_snapshots;
 drop policy if exists "rg_cloud_owner_insert" on public.ride_garage_cloud_snapshots;
