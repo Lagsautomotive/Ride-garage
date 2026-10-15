@@ -1,0 +1,79 @@
+/* Ride Garage beta welcome: isolated first-visit overlay. */
+.rgw-backdrop[hidden]{display:none!important}
+.rgw-backdrop{
+  position:fixed;inset:0;z-index:2147483000;display:flex;align-items:center;
+  justify-content:center;overflow:auto;box-sizing:border-box;
+  padding:max(16px,env(safe-area-inset-top)) max(14px,env(safe-area-inset-right))
+          max(16px,env(safe-area-inset-bottom)) max(14px,env(safe-area-inset-left));
+  background:rgba(5,5,5,.84);-webkit-backdrop-filter:blur(13px);backdrop-filter:blur(13px);
+}
+.rgw-backdrop *{box-sizing:border-box}
+.rgw-panel{
+  position:relative;isolation:isolate;width:min(100%,690px);max-height:calc(100dvh - 32px);
+  margin:auto;overflow-y:auto;overscroll-behavior:contain;
+  border:1px solid #665337;border-radius:24px;
+  background:radial-gradient(ellipse at 85% 0%,rgba(196,143,76,.17),transparent 48%),
+             linear-gradient(150deg,#211d18 0%,#141311 45%,#0d0c0b 100%);
+  color:#f5eee3;box-shadow:0 28px 90px #000d,inset 0 1px 0 #e2c79e22;
+  padding:clamp(22px,4vw,38px);
+  font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
+}
+.rgw-panel::before{
+  content:"";position:absolute;top:0;right:0;width:39%;height:5px;
+  background:linear-gradient(90deg,transparent,#dbb778);
+}
+.rgw-close{
+  position:absolute;right:14px;top:13px;width:38px;height:38px;
+  display:grid;place-items:center;border:1px solid #63513c;border-radius:50%;
+  color:#ead9bf;background:#ffffff0a;font-size:24px;cursor:pointer;
+}
+.rgw-eyebrow{
+  display:inline-flex;align-items:center;gap:9px;margin:3px 42px 20px 0;
+  color:#ddbf8c;font-size:10px;font-weight:800;letter-spacing:.22em;
+  text-transform:uppercase;
+}
+.rgw-eyebrow::before{
+  content:"";width:7px;height:7px;border-radius:50%;background:#d7b16e;
+  box-shadow:0 0 0 5px #d7b16e20;
+}
+.rgw-logo{display:block;max-width:min(100%,240px);max-height:70px;width:auto;height:auto;object-fit:contain;margin:0 0 18px}
+.rgw-title{
+  margin:0;font:700 clamp(27px,4.7vw,41px)/1.12 Georgia,"Times New Roman",serif;
+  letter-spacing:-.035em;color:#f8f0e4;
+}
+.rgw-title em{font-style:normal;color:#d8b67e}
+.rgw-description{max-width:570px;margin:12px 0 22px;font-size:14px;line-height:1.65;color:#c6b9a8}
+.rgw-steps{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin:0 0 23px}
+.rgw-step{
+  background:linear-gradient(155deg,#30291f,#201d19);
+  border:1px solid #544634;border-radius:14px;padding:15px 13px;min-width:0;
+}
+.rgw-number{display:block;font-size:11px;font-weight:800;letter-spacing:.12em;color:#d8b67e;margin-bottom:12px}
+.rgw-step strong{display:block;margin:0 0 5px;font-size:13px;line-height:1.35;color:#f3e9d9}
+.rgw-step p{margin:0;color:#baad9d;font-size:12px;line-height:1.5}
+.rgw-actions{display:flex;gap:10px;flex-wrap:wrap}
+.rgw-actions button{min-height:46px;padding:12px 18px;border-radius:11px;font-size:14px;font-weight:800;cursor:pointer}
+.rgw-primary{flex:1 1 220px;border:1px solid #f0ce93;color:#1c150c;background:linear-gradient(120deg,#f1d6ab,#caa46a 73%,#b48c55)}
+.rgw-secondary{flex:1 1 150px;border:1px solid #73604a;color:#eddfca;background:#2a251e}
+.rgw-primary span{margin-left:6px}
+.rgw-footer{display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;margin-top:18px;border-top:1px solid #51402f;padding-top:14px;font-size:11px;color:#a99b8a}
+.rgw-footer a{color:#e8c58e;text-underline-offset:3px}
+.rgw-backdrop button:focus-visible,.rgw-backdrop a:focus-visible{outline:3px solid #efd39d;outline-offset:3px}
+@media(max-width:560px){
+  .rgw-panel{border-radius:18px;padding:23px 20px;max-height:calc(100dvh - 24px)}
+  .rgw-eyebrow{margin-bottom:13px}
+  .rgw-logo{max-width:200px;max-height:55px;margin-bottom:13px}
+  .rgw-title{font-size:30px}
+  .rgw-description{margin:10px 0 17px;font-size:13px;line-height:1.5}
+  .rgw-steps{grid-template-columns:1fr;gap:8px;margin-bottom:18px}
+  .rgw-step{display:grid;grid-template-columns:31px 1fr;column-gap:7px;padding:10px 12px}
+  .rgw-number{grid-row:1 / span 2;margin:1px 0 0}
+  .rgw-step strong{margin:0 0 1px;font-size:12px}
+  .rgw-step p{font-size:11px;line-height:1.4}
+  .rgw-actions button{flex-basis:100%;min-height:42px;padding:10px}
+  .rgw-footer{margin-top:14px}
+}
+@media(prefers-reduced-motion:no-preference){
+  .rgw-panel{animation:rgw-appear .25s ease-out both}
+  @keyframes rgw-appear{from{opacity:0;transform:translateY(10px) scale(.985)}to{opacity:1;transform:none}}
+}
