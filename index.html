@@ -466,10 +466,44 @@ header h1 {
 <textarea id="bt" rows="4" placeholder="Backup text appears here. To restore, paste it here and tap Restore from text." style="margin-top:10px"></textarea>
 <div class="row" style="margin-top:6px"><button class="btn alt" onclick="impText()">Restore from text</button><label class="btn alt" style="text-align:center">Restore from file<input type="file" accept=".json,application/json" hidden onchange="impFile(this.files[0])"></label></div>
 <div class="mu" id="bm" style="margin-top:6px"></div></details>
-<p class="mu" style="text-align:center;margin:18px 0"><a href="install.html">Install &amp; share Ride Garage</a> · <a href="privacy.html">Privacy</a> · <a href="terms.html">Terms</a></p>
+<section class="card" aria-label="Share and support Ride Garage" style="margin:18px 0">
+  <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+    <button type="button" class="btn" onclick="shareRideGarage()">Share Ride Garage</button>
+    <a class="btn alt" href="mailto:ridegarageapp@gmail.com?subject=Ride%20Garage%20bug%20report&amp;body=Describe%20the%20problem%3A%0A%0ASteps%20to%20reproduce%3A%0A%0ADevice%20and%20browser%3A%0A">Report a bug</a>
+  </div>
+  <p id="rgConnection" class="mu" role="status" aria-live="polite">Checking connection…</p>
+  <p class="mu"><a href="install.html">Install instructions</a> · <a href="privacy.html">Privacy</a> · <a href="terms.html">Terms</a></p>
+</section>
 </main>
 <div id="lb" onclick="this.style.display='none'"><img id="lbi" alt=""></div>
 <script>
+function updateRideGarageConnection(){
+  const el=document.getElementById('rgConnection');
+  if(!el)return;
+  el.textContent=navigator.onLine
+    ? 'Online · Social features use your internet connection'
+    : 'Offline · Saved garage records may still be available; Social requires internet';
+}
+window.addEventListener('online',updateRideGarageConnection);
+window.addEventListener('offline',updateRideGarageConnection);
+async function shareRideGarage(){
+  const url=new URL('install.html',location.href).href;
+  const title='Ride Garage';
+  const text='Track your motorcycle builds, trips and maintenance with Ride Garage. Install it free!';
+  if(navigator.share){
+    try{await navigator.share({title,text,url});return}
+    catch(err){if(err && err.name==='AbortError')return}
+  }
+  try{
+    if(navigator.clipboard && window.isSecureContext){
+      await navigator.clipboard.writeText(url);
+      alert('Ride Garage install link copied. Share it with your friends!');
+    }else{
+      prompt('Copy and share this Ride Garage install link:',url);
+    }
+  }catch(err){prompt('Copy and share this Ride Garage install link:',url)}
+}
+updateRideGarageConnection();
 let S={mods:[],trips:[],places:[],svc:[],slog:[],fuel:[],odo:0,unit:'km',tab:'build',bike:''};
 const CATS=['Engine','Exhaust','Suspension','Brakes','Wheels & tires','Bodywork','Electronics','Other'];
 const $=id=>document.getElementById(id);
