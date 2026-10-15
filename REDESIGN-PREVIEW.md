@@ -4,7 +4,7 @@
 
 This is a static GitHub Pages PWA. index.html contains the existing editors and business logic. Local state is one motorcycle garage in IndexedDB database ridegarage, version 1, store kv, key s. Fields: bike, mods (with photos), trips (with GPS), places, svc, slog, fuel, odo, unit, tab.
 
-This stage adds Home, a photo-led Garage and five fixed navigation destinations. Garage retains the original build editor. Hero photos come from saved modifications; no new photo storage is introduced.
+This stage adds Home, a photo-led Garage and five fixed navigation destinations. Garage retains the original build editor. Hero photos come from saved modifications; no new photo storage or sample records are introduced. The approved concept is applied with an overlaid Home motorcycle title, outlined icons, charcoal metric cards, a road action card, a compact service check-in, gold Garage progress and a pill-shaped Add build step action. The header uses an original vector Ride Garage mark and a functioning Profile shortcut. A visible toast confirms successful backup restores after returning to Garage.
 
 - Home: saved ride/build/service summaries and shortcuts.
 - Garage: original motorcycle name, modifications, photos and sharing.
@@ -14,7 +14,7 @@ This stage adds Home, a photo-led Garage and five fixed navigation destinations.
 
 No database schema, security policy, auth configuration, cloud or GPS logic changes. Internal legacy tab IDs remain compatible. Normal launches open Home; index.html#social still opens Community from Cloud. New navigation does not write state.
 
-Styles are isolated in app-shell.css. Service worker cache advances v25 → v26 and precaches the stylesheet. Manifest, scope, relative asset paths and Pages configuration are unchanged.
+Styles are isolated in app-shell.css. Service worker cache advances v25 → v27 and precaches the stylesheet. Manifest, scope, relative asset paths and Pages configuration are unchanged.
 
 ## Preview before merging
 

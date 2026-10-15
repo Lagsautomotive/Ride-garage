@@ -489,9 +489,9 @@ header h1 {
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;animation-duration:.01ms!important;transition-duration:.01ms!important}}
 </style><link rel="stylesheet" href="premium.css"><link rel="stylesheet" href="welcome.css"><link rel="stylesheet" href="app-shell.css"></head><body class="rg-app">
 <main>
-<header><h1 style="display:flex;align-items:center;gap:8px"><img class="app-wordmark" src="ride-garage-premium-logo.png" alt="Ride Garage"></h1><div class="rg-header-actions"><div class="mu" id="bike"></div><a href="cloud.html" class="rg-cloud-tab" aria-label="Open Cloud Garage Sync page"><span aria-hidden="true">☁️</span> Cloud</a></div></header>
+<header class="rg-app-header"><h1 class="rg-brand"><svg viewBox="0 0 32 36" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round" aria-hidden="true"><path d="m16 2 13 7v16L16 34 3 25V9zM3 9l13 7 13-7M16 16v18M7 12l9-5 9 5M9 5l7 4 7-4"/></svg><span>Ride <strong>Garage</strong></span></h1><div class="rg-header-actions"><span class="mu" id="bike"></span><button type="button" class="rg-account-button" onclick="tab('profile')" aria-label="Open your profile"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 22v-3a8 8 0 0 1 16 0v3"/></svg></button></div></header>
 <a class="rg-skip" href="#v">Skip to content</a><nav aria-label="Main navigation" class="rg-primary-nav"><div class="tabs"><button type="button" id="t-home" onclick="tab('home')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m3 10 9-7 9 7v11h-6v-7H9v7H3z"/></svg><span>Home</span></button><button type="button" id="t-build" onclick="tab('build')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m3 9 9-6 9 6v12H3zM7 21v-9h10v9M7 16h10"/></svg><span>Garage</span></button><button type="button" id="t-trips" onclick="tab('trips')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 21V5m0 0c5-6 9 6 14 0v10c-5 6-9-6-14 0"/></svg><span>Rides</span></button><button type="button" id="t-social" onclick="tab('social')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="8" r="4"/><path d="M2 21v-3a7 7 0 0 1 14 0v3M17 4a4 4 0 0 1 0 8m2 4a5 5 0 0 1 3 5"/></svg><span>Community</span></button><button type="button" id="t-profile" onclick="tab('profile')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21v-2a8 8 0 0 1 16 0v2"/></svg><span>Profile</span></button></div></nav>
-<div id="rg-section-heading" tabindex="-1"></div><nav id="rg-section-tools" aria-label="Section tools"></nav><div id="v" tabindex="-1"></div><div id="rg-profile-tools" hidden>
+<div id="rg-section-heading" tabindex="-1" role="group" aria-label="Current section"></div><nav id="rg-section-tools" aria-label="Section tools"></nav><div id="v" tabindex="-1"></div><div id="rg-profile-tools" hidden>
 <details class="card" style="margin-top:8px"><summary><b>Backup &amp; restore</b></summary>
 <p class="mu">Your garage lives on this device by default. Cloud Garage Sync is optional and never runs automatically. Back up your local records before clearing your browser or moving to another device. Restoring from a file replaces local records after confirmation. Export your current garage first and check that the backup downloaded successfully. Photos make the backup large. Social accounts/posts are not included.</p>
 <div class="row"><button class="btn" onclick="expFile()">Download backup file</button><button class="btn alt" onclick="expText()">Show backup text</button></div>
@@ -573,12 +573,14 @@ function render(){
   else if(S.tab==='social')renderSocial();
   else renderProfile();
 }
+const RG_ICON_PATHS={"road":"<path d=\"m8 3-5 18M16 3l5 18M12 3v3m0 4v4m0 4v3\"/>","pin":"<path d=\"M20 10c0 6-8 12-8 12S4 16 4 10a8 8 0 1 1 16 0Z\"/><circle cx=\"12\" cy=\"10\" r=\"2.5\"/>","wrench":"<path d=\"M21 3a6 6 0 0 1-8 8L5 19a2 2 0 0 1-3-3l8-8a6 6 0 0 1 8-8l-4 4 3 3Z\"/>","mountain":"<path d=\"m2 20 6-12 5 7 4-11 5 16M6 12l3 1 2-2\"/>"};
+function rgIcon(name){return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'+RG_ICON_PATHS[name]+'</svg>'}
 function garageHero(){
-  // Photos belong to existing build entries; no second photo store or data migration.
   const mod=S.mods.slice().reverse().find(m=>m.photos&&m.photos.length);
-  const photo=mod&&mod.photos[0];
-  return '<section class="rg-bike-hero card">'+(photo?'<img class="rg-bike-photo" src="'+esc(photo)+'" alt="Build photo of '+esc(S.bike||'your motorcycle')+'">':'<div class="rg-photo-empty"><span aria-hidden="true">↗</span><p>Your next chapter starts here.</p><small>Add a build photo in Garage to make it yours.</small></div>')+
-    '<div class="rg-bike-caption"><span class="rg-eyebrow">RIDE GARAGE / PERSONAL COLLECTION</span><h3>'+esc(S.bike||'Your motorcycle')+'</h3><p>Build it. Ride it. Remember it.</p></div></section>';
+  const photo=mod&&mod.photos[0],home=S.tab==='home';
+  return '<section class="rg-bike-hero card '+(photo?'rg-has-photo':'rg-no-photo')+(home?' rg-home-hero':'')+'" aria-label="Your motorcycle">'+
+    (photo?'<img class="rg-bike-photo" src="'+esc(photo)+'" alt="Build photo of '+esc(S.bike||'your motorcycle')+'">':'<div class="rg-photo-empty">'+rgIcon('road')+'<p>Your next chapter starts here.</p><small>Add a photo to a build step to make this garage yours.</small><button type="button" class="btn alt" onclick="tab(\'build\');openBuildForm()">Add a build photo</button></div>')+
+    '<div class="rg-bike-caption"><span class="rg-eyebrow">YOUR MOTORCYCLE</span><h3>'+esc(S.bike||'Your motorcycle')+'</h3><p>'+(home?'Build it. Ride it. Remember it.':'Your motorcycle &amp; build history')+'</p></div></section>';
 }
 function renderHome(){
   const done=S.mods.filter(m=>m.status==='done').length;
@@ -586,16 +588,13 @@ function renderHome(){
   const total=S.trips.reduce((sum,t)=>sum+(Number(t.dist)||0),0);
   const last=S.trips[S.trips.length-1];
   $('v').innerHTML=garageHero()+
-    '<div class="rg-metrics"><div class="card"><strong>'+S.trips.length+'</strong><span>Rides recorded</span></div><div class="card"><strong>'+esc(fd(total))+'</strong><span>Distance explored</span></div><div class="card"><strong>'+done+'</strong><span>Build steps done</span></div></div>'+
-    '<div class="rg-dashboard-grid"><section class="card"><p class="rg-eyebrow">READY WHEN YOU ARE</p><h3>Find your next road.</h3><p class="mu">Record your route and keep the moments that matter.</p><div class="row"><button class="btn" onclick="tab(\'trips\')">Open ride tracking ↗</button><button class="btn alt" onclick="tab(\'places\')">Saved places</button></div></section>'+
-    '<section class="card"><p class="rg-eyebrow">GARAGE CHECK-IN</p><h3>'+(overdue?overdue+' service '+(overdue===1?'item needs':'items need')+' attention':S.svc.length?'Nothing overdue.':'Keep your bike ride-ready.')+'</h3><p class="mu">'+(S.svc.length?'Review your maintenance schedule and service history.':'Add service intervals to see your maintenance status here.')+'</p><button class="btn alt" onclick="tab(\'svc\')">View service records</button></section></div>'+
-    '<section class="card"><p class="rg-eyebrow">LAST RIDE</p><h3>'+esc(last?last.name:'The road is waiting.')+'</h3><p class="mu">'+(last?esc(fd(last.dist))+' · '+esc(fdur(last.dur)):'Your saved rides will appear here after you record a trip.')+'</p><button class="btn alt" onclick="tab(\'trips\')">View rides</button></section>';
+    '<div class="rg-metrics" aria-label="Your riding overview"><div class="card">'+rgIcon('road')+'<strong>'+S.trips.length+'</strong><span>Rides recorded</span></div><div class="card">'+rgIcon('pin')+'<strong>'+esc(fd(total))+'</strong><span>Distance explored</span></div><div class="card">'+rgIcon('wrench')+'<strong>'+done+'</strong><span>Build steps done</span></div></div>'+
+    '<section class="card rg-ride-cta"><div class="rg-road-art" aria-hidden="true"><svg viewBox="0 0 300 220" fill="none"><path d="m0 120 70-90 55 80 75-95 100 110" stroke="currentColor"/><path d="M130 230c170-60-140-35 10-95s180-20 90-95" stroke="currentColor" stroke-width="28"/><path d="M130 230c170-60-140-35 10-95s180-20 90-95" stroke="#151617" stroke-width="20"/></svg></div><p class="rg-eyebrow">'+rgIcon('mountain')+' READY WHEN YOU ARE</p><h3>Find your next road.</h3><p class="mu">Record your route. Keep your story.</p><button type="button" class="btn" onclick="tab(\'trips\')">Open Rides <span aria-hidden="true">↗</span></button></section>'+
+    '<section class="card rg-checkin">'+rgIcon('wrench')+'<div><h3>Garage check-in</h3><p class="mu">'+(overdue?overdue+' service '+(overdue===1?'item needs':'items need')+' attention.':S.svc.length?'Nothing overdue. Keep riding.':'Keep your ride in top shape.')+'</p></div><button type="button" class="rg-text-button" onclick="tab(\'svc\')">View service records <span aria-hidden="true">→</span></button></section>'+
+    '<section class="card"><p class="rg-eyebrow">LAST RIDE</p><h3>'+esc(last?last.name:'The road is waiting.')+'</h3><p class="mu">'+(last?esc(fd(last.dist))+' · '+esc(fdur(last.dur)):'Your saved rides will appear here after you record a trip.')+'</p><div class="row"><button type="button" class="btn alt" onclick="tab(\'trips\')">View rides</button><button type="button" class="btn alt" onclick="tab(\'places\')">Saved places</button></div></section>';
 }
-function renderGarage(){
-  renderBuild();
-  $('v').insertAdjacentHTML('afterbegin',garageHero());
-  $('bk').setAttribute('aria-label','Motorcycle name');
-}
+function renderGarage(){renderBuild();$('v').insertAdjacentHTML('afterbegin',garageHero())}
+function openBuildForm(){const form=$('rg-build-form');if(!form)return;form.open=true;$('mt').focus()}
 function renderProfile(){
   $('v').innerHTML='<section class="card"><p class="rg-eyebrow">RIDER & MOTORCYCLE</p><h3>'+esc(S.bike||'Make this garage yours.')+'</h3><p class="mu">Your motorcycle, records and riding preferences in one place.</p><div class="row"><button class="btn alt" onclick="tab(\'build\')">Edit motorcycle</button><button class="btn alt" onclick="tab(\'social\')">Rider account</button></div></section>'+
   '<section class="card"><h3>Ride preferences</h3><p class="mu">Odometer: '+esc(fd(S.odo||0))+'</p><button class="btn alt" onclick="S.unit=S.unit===\'km\'?\'mi\':\'km\';save();render()">Distance units: '+esc(U().d)+'</button></section>'+
@@ -608,29 +607,31 @@ function renderBuild(){
   const m=S.mods,done=m.filter(x=>x.status=='done').length,pct=m.length?Math.round(done/m.length*100):0;
   const spent=m.reduce((a,x)=>a+(+x.cost||0),0);
   $('v').innerHTML=`
-  <div class="card">
-    <input id="bk" placeholder="Your bike (e.g. 2019 Yamaha R6)" value="${esc(S.bike)}" onchange="S.bike=this.value;save();render()">
-    <div class="stats" style="margin-top:12px"><div><div class="big">${pct}%</div><div class="mu">complete</div></div><div><div class="big">${done}/${m.length}</div><div class="mu">mods done</div></div><div><div class="big">$${spent.toLocaleString()}</div><div class="mu">spent</div></div></div>
-    <div class="bar"><i style="width:${pct}%"></i></div>
-  </div>
-  <details class="card"><summary><b>+ Add mod / build step</b></summary>
-    <input id="mt" placeholder="What are you doing? (e.g. Slip-on exhaust)">
-    <div class="row"><select id="mc">${CATS.map(c=>`<option>${c}</option>`).join('')}</select>
-    <select id="ms"><option value="planned">Planned</option><option value="doing">In progress</option><option value="done">Done</option></select>
-    <input id="mp" type="number" inputmode="decimal" placeholder="Cost $"></div>
-    <textarea id="mn" rows="2" placeholder="Notes: parts, torque specs, tips"></textarea>
-    <input id="mf" type="file" accept="image/*" multiple>
-    <button class="btn" style="margin-top:10px" onclick="addMod()">Save</button>
+  <section class="card rg-build-overview" aria-label="Build progress">
+    <div class="stats"><div><div class="big">${pct}%</div><div class="mu">complete</div></div><div><div class="big">${done} / ${m.length}</div><div class="mu">done</div></div><div><div class="big">$${spent.toLocaleString()}</div><div class="mu">spent</div></div></div>
+    <div class="bar" role="progressbar" aria-label="Completed build steps" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${pct}"><i style="width:${pct}%"></i></div>
+    <label class="rg-field-label" for="bk">Motorcycle name</label><input id="bk" placeholder="e.g. 2019 Yamaha R6" value="${esc(S.bike)}" onchange="S.bike=this.value;save();render()">
+  </section>
+  <button type="button" class="btn rg-add-build" onclick="openBuildForm()">+ Add build step</button>
+  <details class="card rg-build-form" id="rg-build-form"><summary><b>Build step details</b></summary>
+    <label class="rg-field-label" for="mt">Build step</label><input id="mt" placeholder="e.g. Slip-on exhaust">
+    <div class="row"><div><label class="rg-field-label" for="mc">Category</label><select id="mc">${CATS.map(c=>`<option>${c}</option>`).join('')}</select></div>
+    <div><label class="rg-field-label" for="ms">Status</label><select id="ms"><option value="planned">Planned</option><option value="doing">In progress</option><option value="done">Done</option></select></div>
+    <div><label class="rg-field-label" for="mp">Cost ($)</label><input id="mp" type="number" inputmode="decimal" placeholder="0.00"></div></div>
+    <label class="rg-field-label" for="mn">Build notes</label><textarea id="mn" rows="2" placeholder="Parts, torque specs, tips"></textarea>
+    <label class="rg-field-label" for="mf">Build photos</label><input id="mf" type="file" accept="image/*" multiple>
+    <button type="button" class="btn" style="margin-top:10px" onclick="addMod()">Save build step</button>
   </details>
-  ${m.length?m.slice().reverse().map(modCard).join(''):'<p class="mu" style="text-align:center">No mods yet. Add your first build step and upload photos.</p>'}`;
+  <div class="rg-build-heading"><h3>Your build</h3><span class="mu">${m.length} ${m.length===1?'step':'steps'}</span></div>
+  ${m.length?m.slice().reverse().map(modCard).join(''):'<section class="card rg-empty-build"><h3>Every build starts somewhere.</h3><p class="mu">Log a planned upgrade, an ongoing project or a finished modification. Add photos to tell the story.</p><button type="button" class="btn alt" onclick="openBuildForm()">Add your first step</button></section>'}`;
 }
 function modCard(x){
-  return `<div class="card"><div class="top"><div><b>${esc(x.title)}</b><div class="mu">${esc(x.cat)} · ${new Date(x.date).toLocaleDateString()}${x.cost?' · $'+esc(x.cost):''}</div></div>
-  <select style="width:auto;margin:0" onchange="setSt('${x.id}',this.value)">${[['planned','Planned'],['doing','In progress'],['done','Done']].map(o=>`<option value="${o[0]}"${x.status==o[0]?' selected':''}>${o[1]}</option>`).join('')}</select></div>
+  return `<article class="card rg-mod-card"><div class="top"><div><b>${esc(x.title)}</b><div class="mu">${esc(x.cat)} · ${new Date(x.date).toLocaleDateString()}${x.cost?' · $'+esc(x.cost):''}</div></div>
+  <select aria-label="Build step status" style="width:auto;margin:0" onchange="setSt('${x.id}',this.value)">${[['planned','Planned'],['doing','In progress'],['done','Done']].map(o=>`<option value="${o[0]}"${x.status==o[0]?' selected':''}>${o[1]}</option>`).join('')}</select></div>
   ${x.notes?`<p style="margin:8px 0">${esc(x.notes)}</p>`:''}
-  ${x.photos.length?`<div class="ph">${x.photos.map((p,i)=>`<img src="${p}" alt="" onclick="zoom('${x.id}',${i})">`).join('')}</div>`:''}
+  ${x.photos.length?`<div class="ph">${x.photos.map((p,i)=>`<button type="button" class="rg-photo-button" onclick="zoom('${x.id}',${i})" aria-label="View photo ${i+1} of ${esc(x.title)}"><img src="${esc(p)}" alt="Build photo ${i+1}" loading="lazy"></button>`).join('')}</div>`:''}
   <label class="btn alt sm" style="display:inline-block">+ Photos<input type="file" accept="image/*" multiple hidden onchange="addPh('${x.id}',this.files)"></label>
-  <button class="btn alt sm" onclick="delMod('${x.id}')">Delete</button> <button class="btn alt sm" onclick="shareMod('${x.id}')">Share</button></div>`;
+  <button class="btn alt sm" onclick="delMod('${x.id}')">Delete</button> <button class="btn alt sm" onclick="shareMod('${x.id}')">Share</button></article>`;
 }
 async function addMod(){
   const t=$('mt').value.trim();if(!t){$('mt').focus();return}
@@ -850,7 +851,7 @@ function addFuel(){
 function delFuel(id){S.fuel=S.fuel.filter(e=>e.id!=id);save();render()}
 /* ---------- BACKUP ---------- */
 const bkJSON=()=>JSON.stringify(S);
-function bmsg(t){$('bm').textContent=t}
+function bmsg(t){$('bm').textContent=t;if($('rg-profile-tools').hidden)toast(t)}
 function backupCounts(d){
   return ['mods','trips','places','svc','slog','fuel'].map(k=>d[k].length).join(', ');
 }

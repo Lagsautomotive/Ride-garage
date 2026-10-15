@@ -21,8 +21,12 @@ async function stored(page){
  fs.mkdirSync('test-results',{recursive:true});
  for(const [engine,name] of [[chromium,'chromium'],[webkit,'webkit']]){
   const browser=await engine.launch();
+  try {
   const context=await browser.newContext({viewport:{width:390,height:844},isMobile:true,hasTouch:true});
   const page=await context.newPage();
+  page.setDefaultTimeout(10000);
+  page.setDefaultNavigationTimeout(20000);
+  console.log(name+': loading fixture');
   const errors=[];page.on('pageerror',e=>errors.push(e.message));
   await page.goto('http://127.0.0.1:8080/');
   await page.evaluate(async data=>{
@@ -34,6 +38,7 @@ async function stored(page){
   await page.locator('#t-home[aria-current="page"]').waitFor();
   assert.match(await page.locator('#v').innerText(),/2019 Yamaha R6/);
   assert.equal(await page.locator('.rg-bike-photo').count(),1);
+  console.log(name+': checking responsive routes');
   for(const width of [320,390,768,1024]){
    await page.setViewportSize({width,height:844});
    for(const [tab,text,parent] of [['home','Coastal ride','home'],['build','Exhaust upgrade','build'],['trips','Coastal ride','trips'],['places','Scenic stop','trips'],['profile','Cloud Garage Sync','profile'],['svc','Service history','profile'],['fuel','USD','profile']]){
@@ -47,10 +52,16 @@ async function stored(page){
    }
   }
   assert.deepEqual(await stored(page),fixture,'Browsing must not write or reset records');
+  await page.setViewportSize({width:390,height:844});
   await page.locator('#t-home').click();
   await page.screenshot({path:'test-results/'+name+'-home.png',fullPage:true});
   await page.locator('#t-build').click();
   await page.screenshot({path:'test-results/'+name+'-garage.png',fullPage:true});
+  await page.getByRole('button',{name:'+ Add build step',exact:true}).click();
+  assert.equal(await page.locator('#rg-build-form').evaluate(el=>el.open),true);
+  assert.equal(await page.locator('#mt').evaluate(el=>el===document.activeElement),true);
+  await page.locator('#rg-build-form > summary').click();
+  console.log(name+': verifying editor and backup');
   // Existing editor still saves into the same IndexedDB shape.
   await page.locator('#bk').fill('Yamaha R6 beta');
   await page.locator('#bk').press('Tab');
@@ -63,7 +74,14 @@ async function stored(page){
   const exported=JSON.parse(await page.locator('#bt').inputValue());
   assert.deepEqual(exported.mods,fixture.mods);
   assert.deepEqual(exported.trips,fixture.trips);
-  await page.evaluate(async()=>{await navigator.serviceWorker.ready});
+  page.once('dialog',dialog=>dialog.accept());
+  await page.evaluate(data=>applyBk(JSON.stringify(data)),fixture);
+  await page.locator('#t-build[aria-current="page"]').waitFor();
+  assert.match(await page.locator('#toast').innerText(),/Backup restored and saved/);
+  assert.equal(await page.locator('#toast').isVisible(),true);
+  assert.deepEqual(await stored(page),fixture);
+  console.log(name+': checking offline shell');
+  await page.waitForFunction(()=>!!navigator.serviceWorker.controller);
   await page.reload();
   await page.locator('#t-home[aria-current="page"]').waitFor();
   await context.setOffline(true);
@@ -72,7 +90,7 @@ async function stored(page){
   await page.locator('#t-build').click();
   assert.match(await page.locator('#v').innerText(),/Exhaust upgrade/);
   assert.equal(errors.length,0,errors.join('\n'));
-  await browser.close();
+  } finally { await browser.close(); }
  }
  console.log('Chromium and WebKit: saved records, editors, navigation, responsive layout and offline shell passed.');
 })().catch(e=>{console.error(e);process.exitCode=1});
