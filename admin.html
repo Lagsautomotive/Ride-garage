@@ -1,40 +1,176 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#d3b47e"><title>Ride Garage | Private Admin</title><link rel="icon" href="icon-premium-192.png"><script src="config.js"></script><style>
-:root{color-scheme:dark;font:16px/1.55 system-ui,-apple-system,sans-serif}*{box-sizing:border-box}body{margin:0;background:#0b0d10;color:#f6f6f6}main{max-width:1050px;margin:auto;padding:25px 18px 80px}header{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;border-bottom:1px solid #383b43;padding-bottom:20px}header a{color:#ffa365}h1{margin:24px 0 8px;font-size:clamp(28px,6vw,42px)}p{color:#b1b4bd}.cards{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:23px 0}.stat{padding:18px;background:#181a20;border:1px solid #32343a;border-radius:15px}.stat b{display:block;color:#ff7b20;font-size:27px}.stat span{font-size:13px;color:#b8b8c2}.controls{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:20px 0}select,button{font:inherit;border-radius:9px;padding:10px;background:#22252b;color:#fff;border:1px solid #565a61}button{cursor:pointer}button.primary{background:#d3b47e;color:#0a0a0a;font-weight:800;border-color:#d3b47e}.item{background:#17191f;padding:19px;border:1px solid #393b42;border-radius:14px;margin:12px 0}.meta{display:flex;gap:10px;align-items:center;flex-wrap:wrap;color:#adafbb;font-size:13px}.tag{background:#d3b47e20;color:#ffab70;padding:3px 9px;border-radius:30px}.message{white-space:pre-wrap;overflow-wrap:anywhere;color:#eee}.item footer{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-top:14px}.item footer label{color:#bbb;font-size:14px}.hidden{display:none}#notice{color:#f9bc80}@media(max-width:600px){.cards{grid-template-columns:repeat(2,1fr)}.controls select,.controls button{flex:1}}</style><link rel="stylesheet" href="premium.css"></head>
-<body class="rg-admin"><main><header><strong class="admin-brand"><img class="admin-emblem" src="icon-premium-192.png" alt=""> RIDE GARAGE <span style="color:#d3b47e">/ ADMIN</span></strong><a href="index.html">Return to app</a></header><h1>Beta Feedback</h1><p>Private rider reports and feature requests. Access is controlled by Supabase security policies, not just this page.</p><p id="notice" role="status" aria-live="polite">Checking admin access…</p><div id="dashboard" class="hidden">
-<div class="cards"><div class="stat"><b id="total">0</b><span>Total</span></div><div class="stat"><b id="newCount">0</b><span>New</span></div><div class="stat"><b id="progressCount">0</b><span>In progress</span></div><div class="stat"><b id="resolvedCount">0</b><span>Resolved</span></div></div>
-<div class="controls"><label for="filter">Filter</label><select id="filter"><option value="all">All feedback</option><option value="new">New</option><option value="in_progress">In progress</option><option value="resolved">Resolved</option></select><button class="primary" id="refresh">Refresh</button></div>
-<div id="items"></div><p id="moreNote"></p></div></main>
+<!doctype html>
+<html lang="en"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#d3b47e">
+<title>Ride Garage | Beta Control Center</title>
+<link rel="icon" href="icon-premium-192.png">
+<script src="config.js"></script>
+<style>
+:root{color-scheme:dark;font:15px/1.55 system-ui,-apple-system,Segoe UI,sans-serif}
+*{box-sizing:border-box}body{margin:0;background:#0d0c0b;color:#f5efe5}
+main{width:min(1100px,100%);margin:auto;padding:clamp(16px,4vw,32px) 16px 90px}
+header{display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;border-bottom:1px solid #54422c;padding-bottom:16px}
+header a{color:#dbbc86;text-decoration:none}
+h1{font:700 clamp(29px,5vw,43px)/1.13 Georgia,serif;letter-spacing:-.04em;margin:25px 0 6px}
+h2{font:700 clamp(21px,3vw,27px)/1.25 Georgia,serif;margin:0 0 5px}
+p{color:#bdb2a4}.lead{margin:0 0 18px}
+#notice{min-height:1.5em;color:#e1bd7e}
+.heading{display:flex;align-items:end;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-top:30px}
+.heading p{margin:0;color:#ac9f8b;font-size:13px}
+.cards{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin:15px 0 12px}
+.stat{min-width:0;padding:20px 16px;background:linear-gradient(145deg,#25201a,#171613);border:1px solid #534330;border-radius:17px;box-shadow:0 8px 30px #0003}
+.stat b{display:block;font-size:clamp(26px,4vw,37px);font-weight:800;color:#e0be88;font-variant-numeric:tabular-nums;line-height:1.15}
+.stat span{display:block;color:#c4b6a1;font-size:12px;line-height:1.4;margin-top:9px}
+.note{font-size:12px;color:#bcae98;margin:6px 0 16px}
+.toolbar{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:18px 0}
+select,button{font:inherit;border-radius:9px;padding:10px;background:#25211c;color:#eee1cd;border:1px solid #65513a}
+button{cursor:pointer}button.primary{background:#d3b47e;color:#1b140a;border-color:#e2c793;font-weight:800}
+button:disabled{opacity:.5;cursor:wait}
+button:focus-visible,a:focus-visible,select:focus-visible{outline:2px solid #f0d69f;outline-offset:3px}
+.tag{display:inline-flex;align-items:center;background:#d3b47e1e;color:#f4d198;padding:3px 9px;border:1px solid #63513b;border-radius:20px;font-size:12px}
+.item{background:linear-gradient(145deg,#25211c,#181714);padding:18px;border:1px solid #504332;border-radius:14px;margin:10px 0;overflow-wrap:anywhere}
+.meta{display:flex;gap:8px;align-items:center;flex-wrap:wrap;color:#beae99;font-size:12px}
+.message{white-space:pre-wrap;overflow-wrap:anywhere;color:#f3e9dd}
+.item footer{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-top:13px}
+.item footer label{font-size:13px;color:#d0c1ae}
+.tablewrap{overflow-x:auto;border:1px solid #504332;border-radius:16px;background:#1a1815;margin-top:15px}
+table{width:100%;border-collapse:collapse;text-align:left;min-width:500px}
+th,td{padding:13px 14px;border-bottom:1px solid #3b342b;font-size:13px;white-space:nowrap}
+th{color:#dec392;font-size:11px;letter-spacing:.05em;text-transform:uppercase}
+td{color:#e0d4c1}tr:last-child td{border-bottom:0}
+.empty{padding:14px 0;color:#afa38f}
+.hidden{display:none!important}
+#betaNotice{font-size:13px;color:#e2b978;margin-top:10px}
+@media(max-width:750px){.cards{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:400px){.cards{gap:8px}.stat{padding:15px 11px}main{padding-inline:12px}.toolbar>*{flex:1}button{min-height:44px}}
+</style><link rel="stylesheet" href="premium.css"></head>
+<body class="rg-admin"><main>
+<header>
+<strong class="admin-brand"><img class="admin-emblem" src="icon-premium-192.png" alt=""> RIDE GARAGE <span style="color:#d3b47e">/ ADMIN</span></strong>
+<a href="index.html">Return to app</a>
+</header>
+<h1>Beta Control Center</h1>
+<p class="lead">Private overview of opted-in beta testers, recent participation and rider feedback.</p>
+<p id="notice" role="status" aria-live="polite">Checking admin access…</p>
+<div id="dashboard" class="hidden">
+<div class="toolbar">
+<button class="primary" type="button" id="refresh">Refresh now</button>
+<span id="lastUpdated" class="note" role="status">—</span>
+<span class="note">Auto-refreshes every 60 seconds while open.</span>
+</div>
+<section aria-labelledby="betaHeading">
+<div class="heading"><div><h2 id="betaHeading">Beta tester activity</h2><p>Only riders who voluntarily join the beta program are counted.</p></div></div>
+<div class="cards">
+<div class="stat"><b id="totalTesters">—</b><span>Enrolled testers</span></div>
+<div class="stat"><b id="newTesters">—</b><span>Joined in the last 7 days</span></div>
+<div class="stat"><b id="activeTesters">—</b><span>Active in the last 7 days</span></div>
+<div class="stat"><b id="totalCheckins">—</b><span>Check-ins · latest 100 testers</span></div>
+</div>
+<p id="betaNotice" role="status"></p>
+<div id="testerSection" class="hidden">
+<div class="heading"><h2>Recent beta testers</h2><p>Most recent 100. IDs are shortened for display.</p></div>
+<div class="tablewrap"><table><thead><tr><th>Rider ID</th><th>Joined</th><th>Last activity</th><th>Check-ins</th></tr></thead><tbody id="testers"></tbody></table></div>
+</div>
+</section>
+<section aria-labelledby="feedbackHeading">
+<div class="heading"><div><h2 id="feedbackHeading">Feedback inbox</h2><p>Bug reports, feature ideas and general feedback.</p></div></div>
+<div class="cards">
+<div class="stat"><b id="total">—</b><span>Total feedback</span></div>
+<div class="stat"><b id="newCount">—</b><span>New</span></div>
+<div class="stat"><b id="progressCount">—</b><span>In progress</span></div>
+<div class="stat"><b id="resolvedCount">—</b><span>Resolved</span></div>
+</div>
+<div class="toolbar"><label for="filter">Show</label><select id="filter"><option value="all">All feedback</option><option value="new">New</option><option value="in_progress">In progress</option><option value="resolved">Resolved</option></select></div>
+<div id="items"></div><p id="moreNote" class="note"></p>
+</section>
+</div></main>
 <script type="module">
 import {createClient} from 'https://esm.sh/@supabase/supabase-js@2.49.4';
-const cfg=window.RG_CONFIG||{},notice=document.getElementById('notice'),dashboard=document.getElementById('dashboard'),items=document.getElementById('items');
-let sb=null,records=[];
+const cfg=window.RG_CONFIG||{};
+const $=id=>document.getElementById(id);
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-function render(){
-  for(const [id,count] of [['total',records.length],['newCount',records.filter(x=>x.status==='new').length],['progressCount',records.filter(x=>x.status==='in_progress').length],['resolvedCount',records.filter(x=>x.status==='resolved').length]])document.getElementById(id).textContent=count;
-  const filter=document.getElementById('filter').value;const visible=records.filter(x=>filter==='all'||x.status===filter);
-  items.innerHTML=visible.length?visible.map(x=>'<article class="item" data-id="'+esc(x.id)+'"><div class="meta"><span class="tag">'+esc(x.category)+'</span><span>'+esc(new Date(x.created_at).toLocaleString())+'</span><span>Rider '+esc(x.user_id.slice(0,8))+'…</span></div><p class="message">'+esc(x.message)+'</p><footer><label>Status</label><select data-status="'+esc(x.id)+'"><option value="new"'+(x.status==='new'?' selected':'')+'>New</option><option value="in_progress"'+(x.status==='in_progress'?' selected':'')+'>In progress</option><option value="resolved"'+(x.status==='resolved'?' selected':'')+'>Resolved</option></select><span id="result-'+esc(x.id)+'"></span></footer></article>').join(''):'<p>No feedback in this category yet.</p>';
-  items.querySelectorAll('select[data-status]').forEach(el=>el.addEventListener('change',async()=>{
-    const id=el.dataset.status,original=records.find(x=>x.id===id),previous=original.status;el.disabled=true;
+const fmt=t=>t?new Date(t).toLocaleString():'—';
+let sb=null,records=[],feedbackTotals=null,refreshing=false;
+function renderFeedback(){
+  if(!feedbackTotals)return;
+  [['total',feedbackTotals.total],['newCount',feedbackTotals.new],['progressCount',feedbackTotals.in_progress],['resolvedCount',feedbackTotals.resolved]].forEach(([id,n])=>$(id).textContent=String(n));
+  const filter=$('filter').value,visible=records.filter(x=>filter==='all'||x.status===filter);
+  $('items').innerHTML=visible.length?visible.map(x=>'<article class="item"><div class="meta"><span class="tag">'+esc(x.category)+'</span><span>'+esc(fmt(x.created_at))+'</span><span>Rider '+esc(String(x.user_id||'').slice(0,8))+'…</span></div><p class="message">'+esc(x.message)+'</p><footer><label for="s-'+esc(x.id)+'">Status</label><select id="s-'+esc(x.id)+'" data-status="'+esc(x.id)+'"><option value="new"'+(x.status==='new'?' selected':'')+'>New</option><option value="in_progress"'+(x.status==='in_progress'?' selected':'')+'>In progress</option><option value="resolved"'+(x.status==='resolved'?' selected':'')+'>Resolved</option></select><span id="result-'+esc(x.id)+'"></span></footer></article>').join(''):'<p class="empty">No feedback in this category among the latest submissions.</p>';
+  $('items').querySelectorAll('select[data-status]').forEach(el=>el.addEventListener('change',async()=>{
+    const id=el.dataset.status,row=records.find(x=>x.id===id),old=row.status;
+    el.disabled=true;
     const {error}=await sb.from('beta_feedback').update({status:el.value}).eq('id',id);
-    if(error){el.value=previous;notice.textContent='Update failed. Check admin permission and try again.';}else{original.status=el.value;notice.textContent='Feedback status saved.';render();}el.disabled=false;
+    if(error){el.value=old;$('notice').textContent='Could not update this feedback. Check your permission and try again.';}
+    else{row.status=el.value;$('notice').textContent='Feedback status saved.';await refresh();}
+    el.disabled=false;
   }));
 }
-async function refresh(){
- notice.textContent='Loading feedback…';
- const {data,error}=await sb.from('beta_feedback').select('id,user_id,category,message,created_at,status').order('created_at',{ascending:false}).limit(500);
- if(error){notice.textContent='Could not read feedback. Check your admin permission and SQL setup.';return;}
- records=data||[];dashboard.classList.remove('hidden');document.getElementById('moreNote').textContent=records.length===500?'Showing latest 500 submissions. Older submissions can be reviewed in Supabase.':'';notice.textContent=records.length+' submission(s) loaded.';render();
+async function loadFeedback(){
+  const start=sb.from('beta_feedback');
+  const [latest,total,unread,doing,done]=await Promise.all([
+    start.select('id,user_id,category,message,created_at,status').order('created_at',{ascending:false}).limit(500),
+    sb.from('beta_feedback').select('id',{count:'exact',head:true}),
+    sb.from('beta_feedback').select('id',{count:'exact',head:true}).eq('status','new'),
+    sb.from('beta_feedback').select('id',{count:'exact',head:true}).eq('status','in_progress'),
+    sb.from('beta_feedback').select('id',{count:'exact',head:true}).eq('status','resolved')
+  ]);
+  if([latest,total,unread,doing,done].some(x=>x.error))throw Error('Feedback query failed.');
+  records=latest.data||[];
+  feedbackTotals={total:total.count||0,new:unread.count||0,in_progress:doing.count||0,resolved:done.count||0};
+  $('moreNote').textContent=records.length===500?'Showing the latest 500 items. Filter totals include all records; older items can be reviewed in Supabase.':'';
+  renderFeedback();
 }
-document.getElementById('filter').addEventListener('change',render);document.getElementById('refresh').addEventListener('click',refresh);
+async function loadBeta(){
+  const since=new Date(Date.now()-7*24*60*60*1000).toISOString();
+  const [total,newSignups,active,latest]=await Promise.all([
+    sb.from('ride_garage_beta_testers').select('user_id',{head:true,count:'exact'}),
+    sb.from('ride_garage_beta_testers').select('user_id',{head:true,count:'exact'}).gte('joined_at',since),
+    sb.from('ride_garage_beta_testers').select('user_id',{head:true,count:'exact'}).gte('last_active_at',since),
+    sb.from('ride_garage_beta_testers').select('user_id,joined_at,last_active_at,checkins').order('joined_at',{ascending:false}).limit(100)
+  ]);
+  if([total,newSignups,active,latest].some(x=>x.error)){
+    $('betaNotice').textContent='Tester tracking is not yet active. Run supabase/beta-testers.sql once in your Supabase SQL Editor (after the existing admin-dashboard.sql). Feedback remains available.';
+    $('testerSection').classList.add('hidden');
+    ['totalTesters','newTesters','activeTesters','totalCheckins'].forEach(id=>$(id).textContent='—');
+    return;
+  }
+  const data=latest.data||[];
+  $('totalTesters').textContent=String(total.count||0);
+  $('newTesters').textContent=String(newSignups.count||0);
+  $('activeTesters').textContent=String(active.count||0);
+  $('totalCheckins').textContent=String(data.reduce((n,x)=>n+(Number(x.checkins)||0),0));
+  $('betaNotice').textContent='Activity means a signed-in, enrolled tester checked in through the Social tab. Check-ins are limited to once every 30 minutes. Anonymous visitors are not counted.';
+  $('testers').innerHTML=data.length?data.map(x=>'<tr><td>'+esc(String(x.user_id).slice(0,8))+'…</td><td>'+esc(fmt(x.joined_at))+'</td><td>'+esc(fmt(x.last_active_at))+'</td><td>'+esc(x.checkins)+'</td></tr>').join(''):'<tr><td colspan="4">No enrolled beta testers yet.</td></tr>';
+  $('testerSection').classList.remove('hidden');
+}
+async function refresh(){
+  if(refreshing||!sb)return;
+  refreshing=true;$('refresh').disabled=true;$('notice').textContent='Updating beta dashboard…';
+  const results=await Promise.allSettled([loadFeedback(),loadBeta()]);
+  const failed=results[0].status==='rejected';
+  $('notice').textContent=failed?'Could not load feedback. Your access or the feedback database may need attention.':'Dashboard updated.';
+  $('lastUpdated').textContent='Last updated '+new Date().toLocaleTimeString();
+  refreshing=false;$('refresh').disabled=false;
+}
+$('filter').addEventListener('change',renderFeedback);
+$('refresh').addEventListener('click',refresh);
 try{
- if(!cfg.SUPABASE_URL||!cfg.SUPABASE_KEY)throw Error('Missing configuration');
- sb=createClient(cfg.SUPABASE_URL,cfg.SUPABASE_KEY);
- const {data:userData,error:userError}=await sb.auth.getUser();
- if(userError||!userData.user){notice.innerHTML='Please <a href="index.html">sign in to Ride Garage Social</a> first.';}
- else{
-  const {data,error}=await sb.rpc('is_ride_garage_admin');
-  if(error||data!==true)notice.textContent='Access denied. This page is available only to the Ride Garage admin account.';
-  else await refresh();
- }
-}catch(e){notice.textContent='Could not connect. Check your connection and try again.';}
+  if(!cfg.SUPABASE_URL||!cfg.SUPABASE_KEY)throw Error('Missing configuration');
+  sb=createClient(cfg.SUPABASE_URL,cfg.SUPABASE_KEY);
+  const {data,error}=await sb.auth.getUser();
+  if(error||!data.user){$('notice').innerHTML='Sign in from <a href="index.html">Ride Garage Social</a> first, then return here.';}
+  else{
+    const response=await sb.rpc('is_ride_garage_admin');
+    if(response.error||response.data!==true){
+      $('notice').textContent='Access denied. This page is available only to the Ride Garage admin account.';
+    }else{
+      $('dashboard').classList.remove('hidden');
+      await refresh();
+      setInterval(()=>{if(!document.hidden&&navigator.onLine)refresh()},60000);
+      document.addEventListener('visibilitychange',()=>{if(!document.hidden)refresh()});
+      window.addEventListener('online',refresh);
+    }
+  }
+}catch(e){$('notice').textContent='Could not connect. Check your connection and try again.';}
 </script></body></html>
