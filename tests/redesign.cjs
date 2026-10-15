@@ -53,6 +53,8 @@ async function stored(page){
   page.setDefaultNavigationTimeout(20000);
   console.log(name+': loading fixture');
   const errors=[];page.on('pageerror',e=>errors.push(e.message));
+  page.on('response',response=>{if(response.status()>=400)console.log(name+': HTTP '+response.status()+' '+response.url())});
+  page.on('requestfailed',request=>console.log(name+': failed '+request.url()+' '+request.failure()?.errorText));
   await page.goto('http://127.0.0.1:8080/');
   await page.evaluate(async data=>{
     localStorage.setItem('ride-garage-beta-welcome-v1','1');
@@ -106,7 +108,16 @@ async function stored(page){
   assert.equal(await page.locator('#toast').isVisible(),true);
   assert.deepEqual(await stored(page),fixture);
   console.log(name+': checking offline shell');
-  await page.waitForFunction(()=>!!navigator.serviceWorker.controller);
+  await page.evaluate(async()=>{await navigator.serviceWorker.register('sw.js',{updateViaCache:'none'})});
+  try { await page.waitForFunction(()=>!!navigator.serviceWorker.controller); }
+  catch(error){
+    console.log(name+': worker diagnostics',await page.evaluate(async()=>({
+      controller:!!navigator.serviceWorker.controller,
+      registrations:(await navigator.serviceWorker.getRegistrations()).map(r=>({scope:r.scope,active:r.active?.state,installing:r.installing?.state,waiting:r.waiting?.state})),
+      caches:await caches.keys()
+    })));
+    throw error;
+  }
   await page.reload();
   await page.locator('#t-home[aria-current="page"]').waitFor();
   // Stop the real HTTP server instead of using the engine's offline emulation.
