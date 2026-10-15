@@ -1,0 +1,52 @@
+/* Ride Garage 2.0: app-only presentation. Keep storage and feature editors intact. */
+body.rg-app{--ac:#dfbd7b;--mu:#b4b1aa;background:#090a0b;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;user-select:text;-webkit-user-select:text}
+body.rg-app::before{background:radial-gradient(ellipse at 90% 0,rgba(211,180,126,.08),transparent 45%),#090a0b}
+body.rg-app main{max-width:1000px;padding:18px 20px calc(112px + env(safe-area-inset-bottom,0px))}
+body.rg-app header{padding:0 0 16px;gap:12px;border-color:#292929}
+body.rg-app header h1 .app-wordmark{width:160px;max-height:54px}
+body.rg-app .rg-header-actions #bike{max-width:150px}
+body.rg-app .rg-cloud-tab{background:#191a1b;border-color:#454038}
+body.rg-app .card{background:#151617;border-color:#303031;border-radius:22px;box-shadow:0 8px 24px #0002;backdrop-filter:none}
+body.rg-app h2{font-size:clamp(28px,5.5vw,40px);line-height:1.15;letter-spacing:-.045em;margin:8px 0 24px}
+body.rg-app h3{font-size:21px;line-height:1.3;letter-spacing:-.025em;margin:8px 0 12px}
+body.rg-app .rg-eyebrow{color:#ddbd82;font-size:10px;font-weight:750;letter-spacing:.18em;margin:20px 0 0}
+body.rg-app .mu{color:#bbb7af;line-height:1.6}
+body.rg-app .btn{min-height:44px;padding:12px 16px;border-radius:13px;background:#dfbd7b;box-shadow:none}
+body.rg-app .btn.alt{background:#202122;border-color:#404041;color:#eeeae2}
+body.rg-app .btn.sm{padding:9px 12px}
+body.rg-app input,body.rg-app select,body.rg-app textarea{background:#0f1011;border-color:#454545}
+body.rg-app .tabs{position:fixed;top:auto;bottom:0;left:0;right:0;width:auto;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:4px;margin:0;padding:8px max(8px,env(safe-area-inset-right,0px)) calc(8px + env(safe-area-inset-bottom,0px)) max(8px,env(safe-area-inset-left,0px));border:0;border-top:1px solid #343331;border-radius:0;background:rgba(15,16,17,.97);z-index:20;box-shadow:0 -8px 30px #0005}
+body.rg-app .tabs button{display:flex;flex-direction:column;justify-content:center;align-items:center;gap:5px;min-width:0;min-height:57px;padding:7px 0;font-size:10px;line-height:1.2;white-space:normal;letter-spacing:0;border:0;color:#a8a7a3;background:transparent;border-radius:12px}
+body.rg-app .tabs svg{width:23px;height:23px;flex:none}
+body.rg-app .tabs button.on{color:#e6c78f;background:#dfbd7b12;border:0}
+body.rg-app #rg-section-tools{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 18px}
+body.rg-app #rg-section-tools:empty{display:none}
+body.rg-app #rg-section-tools .btn{font-size:13px;flex:1;min-width:0;text-align:center}
+body.rg-app #rg-section-tools [aria-current=page]{border-color:#dfbd7b;color:#e6c78f;background:#dfbd7b12}
+body.rg-app .rg-bike-hero{position:relative;padding:0;overflow:hidden;border-color:#454039}
+body.rg-app .rg-bike-photo{display:block;width:100%;height:clamp(250px,48vw,420px);object-fit:cover}
+body.rg-app .rg-bike-caption{padding:22px;background:linear-gradient(0deg,#101112,#171819)}
+body.rg-app .rg-bike-caption .rg-eyebrow{margin:0;font-size:9px}
+body.rg-app .rg-bike-caption h3{font-size:28px;margin:9px 0}
+body.rg-app .rg-bike-caption p{font-size:13px;color:#c5beb1;margin:0}
+body.rg-app .rg-photo-empty{min-height:220px;padding:30px;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;background:radial-gradient(ellipse at 50% 100%,#51422b55,transparent 65%),repeating-linear-gradient(130deg,#ffffff03 0 1px,transparent 1px 38px),#141617}
+body.rg-app .rg-photo-empty>span{font-size:52px;font-weight:200;color:#dfbd7b}
+body.rg-app .rg-photo-empty p{font-size:21px;margin:8px 0;color:#eee8dc}
+body.rg-app .rg-photo-empty small{font-size:12px;color:#bcb6ab}
+body.rg-app .rg-metrics{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin:18px 0}
+body.rg-app .rg-metrics .card{padding:16px 10px;margin:0}
+body.rg-app .rg-metrics strong{display:block;font-size:clamp(18px,4vw,28px);letter-spacing:-.04em;color:#f3e7cf}
+body.rg-app .rg-metrics span{display:block;font-size:11px;color:#b4b1aa;margin-top:4px}
+body.rg-app .rg-dashboard-grid{display:grid;gap:0}
+body.rg-app .ph{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;overflow:visible}
+body.rg-app .ph img{width:100%;height:clamp(140px,28vw,260px);object-fit:cover;border-radius:14px}
+body.rg-app .top{flex-wrap:wrap}
+body.rg-app #rg-profile-tools[hidden]{display:none!important}
+body.rg-app .rg-skip{position:fixed;top:-100px;left:16px;z-index:100;background:#dfbd7b;color:#111;padding:12px;border-radius:10px}
+body.rg-app .rg-skip:focus{top:12px}
+body.rg-app #lb{z-index:60}
+body.rg-app :focus-visible{outline:2px solid #dfbd7b;outline-offset:4px}
+body.rg-app #v:focus,body.rg-app #rg-section-heading:focus{outline:none}
+@media(min-width:700px){body.rg-app main{padding:28px 32px calc(112px + env(safe-area-inset-bottom,0px))}body.rg-app .tabs{padding-left:max(16px,calc((100vw - 750px)/2));padding-right:max(16px,calc((100vw - 750px)/2))}body.rg-app .tabs button{font-size:12px}body.rg-app .rg-dashboard-grid{grid-template-columns:1fr 1fr;gap:16px}}
+@media(max-width:380px){body.rg-app main{padding-left:12px;padding-right:12px}body.rg-app .rg-header-actions #bike{display:none}body.rg-app .rg-metrics{gap:6px}body.rg-app .rg-metrics .card{padding:13px 8px}body.rg-app .tabs button{font-size:9px}body.rg-app .rg-bike-caption{padding:18px}}
+@media(prefers-reduced-motion:reduce){body.rg-app *,body.rg-app *::before,body.rg-app *::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
