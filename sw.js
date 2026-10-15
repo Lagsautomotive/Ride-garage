@@ -1,4 +1,4 @@
-const CACHE = 'ride-garage-v19';
+const CACHE = 'ride-garage-v20';
 const APP_SHELL = ['./', 'index.html', 'manifest.webmanifest', 'icon-192.png', 'icon-512.png', 'icon-premium-192.png', 'icon-premium-512.png', 'ride-garage-premium-logo.png', 'privacy.html', 'terms.html', 'install.html', 'landing.html', 'feedback.html', 'admin.html', 'premium.css'];
 
 self.addEventListener('install', event => {
