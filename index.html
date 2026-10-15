@@ -883,6 +883,12 @@ async function socProfile(){
 }
 function drawSocial(){
   $('v').innerHTML=`<div class="card"><div class="top"><div><b>@${esc(PROF.username)}</b><div class="mu">${esc(PROF.bike||'')}</div></div><button class="btn alt sm" onclick="SB.auth.signOut()">Sign out</button></div></div>
+  <section class="card" aria-label="Volunteer beta tester program">
+    <div class="top"><div><b>🏍️ Help build Ride Garage</b><p class="mu" style="margin:6px 0">Join the beta program to help us measure participation and improve the app. Optional and free.</p></div></div>
+    <div id="rgBetaStatus" class="mu" role="status" aria-live="polite">Checking enrollment…</div>
+    <div id="rgBetaActions" class="row" style="margin-top:10px"></div>
+    <p class="mu" style="margin:8px 0 0">Only your account ID, enrollment date and occasional Social check-ins are recorded. Your private garage stays on this device. <a href="privacy.html">Privacy</a></p>
+  </section>
   <div id="rgAdminShortcut"></div>
   <details class="card"${draft?' open':''}><summary><b>+ New post</b></summary>
     ${draft&&draft.img?`<img src="${draft.img}" alt="" style="width:100%;border-radius:10px;margin-top:8px">`:''}
@@ -895,6 +901,52 @@ function drawSocial(){
   <details class="card"><summary class="mu">Rules, terms and blocked riders</summary><p class="mu">${esc(RULES)}</p><p class="mu"><a href="terms.html">Terms of Use</a> \u00b7 <a href="privacy.html">Privacy Policy</a> \u00b7 ridegarageapp@gmail.com</p><button class="btn alt sm" onclick="socBlocked()">Show blocked riders</button><div id="bl"></div></details><details class="card"><summary><b>Account &amp; privacy</b></summary><p class="mu">Request deletion of your community account, posts and associated account data. Deletion is permanent once confirmed and the secure service is enabled. Local garage entries stay on this device unless you remove them separately.</p><p class="mu"><a href="privacy.html">Privacy Policy</a> · <a href="terms.html">Terms</a></p><button class="btn alt" onclick="socDeleteAccount()">Delete my community account</button><p class="mu" id="delStatus"></p><a href="mailto:ridegarageapp@gmail.com?subject=Ride%20Garage%20account%20deletion%20request">Request deletion by email</a></details>`;
   drawFeed();
   loadRideGarageAdminShortcut(ME.id);
+  rgBetaRenderEnrollment(ME.id);
+}
+async function rgBetaRenderEnrollment(uid){
+  const status=$('rgBetaStatus'),actions=$('rgBetaActions');
+  if(!status||!actions||!SB||!ME||ME.id!==uid)return;
+  try{
+    const {data,error}=await SB.rpc('rg_beta_is_joined');
+    if(!ME||ME.id!==uid||S.tab!=='social')return;
+    if(error){
+      status.textContent='Beta enrollment is not enabled yet.';
+      actions.innerHTML='';
+      return;
+    }
+    if(data===true){
+      status.textContent='You are an enrolled beta tester. Thanks for helping! Check-ins happen when you open Social, at most once every 30 minutes.';
+      actions.innerHTML='<a class="btn alt sm" href="feedback.html">Send feedback</a><button type="button" class="btn alt sm" onclick="rgBetaLeave()">Leave beta</button>';
+      // The server updates activity only for enrolled accounts and throttles check-ins.
+      SB.rpc('rg_beta_check_in').then(()=>{}).catch(()=>{});
+    }else{
+      status.textContent='Your participation is optional. An account is required; no private garage data will be shared.';
+      actions.innerHTML='<button type="button" class="btn sm" onclick="rgBetaJoin()">Join beta testing</button><a class="btn alt sm" href="feedback.html">Send feedback</a>';
+    }
+  }catch(e){status.textContent='Beta enrollment is temporarily unavailable.';actions.innerHTML=''}
+}
+async function rgBetaJoin(){
+  if(!SB||!ME)return;
+  const uid=ME.id,status=$('rgBetaStatus'),actions=$('rgBetaActions');
+  if(actions)actions.querySelectorAll('button').forEach(b=>b.disabled=true);
+  if(status)status.textContent='Joining the beta…';
+  try{
+    const {data,error}=await SB.rpc('rg_beta_join');
+    if(error||data!==true)throw Error('Beta enrollment is not active yet.');
+    if(ME&&ME.id===uid&&S.tab==='social')await rgBetaRenderEnrollment(uid);
+  }catch(e){if(status)status.textContent='Could not join yet. Please try again later.';if(actions)actions.querySelectorAll('button').forEach(b=>b.disabled=false)}
+}
+async function rgBetaLeave(){
+  if(!SB||!ME)return;
+  if(!confirm('Leave beta testing? Your motorcycle records and community account will remain unchanged.'))return;
+  const uid=ME.id,status=$('rgBetaStatus'),actions=$('rgBetaActions');
+  if(actions)actions.querySelectorAll('button').forEach(b=>b.disabled=true);
+  if(status)status.textContent='Leaving the beta…';
+  try{
+    const {error}=await SB.rpc('rg_beta_leave');
+    if(error)throw error;
+    if(ME&&ME.id===uid&&S.tab==='social')await rgBetaRenderEnrollment(uid);
+  }catch(e){if(status)status.textContent='Could not leave the beta right now. Please try again.';if(actions)actions.querySelectorAll('button').forEach(b=>b.disabled=false)}
 }
 async function loadRideGarageAdminShortcut(uid){
   const target=$('rgAdminShortcut');
@@ -907,7 +959,7 @@ async function loadRideGarageAdminShortcut(uid){
     const current=$('rgAdminShortcut');
     if(!current)return;
     const badge=countResult.error?'':('<span style="display:inline-block;margin-left:8px;padding:2px 9px;border-radius:20px;background:#d3b47e;color:#101010;font-weight:800" aria-label="'+countResult.count+' new feedback reports">'+countResult.count+' New</span>');
-    current.innerHTML='<div class="card"><a class="btn alt" href="admin.html">Admin Dashboard · Feedback</a>'+badge+'</div>';
+    current.innerHTML='<div class="card"><a class="btn alt" href="admin.html">Beta Control Center</a>'+badge+'</div>';
   }catch(e){/* No admin shortcut when authorization cannot be verified. */}
 }
 async function socDeleteAccount(){
