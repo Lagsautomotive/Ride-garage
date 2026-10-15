@@ -460,6 +460,15 @@ header h1 {
 .rg-cloud-copy button{flex:0 1 auto;max-width:100%}
 
 
+/* Interactive map frame stays below fixed navigation and leaves controls usable on iOS. */
+.rg-map-host{position:relative;z-index:0;width:100%;height:292px;min-height:230px;margin:9px 0;border:1px solid var(--bd);border-radius:12px;overflow:hidden;background:#101113}
+.rg-map-host[hidden],.rg-map-status[hidden],#map[hidden],[id^="rgTripPreview"][hidden]{display:none!important}
+.rg-map-host .leaflet-container{font:13px/1.4 system-ui,-apple-system,sans-serif}
+.rg-map-host .leaflet-control-attribution{font-size:10px!important;max-width:100%;white-space:normal}
+.rg-map-host .leaflet-control-zoom a{color:#242424}
+.rg-map-row{margin:8px 0 4px;justify-content:flex-start}
+.rg-map-row .btn{flex:0 1 auto;max-width:100%}
+@media(max-width:480px){.rg-map-host{height:260px}.rg-map-row .btn{width:100%;flex:1}}
 </style><link rel="stylesheet" href="premium.css"><link rel="stylesheet" href="welcome.css"></head><body class="rg-app">
 <main>
 <header><h1 style="display:flex;align-items:center;gap:8px"><img class="app-wordmark" src="ride-garage-premium-logo.png" alt="Ride Garage"></h1><div class="mu" id="bike"></div></header>
@@ -494,6 +503,7 @@ header h1 {
 <div id="lb" onclick="this.style.display='none'"><img id="lbi" alt=""></div>
 <script src="welcome.js"></script>
 <script src="cloud-sync.js"></script>
+<script src="ride-maps.js"></script>
 <script>
 function updateRideGarageConnection(){
   const el=document.getElementById('rgConnection');
@@ -531,6 +541,7 @@ async function load(){try{const d=await idb();return await new Promise((res,rej)
 async function save(){try{const d=await idb();d.transaction('kv','readwrite').objectStore('kv').put(JSON.parse(JSON.stringify(S)),'s')}catch(e){}}
 function tab(t){S.tab=t;render();window.scrollTo(0,0);const v=$('v');v.classList.remove('fi');void v.offsetWidth;v.classList.add('fi')}
 function render(){
+  if(window.RGMaps)window.RGMaps.destroy();
   $('t-build').className=S.tab=='build'?'on':'';$('t-trips').className=S.tab=='trips'?'on':'';$('t-places').className=S.tab=='places'?'on':'';$('t-svc').className=S.tab=='svc'?'on':'';$('t-fuel').className=S.tab=='fuel'?'on':'';$('t-social').className=S.tab=='social'?'on':'';
   $('bike').textContent=S.bike||'';
   S.tab=='build'?renderBuild():S.tab=='trips'?renderTrips():S.tab=='places'?renderPlaces():S.tab=='svc'?renderSvc():S.tab=='fuel'?renderFuel():renderSocial();
@@ -599,12 +610,19 @@ function renderTrips(){
     <div class="row" style="margin:6px 0 10px"><input id="tn" placeholder="Trip name (e.g. Copper Canyon run)"><select id="tc"><option>🇲🇽 Mexico</option><option>🇺🇸 USA</option><option>🇲🇽🇺🇸 Both</option></select></div>
     <div id="live" class="stats"><div><div class="big" id="ld">0.0</div><div class="mu">${U().d}</div></div><div><div class="big" id="ls">0</div><div class="mu">${U().s}</div></div><div><div class="big" id="lt">0m</div><div class="mu">time</div></div></div>
     <div id="map" style="margin:10px 0">${trackSVG(cur&&cur.pts)}</div>
+    <div id="rgLiveMap" class="rg-map-host" hidden></div>
+    <div class="row rg-map-row"><button type="button" id="rgLiveMapButton" class="btn alt sm" onclick="RGMaps.toggleLive(cur)">Interactive live map</button></div>
+    <p id="rgLiveMapStatus" class="mu rg-map-status" role="status" aria-live="polite" hidden></p>
     <div class="mu" id="msg">${cur?'Recording… keep this screen open.':'GPS needs location permission and an open screen.'}</div>
     <div style="margin-top:10px">${cur?'<button class="btn" onclick="stopTrack()">Stop &amp; save</button>':'<button class="btn" onclick="startTrack()">Start ride</button>'}</div>
   </div>
   <div class="mu" style="margin:4px 2px 8px">${S.trips.length} trips · ${fd(tot)} total</div>
-  ${S.trips.slice().reverse().map(t=>`<div class="card"><div class="top"><div><b>${esc(t.name)}</b><div class="mu">${esc(t.country)} · ${new Date(t.date).toLocaleDateString()}</div></div><button class="btn alt sm" onclick="delTrip('${t.id}')">Delete</button></div>
-  ${trackSVG(t.pts)}<div class="stats" style="margin-top:8px"><div><b>${fd(t.dist)}</b><div class="mu">distance</div></div><div><b>${fdur(t.dur)}</b><div class="mu">ride time</div></div><div><b>${(t.max*U().k).toFixed(0)} ${U().s}</b><div class="mu">top speed</div></div></div></div>`).join('')}`;
+  ${S.trips.slice().reverse().map((t,i)=>`<div class="card"><div class="top"><div><b>${esc(t.name)}</b><div class="mu">${esc(t.country)} · ${new Date(t.date).toLocaleDateString()}</div></div><button class="btn alt sm" onclick="delTrip('${t.id}')">Delete</button></div>
+  <div id="rgTripPreview${i}">${trackSVG(t.pts)}</div>
+  <div id="rgTripMap${i}" class="rg-map-host" hidden></div>
+  <div class="row rg-map-row"><button type="button" id="rgTripButton${i}" class="btn alt sm" onclick="RGMaps.toggleTrip(${i},S.trips)">Interactive map</button></div>
+  <p id="rgTripStatus${i}" class="mu rg-map-status" role="status" aria-live="polite" hidden></p>
+  <div class="stats" style="margin-top:8px"><div><b>${fd(t.dist)}</b><div class="mu">distance</div></div><div><b>${fdur(t.dur)}</b><div class="mu">ride time</div></div><div><b>${(t.max*U().k).toFixed(0)} ${U().s}</b><div class="mu">top speed</div></div></div></div>`).join('')}`;
   if(cur)upd();
 }
 function msg(t){const e=$('msg');if(e)e.textContent=t}
@@ -624,6 +642,7 @@ function upd(){
   if(!cur||S.tab!='trips'||!$('ld'))return;
   $('ld').textContent=(cur.dist*U().k).toFixed(1);$('ls').textContent=Math.round(cur.sp*U().k);$('lt').textContent=fdur(Date.now()-cur.t0);
   $('map').innerHTML=trackSVG(cur.pts);
+  if(window.RGMaps)window.RGMaps.updateLive(cur);
 }
 function stopTrack(){
   navigator.geolocation.clearWatch(watch);clearInterval(tick);
@@ -646,6 +665,14 @@ function navURL(p,app){
 }
 function renderPlaces(){
   $('v').innerHTML=`
+  <section class="card" aria-label="Saved places interactive map">
+    <div class="top"><div><b>🗺️ Your saved places map</b>
+      <p class="mu" style="margin:6px 0">Explore your favorite stops. Places saved with latitude and longitude appear as map pins; address-only places still work with navigation links.</p>
+    </div></div>
+    <div class="row rg-map-row"><button type="button" class="btn alt sm" id="rgPlacesMapButton" onclick="RGMaps.togglePlaces(S.places)">Show places map</button></div>
+    <div id="rgPlacesMap" class="rg-map-host" hidden></div>
+    <p id="rgPlacesMapStatus" class="mu rg-map-status" role="status" aria-live="polite" hidden></p>
+  </section>
   <details class="card"${S.places.length?'':' open'}><summary><b>+ Save a place</b></summary>
     <input id="pn" placeholder="Name (e.g. Pemex Ciudad Delicias)">
     <div class="row"><input id="pa" placeholder="Address or coordinates (28.19,-105.47)"><button class="btn alt" style="margin-top:6px" onclick="myLoc()">📍 Use my location</button></div>
