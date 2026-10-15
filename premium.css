@@ -211,3 +211,23 @@ body.rg-legal h2{color:#eadcc7}
   body.rg-app *,body.rg-landing *,body.rg-install *,body.rg-feedback *,
   body.rg-admin *,body.rg-legal *{scroll-behavior:auto!important;transition:none!important}
 }
+
+
+/* Premium identity assets: responsive wordmarks, not UI logic. */
+body.rg-app header h1 .app-wordmark{
+ display:block;width:clamp(155px,38vw,255px);height:auto;max-height:86px;
+ object-fit:contain;object-position:left center;
+}
+body.rg-app header h1{min-height:42px;margin:0;line-height:1}
+body.rg-landing .brand img.brand-wordmark{
+ display:block;width:clamp(155px,24vw,245px);max-width:100%;
+ height:auto;max-height:78px;object-fit:contain;border-radius:0;
+}
+body.rg-landing .navinner{gap:10px}
+body.rg-landing .brand{min-width:0}
+body.rg-admin .admin-brand{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+body.rg-admin .admin-emblem{width:38px;height:38px;object-fit:contain;border-radius:8px}
+@media(max-width:420px){
+ body.rg-app header h1 .app-wordmark{width:clamp(145px,43vw,190px)}
+ body.rg-landing .brand img.brand-wordmark{width:clamp(145px,43vw,175px)}
+}
