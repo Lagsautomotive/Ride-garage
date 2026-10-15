@@ -644,7 +644,7 @@ function setSt(id,v){S.mods.find(x=>x.id==id).status=v;save();render()}
 function delMod(id){if(confirm('Delete this entry?')){S.mods=S.mods.filter(x=>x.id!=id);save();render()}}
 function zoom(id,i){$('lbi').src=S.mods.find(x=>x.id==id).photos[i];$('lb').style.display='flex'}
 /* ---------- TRIPS ---------- */
-let cur=null,watch=null,tick=null;
+let cur=null,watch=null,tick=null,rideNotice='';
 const R=6371;
 function hav(a,b){const r=Math.PI/180,dl=(b[0]-a[0])*r,dn=(b[1]-a[1])*r,x=Math.sin(dl/2)**2+Math.cos(a[0]*r)*Math.cos(b[0]*r)*Math.sin(dn/2)**2;return 2*R*Math.asin(Math.sqrt(x))}
 const U=()=>S.unit=='km'?{k:1,d:'km',s:'km/h'}:{k:0.621371,d:'mi',s:'mph'};
@@ -669,7 +669,7 @@ function renderTrips(){
     <div id="rgLiveMap" class="rg-map-host" hidden></div>
     <div class="row rg-map-row"><button type="button" id="rgLiveMapButton" class="btn alt sm" onclick="RGMaps.toggleLive(cur)">Interactive live map</button></div>
     <p id="rgLiveMapStatus" class="mu rg-map-status" role="status" aria-live="polite" hidden></p>
-    <div class="mu" id="msg">${cur?'Recording… keep this screen open.':'GPS needs location permission and an open screen.'}</div>
+    <div class="mu" id="msg" role="status" aria-live="polite" aria-atomic="true">${esc(rideNotice||(cur?'Recording… keep this screen open.':'GPS needs location permission and an open screen.'))}</div>
     <div style="margin-top:10px">${cur?'<button class="btn" onclick="stopTrack()">Stop &amp; save</button>':'<button class="btn" onclick="startTrack()">Start ride</button>'}</div>
   </div>
   <div class="mu" style="margin:4px 2px 8px">${S.trips.length} trips · ${fd(tot)} total</div>
@@ -683,6 +683,7 @@ function renderTrips(){
 }
 function msg(t){const e=$('msg');if(e)e.textContent=t}
 function startTrack(){
+  rideNotice='';
   if(!navigator.geolocation){msg('GPS is not available in this browser.');return}
   cur={pts:[],dist:0,max:0,sp:0,t0:Date.now()};
   watch=navigator.geolocation.watchPosition(onPos,e=>{msg(e.code==1?'Location permission denied. Allow it in your browser settings.':'Could not get GPS signal.')},{enableHighAccuracy:true,maximumAge:2000,timeout:20000});
@@ -706,6 +707,10 @@ function stopTrack(){
     const step=Math.ceil(cur.pts.length/400);
     S.trips.push({id:'t'+Date.now(),name:($('tn').value.trim()||'Ride '+new Date().toLocaleDateString()),country:$('tc').value,date:cur.t0,dist:cur.dist,dur:Date.now()-cur.t0,max:cur.max,pts:cur.pts.filter((_,i)=>i%step==0)});S.odo=(S.odo||0)+cur.dist;
     save();
+  }else{
+    rideNotice=cur.pts.length===0
+      ? 'Ride not saved: no usable GPS locations were recorded. GPS can be weak indoors. Allow location access and precise location, then try outdoors with the app open and the screen unlocked.'
+      : 'Ride not saved: only one usable GPS location was recorded. The tracker needs two usable locations about 10 metres (33 feet) apart. Try moving outdoors with the app open and the screen unlocked.';
   }
   cur=null;renderTrips();
 }
