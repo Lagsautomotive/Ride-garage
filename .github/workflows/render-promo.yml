@@ -24,6 +24,8 @@ jobs:
           python-version: '3.12'
       - name: Install media dependencies
         run: |
+          sudo apt-get update
+          sudo apt-get install -y ffmpeg fonts-dejavu-core
           python -m pip install pillow==11.2.1 numpy==2.2.5
           npm install --no-save --package-lock=false playwright@1.51.1
           npx playwright install --with-deps chromium
