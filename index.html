@@ -454,14 +454,30 @@ header h1 {
   }
 }
 
+#rgCloudSection button:disabled{opacity:.55;cursor:wait}
+.rg-cloud-copy{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;padding:12px 0;border-top:1px solid var(--bd)}
+.rg-cloud-copy>div{flex:1;min-width:170px;overflow-wrap:anywhere}
+.rg-cloud-copy button{flex:0 1 auto;max-width:100%}
+
 
 </style><link rel="stylesheet" href="premium.css"><link rel="stylesheet" href="welcome.css"></head><body class="rg-app">
 <main>
 <header><h1 style="display:flex;align-items:center;gap:8px"><img class="app-wordmark" src="ride-garage-premium-logo.png" alt="Ride Garage"></h1><div class="mu" id="bike"></div></header>
 <div class="tabs"><button id="t-build" onclick="tab('build')"><span class="ic">🛠️</span>Build</button><button id="t-trips" onclick="tab('trips')"><span class="ic">🏍️</span>Trips</button><button id="t-places" onclick="tab('places')"><span class="ic">📍</span>Places</button><button id="t-svc" onclick="tab('svc')"><span class="ic">🔧</span>Service</button><button id="t-fuel" onclick="tab('fuel')"><span class="ic">⛽</span>Fuel</button><button id="t-social" onclick="tab('social')"><span class="ic">👥</span>Social</button></div>
 <div id="v"></div>
+<section class="card" id="rgCloudSection" aria-label="Cloud Garage Sync" style="margin-top:8px">
+  <div class="top"><div><b>☁️ Cloud Garage Sync</b> <span class="pill">Beta</span>
+    <p class="mu" style="margin:6px 0">Private, opt-in cloud copies for moving your garage between devices. Upload and merge manually. No automatic uploads, deletes, or overwrites.</p>
+  </div></div>
+  <p class="mu" id="rgCloudAuth" role="status" aria-live="polite">Checking your sign-in…</p>
+  <div class="row"><button type="button" class="btn" id="rgCloudUpload">Save a cloud copy</button>
+    <button type="button" class="btn alt" id="rgCloudRefresh">View cloud copies</button>
+    <button type="button" class="btn alt" id="rgCloudLogin">Open Social / Sign in</button></div>
+  <p class="mu" id="rgCloudStatus" role="status" aria-live="polite">Your existing local garage stays on this device. Download a backup before merging on another device.</p>
+  <div id="rgCloudCopies"></div>
+</section>
 <details class="card" style="margin-top:8px"><summary><b>Backup &amp; restore</b></summary>
-<p class="mu">Your data lives only on this device and web address. Back it up before clearing your browser or moving to the installed app. Restoring replaces what is on this device after confirmation. Export your current garage first and check that the backup downloaded successfully. Photos make the backup large. Social accounts/posts are not included.</p>
+<p class="mu">Your garage lives on this device by default. Cloud Garage Sync is optional and never runs automatically. Back up your local records before clearing your browser or moving to another device. Restoring from a file replaces local records after confirmation. Export your current garage first and check that the backup downloaded successfully. Photos make the backup large. Social accounts/posts are not included.</p>
 <div class="row"><button class="btn" onclick="expFile()">Download backup file</button><button class="btn alt" onclick="expText()">Show backup text</button></div>
 <textarea id="bt" rows="4" placeholder="Backup text appears here. To restore, paste it here and tap Restore from text." style="margin-top:10px"></textarea>
 <div class="row" style="margin-top:6px"><button class="btn alt" onclick="impText()">Restore from text</button><label class="btn alt" style="text-align:center">Restore from file<input type="file" accept=".json,application/json" hidden onchange="impFile(this.files[0])"></label></div>
@@ -477,6 +493,7 @@ header h1 {
 </main>
 <div id="lb" onclick="this.style.display='none'"><img id="lbi" alt=""></div>
 <script src="welcome.js"></script>
+<script src="cloud-sync.js"></script>
 <script>
 function updateRideGarageConnection(){
   const el=document.getElementById('rgConnection');
@@ -822,6 +839,27 @@ function impFile(f){
 let SB=null,lastUid,ME=null,PROF=null,FEED=[],MYLIKES=new Set(),BLOCKS=new Set(),OPEN=null,MENU=null,ARM=null,CMTS={},draft=null;
 const RULES="Community rules: Post motorcycle-related content only. No harassment, hate, nudity, violence or illegal activity. Do not post other people's private information or your home address. You can report posts and block riders. Posts or accounts that break these rules may be removed. You keep ownership of what you post and allow this app to show it to other riders.";
 function loadSB(){return new Promise((res,rej)=>{if(window.supabase)return res();const x=document.createElement('script');x.src='https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.49.4/dist/umd/supabase.js';x.onload=res;x.onerror=()=>rej(new Error('Could not load the community service. Check your connection.'));document.head.appendChild(x)})}
+
+let rgClientPending=null;
+async function rgGetClient(){
+  if(SB)return SB;
+  if(rgClientPending)return rgClientPending;
+  const C=window.RG_CONFIG||{};
+  if(!C.SUPABASE_URL||!C.SUPABASE_KEY)throw Error('Cloud features are not configured.');
+  rgClientPending=(async()=>{
+    await loadSB();
+    const client=window.supabase.createClient(C.SUPABASE_URL,C.SUPABASE_KEY);
+    client.auth.onAuthStateChange((ev,ses)=>{
+      if(ev==='INITIAL_SESSION')return;
+      const uid=ses&&ses.user?ses.user.id:null;
+      if(uid!==lastUid){lastUid=uid;ME=null;PROF=null;if(S.tab==='social')renderSocial()}
+      if(window.RideGarageCloud)setTimeout(()=>window.RideGarageCloud.refreshAuth(),0);
+    });
+    SB=client;
+    return client;
+  })();
+  try{return await rgClientPending}finally{rgClientPending=null}
+}
 function toast(t){let e=$('toast');if(!e){e=document.createElement('div');e.id='toast';e.style.cssText='position:fixed;left:50%;transform:translateX(-50%);bottom:calc(96px + env(safe-area-inset-bottom,0px));background:rgba(0,0,0,.85);color:#fff;padding:10px 16px;border-radius:12px;z-index:20;max-width:90%;font-size:14px';document.body.appendChild(e)}e.textContent=t;e.style.display='block';clearTimeout(e._t);e._t=setTimeout(()=>{e.style.display='none'},3500)}
 function smsg(t){const m=$('sm');if(m&&m.offsetParent)m.textContent=t;else toast(t)}
 function ago(t){const s=(Date.now()-new Date(t))/1000;if(s<60)return 'now';if(s<3600)return Math.floor(s/60)+'m';if(s<86400)return Math.floor(s/3600)+'h';return Math.floor(s/86400)+'d'}
@@ -832,10 +870,7 @@ async function renderSocial(){
   if(!C.SUPABASE_URL||!C.SUPABASE_KEY){$('v').innerHTML='<div class="card"><b>Community is not set up yet</b><p class="mu">Put your Supabase URL and public key in config.js and upload it.</p></div>';return}
   $('v').innerHTML='<p class="mu" style="text-align:center">Loading...</p>';
   try{
-    if(!SB){
-      await loadSB();SB=supabase.createClient(C.SUPABASE_URL,C.SUPABASE_KEY);
-      SB.auth.onAuthStateChange((ev,ses)=>{if(ev=='INITIAL_SESSION')return;const u=ses&&ses.user?ses.user.id:null;if(u!==lastUid){lastUid=u;ME=null;PROF=null;if(S.tab=='social')renderSocial()}});
-    }
+    await rgGetClient();
     const {data:{session}}=await SB.auth.getSession();
     if(!session){ME=null;lastUid=null;return authView()}
     ME=session.user;lastUid=ME.id;
@@ -898,7 +933,7 @@ function drawSocial(){
     <button class="btn" style="margin-top:10px" onclick="postSubmit()">Post</button>
     <div class="mu" id="sm" style="margin-top:8px"></div></details>
   <div id="feed"></div>
-  <details class="card"><summary class="mu">Rules, terms and blocked riders</summary><p class="mu">${esc(RULES)}</p><p class="mu"><a href="terms.html">Terms of Use</a> \u00b7 <a href="privacy.html">Privacy Policy</a> \u00b7 ridegarageapp@gmail.com</p><button class="btn alt sm" onclick="socBlocked()">Show blocked riders</button><div id="bl"></div></details><details class="card"><summary><b>Account &amp; privacy</b></summary><p class="mu">Request deletion of your community account, posts and associated account data. Deletion is permanent once confirmed and the secure service is enabled. Local garage entries stay on this device unless you remove them separately.</p><p class="mu"><a href="privacy.html">Privacy Policy</a> · <a href="terms.html">Terms</a></p><button class="btn alt" onclick="socDeleteAccount()">Delete my community account</button><p class="mu" id="delStatus"></p><a href="mailto:ridegarageapp@gmail.com?subject=Ride%20Garage%20account%20deletion%20request">Request deletion by email</a></details>`;
+  <details class="card"><summary class="mu">Rules, terms and blocked riders</summary><p class="mu">${esc(RULES)}</p><p class="mu"><a href="terms.html">Terms of Use</a> \u00b7 <a href="privacy.html">Privacy Policy</a> \u00b7 ridegarageapp@gmail.com</p><button class="btn alt sm" onclick="socBlocked()">Show blocked riders</button><div id="bl"></div></details><details class="card"><summary><b>Account &amp; privacy</b></summary><p class="mu">Request deletion of your community account, posts and associated account data. Deletion is permanent once confirmed and the secure service is enabled. Local garage entries stay on this device unless you remove them separately. Cloud Garage Sync copies associated with your account are deleted when the account is deleted.</p><p class="mu"><a href="privacy.html">Privacy Policy</a> · <a href="terms.html">Terms</a></p><button class="btn alt" onclick="socDeleteAccount()">Delete my community account</button><p class="mu" id="delStatus"></p><a href="mailto:ridegarageapp@gmail.com?subject=Ride%20Garage%20account%20deletion%20request">Request deletion by email</a></details>`;
   drawFeed();
   loadRideGarageAdminShortcut(ME.id);
   rgBetaRenderEnrollment(ME.id);
@@ -1092,7 +1127,20 @@ async function socDel(id){
   FEED=FEED.filter(x=>x.id!=id);drawFeed();
 }
 function shareMod(id){const m=S.mods.find(x=>x.id==id);draft={cap:m.title+(m.notes?' - '+m.notes:''),img:m.photos[0]||null};tab('social')}
-load().then(d=>{if(d)S=Object.assign(S,d);S.tab='build';render();if(window.initRideGarageWelcome)window.initRideGarageWelcome(d)});
+load().then(d=>{
+  if(d)S=Object.assign(S,d);
+  S.tab='build';
+  render();
+  if(window.initRideGarageWelcome)window.initRideGarageWelcome(d);
+  if(window.RideGarageCloud)window.RideGarageCloud.init({
+    getState:()=>S,
+    setState:data=>{S=data;render()},
+    persist:persistBackup,
+    validate:validBackup,
+    getClient:rgGetClient,
+    openSocial:()=>tab('social')
+  });
+});
 </script>
 <script>if('serviceWorker' in navigator)addEventListener('load',()=>navigator.serviceWorker.register('sw.js',{updateViaCache:'none'}).catch(()=>{}))</script>
 </body></html>
