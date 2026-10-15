@@ -83,7 +83,11 @@
       maxZoom:19,updateWhenIdle:true,keepBuffer:1,
       attribution:'&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener noreferrer">OpenStreetMap contributors</a>'
     }).addTo(map);
-    tiles.on('tileerror',()=>message(a.status,'Some map tiles could not load. The saved route preview remains available offline.'));
+    tiles.on('tileerror',()=>{
+      if(active!==a)return;
+      if(a.preview)a.preview.hidden=false;
+      message(a.status,'Some map tiles could not load. The saved route preview is shown below.');
+    });
     if(pts.length===1)map.setView(pts[0],14);
     else if(pts.length>1)map.fitBounds(L.latLngBounds(pts),{padding:[22,22],maxZoom:15});
     else map.setView([0,0],2);
@@ -144,11 +148,11 @@
     const a=active;
     if(!a||a.key!=='live'||!a.map||!a.line||!a.last)return;
     const pts=route(current&&current.pts);
-    if(pts.length<=a.seen)return;
+    if(!current||!Array.isArray(current.pts)||current.pts.length<=a.seen)return;
     a.line.setLatLngs(pts);
     const end=pts[pts.length-1];
     a.last.setLatLng(end);
-    a.seen=pts.length;
+    a.seen=current.pts.length;
     // Don't continuously recenter while the rider explores the map.
     if(!a.map.getBounds().contains(end))a.map.panTo(end,{animate:false});
   }
