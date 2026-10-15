@@ -2,6 +2,29 @@
 const assert = require('node:assert/strict');
 const { chromium, webkit } = require('playwright');
 const fs = require('node:fs');
+const http = require('node:http');
+const path = require('node:path');
+function previewServer(){
+  const root=process.cwd();
+  return http.createServer((req,res)=>{
+    const pathname=new URL(req.url,'http://127.0.0.1:8080').pathname;
+    const file=path.resolve(root,'.'+decodeURIComponent(pathname==='/'?'/index.html':pathname));
+    if(!file.startsWith(root+path.sep)){res.writeHead(403).end();return}
+    fs.readFile(file,(error,data)=>{
+      if(error){res.writeHead(404).end();return}
+      const types={'.html':'text/html','.js':'text/javascript','.css':'text/css','.png':'image/png','.webmanifest':'application/manifest+json'};
+      res.writeHead(200,{'Content-Type':types[path.extname(file)]||'application/octet-stream','Cache-Control':'no-store'});
+      res.end(data);
+    });
+  });
+}
+async function stopServer(server){
+  if(!server.listening)return;
+  await new Promise((resolve,reject)=>{
+    server.close(error=>error?reject(error):resolve());
+    server.closeAllConnections();
+  });
+}
 const fixture = {
   bike:'2019 Yamaha R6',unit:'km',odo:12000,tab:'build',
   mods:[{id:'m1',title:'Exhaust upgrade',cat:'Exhaust',status:'done',cost:200,notes:'Saved build notes',date:1700000000000,photos:['data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+aX1sAAAAASUVORK5CYII=']}],
@@ -21,7 +44,9 @@ async function stored(page){
  fs.mkdirSync('test-results',{recursive:true});
  for(const [engine,name] of [[chromium,'chromium'],[webkit,'webkit']]){
   const browser=await engine.launch();
+  const server=previewServer();
   try {
+  await new Promise((resolve,reject)=>{server.once('error',reject);server.listen(8080,'127.0.0.1',resolve)});
   const context=await browser.newContext({viewport:{width:390,height:844},isMobile:true,hasTouch:true});
   const page=await context.newPage();
   page.setDefaultTimeout(10000);
@@ -84,13 +109,18 @@ async function stored(page){
   await page.waitForFunction(()=>!!navigator.serviceWorker.controller);
   await page.reload();
   await page.locator('#t-home[aria-current="page"]').waitFor();
-  await context.setOffline(true);
-  await page.reload();
+  // Stop the real HTTP server instead of using the engine's offline emulation.
+  // A fresh document + unique URL proves this is a cached navigation, not stale DOM.
+  await page.evaluate(()=>{window.__beforeOfflineNavigation=true});
+  await stopServer(server);
+  await page.goto('http://127.0.0.1:8080/?offline-proof='+Date.now());
   await page.locator('#t-home[aria-current="page"]').waitFor();
+  assert.equal(await page.evaluate(()=>window.__beforeOfflineNavigation),undefined);
+  assert.equal(await page.evaluate(()=>!!navigator.serviceWorker.controller),true);
   await page.locator('#t-build').click();
   assert.match(await page.locator('#v').innerText(),/Exhaust upgrade/);
   assert.equal(errors.length,0,errors.join('\n'));
-  } finally { await browser.close(); }
+  } finally { await browser.close(); await stopServer(server); }
  }
  console.log('Chromium and WebKit: saved records, editors, navigation, responsive layout and offline shell passed.');
 })().catch(e=>{console.error(e);process.exitCode=1});

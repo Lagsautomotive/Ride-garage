@@ -35,9 +35,9 @@ For iPhone/iPad, use a trusted HTTPS preview host. GPS and PWA installation need
 
 Implementation checks passed for JavaScript syntax, eight screen renderers, parent navigation, read-only rendering and escaped motorcycle names using a DOM stub. Feature editors and storage/auth/GPS/backup function bodies were compared with the original.
 
-The Redesign browser checks workflow runs Chromium/WebKit on isolated fixture data using the original IndexedDB format. It checks screens at 320/390/768/1024 px, overflow, fixed bottom navigation, preservation while browsing, name editing, backup export and offline reload. Home/Garage screenshots are uploaded as an Actions artifact. Browser execution status is reported in PR checks; live Supabase and physical-device GPS are not covered.
+The Redesign browser checks workflow runs Chromium/WebKit on isolated fixture data using the original IndexedDB format. It checks screens at 320/390/768/1024 px, overflow, fixed bottom navigation, preservation while browsing, name editing, backup export/restore and offline navigation after shutting down the HTTP server. The offline assertion uses a unique URL and a new-document marker so existing DOM cannot produce a false pass. Home/Garage screenshots are uploaded as an Actions artifact. Browser execution status is reported in PR checks; live Supabase and physical-device GPS are not covered.
 
-To run browser checks locally, keep the preview server running, then:
+The tests start and stop their own server on port 8080. Stop the manual preview server before running:
 
 ```sh
 npm install --no-save --package-lock=false playwright@1.51.1
