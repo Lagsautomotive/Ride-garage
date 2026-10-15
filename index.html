@@ -828,6 +828,7 @@ async function socProfile(){
 }
 function drawSocial(){
   $('v').innerHTML=`<div class="card"><div class="top"><div><b>@${esc(PROF.username)}</b><div class="mu">${esc(PROF.bike||'')}</div></div><button class="btn alt sm" onclick="SB.auth.signOut()">Sign out</button></div></div>
+  <div id="rgAdminShortcut"></div>
   <details class="card"${draft?' open':''}><summary><b>+ New post</b></summary>
     ${draft&&draft.img?`<img src="${draft.img}" alt="" style="width:100%;border-radius:10px;margin-top:8px">`:''}
     <input id="pf" type="file" accept="image/*">
@@ -838,6 +839,17 @@ function drawSocial(){
   <div id="feed"></div>
   <details class="card"><summary class="mu">Rules, terms and blocked riders</summary><p class="mu">${esc(RULES)}</p><p class="mu"><a href="terms.html">Terms of Use</a> \u00b7 <a href="privacy.html">Privacy Policy</a> \u00b7 ridegarageapp@gmail.com</p><button class="btn alt sm" onclick="socBlocked()">Show blocked riders</button><div id="bl"></div></details><details class="card"><summary><b>Account &amp; privacy</b></summary><p class="mu">Request deletion of your community account, posts and associated account data. Deletion is permanent once confirmed and the secure service is enabled. Local garage entries stay on this device unless you remove them separately.</p><p class="mu"><a href="privacy.html">Privacy Policy</a> · <a href="terms.html">Terms</a></p><button class="btn alt" onclick="socDeleteAccount()">Delete my community account</button><p class="mu" id="delStatus"></p><a href="mailto:ridegarageapp@gmail.com?subject=Ride%20Garage%20account%20deletion%20request">Request deletion by email</a></details>`;
   drawFeed();
+  loadRideGarageAdminShortcut(ME.id);
+}
+async function loadRideGarageAdminShortcut(uid){
+  const target=$('rgAdminShortcut');
+  if(!target||!SB||!ME||ME.id!==uid)return;
+  try{
+    const {data,error}=await SB.rpc('is_ride_garage_admin');
+    if(error||data!==true||!ME||ME.id!==uid||S.tab!=='social')return;
+    const current=$('rgAdminShortcut');
+    if(current)current.innerHTML='<div class="card"><a class="btn alt" href="admin.html">Admin Dashboard · Feedback</a></div>';
+  }catch(e){/* No admin shortcut when authorization cannot be verified. */}
 }
 async function socDeleteAccount(){
   const status=$('delStatus');
