@@ -1,0 +1,42 @@
+name: Extract approved Ride Garage premium branding images
+on:
+  push:
+    paths:
+      - '.github/workflows/extract-premium-branding.yml'
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  extract-images:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Extract only the three approved PNG files
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import struct, zipfile
+          bundle = Path("Ride-Garage-Premium-Branding.zip")
+          expected = {
+              "icon-premium-192.png": (192, 192),
+              "icon-premium-512.png": (512, 512),
+              "ride-garage-premium-logo.png": (1200, 400),
+          }
+          with zipfile.ZipFile(bundle) as archive:
+              for name, (width, height) in expected.items():
+                  data = archive.read(name)
+                  assert data[:8] == b'\x89PNG\r\n\x1a\n', f"Invalid PNG: {name}"
+                  actual_width, actual_height = struct.unpack(">II", data[16:24])
+                  assert (actual_width, actual_height) == (width, height), f"Wrong PNG dimensions: {name}"
+                  Path(name).write_bytes(data)
+                  print(f"Extracted {name} ({actual_width}x{actual_height})")
+          PY
+      - name: Commit the PNG assets to main
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add icon-premium-192.png icon-premium-512.png ride-garage-premium-logo.png
+          if ! git diff --cached --quiet; then
+            git commit -m "Extract premium Ride Garage PNG branding assets"
+            git push
+          fi
