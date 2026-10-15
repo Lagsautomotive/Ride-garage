@@ -3,7 +3,8 @@
 ## What this release does
 
 * Garage records remain in the same local IndexedDB `ridegarage` / `kv` / `s`.
-* The existing Backup & restore feature is unchanged. Create a downloaded backup before testing.
+* The existing Backup & restore feature is unchanged in the main app. The new dedicated Cloud page also offers a Download local backup button. Create a downloaded backup before testing.
+* A compact **☁️ Cloud** link in the main app header opens `cloud.html`; the Cloud Sync panel no longer appears below all six tabs. The original six navigation tabs are unchanged.
 * Cloud copies are **explicitly created**, never uploaded automatically.
 * Each cloud copy is an immutable private snapshot tied to the logged-in Supabase account.
 * A user can view their 10 newest copies and **merge** one into the current device.
@@ -19,13 +20,13 @@
 
 1. On **Device A**, open Ride Garage and **Download backup file**. Verify the saved file exists.
 2. Confirm your motorcycles, modifications, service, fuel, trips and photos are intact.
-3. Open **Social** and sign in. Scroll to **Cloud Garage Sync** and select **Save a cloud copy**. Confirm the explanation of what is uploaded.
+3. Open **Social** and sign in. Tap **☁️ Cloud** in the app header to open the dedicated cloud page, then select **Save a cloud copy**. Confirm the explanation of what is uploaded.
 4. Select **View cloud copies**. The new copy should appear with a timestamp and record counts.
-5. On **Device B**, open the **same app URL**, sign in to the **same account** using Social, and open the cloud section. Select **View cloud copies**, then **Merge into this device**.
+5. On **Device B**, open the **same app URL**, sign in to the **same account** using Social, tap the **☁️ Cloud** link in the header and select **View cloud copies**, then **Merge into this device**.
 6. Confirm the motorcycle, photos, fuel, service, places and trips are now visible on B; pre-existing B records must remain.
 7. Repeat the **same merge** on B and verify that no duplicate records are added.
 8. Change a record on B, save another cloud copy, then merge it on A. Differing versions of the same record must both remain (no silent overwrite).
-9. Sign out, then verify the cloud list is inaccessible without authentication and local garage data is still there.
+9. Return to the main app, sign out on Social, open the dedicated Cloud page, and verify the cloud list is inaccessible without authentication while local garage data remains intact.
 10. Turn off Wi-Fi/cellular; the local garage should remain usable. Cloud calls should display errors without clearing local data.
 
 ## Known limits and next phase
