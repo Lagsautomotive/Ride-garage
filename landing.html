@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#ff6a00">
+<meta name="description" content="Ride Garage is a free motorcycle garage and rider community web app. Track builds, maintenance, trips and fuel. Install on iPhone or Android.">
+<meta property="og:title" content="Ride Garage | Built for the Ride">
+<meta property="og:description" content="Your motorcycle. Your builds. Your journey. Track everything in one free app.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://lagsautomotive.github.io/Ride-garage/landing.html">
+<meta property="og:image" content="https://lagsautomotive.github.io/Ride-garage/icon-512.png">
+<title>Ride Garage — Built for the Ride</title>
+<link rel="icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-192.png">
+<style>
+:root{color-scheme:dark;--bg:#090a0d;--panel:#14161b;--line:#303239;--orange:#ff6a00;--muted:#adb0b8;--white:#f9f9f9;font-family:system-ui,-apple-system,"Segoe UI",sans-serif}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--bg);color:var(--white);line-height:1.6}a{color:inherit;text-decoration:none}button{font:inherit}
+.container{width:min(1120px,calc(100% - 40px));margin-inline:auto}
+nav{position:sticky;top:0;z-index:10;background:#090a0def;backdrop-filter:blur(14px);border-bottom:1px solid #25272c}
+.navinner{display:flex;align-items:center;justify-content:space-between;gap:14px;min-height:76px}
+.brand{display:flex;gap:10px;align-items:center;font-weight:900;letter-spacing:.06em;font-size:18px;white-space:nowrap}
+.brand img{height:38px;width:38px;border-radius:9px}.brand strong{color:var(--orange)}
+.navlinks{display:flex;align-items:center;gap:25px;font-size:14px}.navlinks a:not(.btn):hover{color:var(--orange)}
+.btn{display:inline-flex;justify-content:center;align-items:center;gap:8px;padding:13px 22px;border-radius:11px;font-weight:800;background:var(--orange);color:#0a0a0b;transition:transform .2s,filter .2s;cursor:pointer;border:1px solid var(--orange)}
+.btn:hover{transform:translateY(-2px);filter:brightness(1.12)}
+.btn.outline{background:transparent;color:white;border:1px solid #777a81}
+.hero{position:relative;overflow:hidden;background:radial-gradient(ellipse at 76% 44%,#7d2e092a,transparent 44%),linear-gradient(135deg,#17191d,#090a0d 60%);border-bottom:1px solid #282a2f}
+.hero:after{content:"";position:absolute;inset:auto -8% -90px 40%;height:150px;background:var(--orange);opacity:.13;filter:blur(90px);pointer-events:none}
+.hero-grid{display:grid;grid-template-columns:1.15fr .85fr;align-items:center;gap:46px;padding:100px 0 112px}
+.eyebrow{color:var(--orange);font-weight:900;letter-spacing:.16em;text-transform:uppercase;font-size:12px}
+h1{font-size:clamp(48px,7vw,86px);line-height:1.04;letter-spacing:-.055em;margin:14px 0 23px}
+h1 span{color:var(--orange)}.lede{max-width:570px;font-size:19px;color:#d0d0d5;margin-bottom:28px}
+.actions{display:flex;gap:12px;flex-wrap:wrap}.note{font-size:13px;color:var(--muted);margin-top:16px}
+.visual{position:relative;min-height:410px;display:grid;place-items:center}
+.visual:before{content:"";width:340px;height:340px;position:absolute;border-radius:50%;border:1px solid #ff6a0059;box-shadow:0 0 0 28px #ff6a000b,0 0 0 76px #ff6a0007}
+.helmet{position:relative;width:min(350px,95%);aspect-ratio:1.1;border-radius:28px;background:linear-gradient(145deg,#272b31,#111216 64%);border:1px solid #4f3f33;box-shadow:0 40px 75px #0009,0 0 60px #ff6a0014;display:grid;place-items:center;transform:rotate(-4deg)}
+.helmet img{width:55%;max-width:190px;border-radius:32px;box-shadow:0 0 55px #ff6a002e}
+.corner{position:absolute;font-weight:900;font-size:11px;letter-spacing:.16em;color:#ffa15d}.corner.top{top:28px;left:27px}.corner.bottom{bottom:26px;right:26px}
+section{padding:85px 0}.sectiontitle{text-align:center;font-size:clamp(30px,4vw,44px);line-height:1.15;letter-spacing:-.035em;margin:10px 0 16px}.sectionintro{text-align:center;color:var(--muted);max-width:650px;margin:0 auto 40px}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:17px}.feature{padding:27px;border:1px solid var(--line);border-radius:18px;background:linear-gradient(150deg,#1a1c21,#111216)}.symbol{height:52px;width:52px;background:#ff6a001c;color:var(--orange);display:grid;place-items:center;font-size:25px;border-radius:13px;margin-bottom:20px}.feature h3{font-size:19px;margin:0 0 8px}.feature p{margin:0;color:var(--muted);font-size:15px}
+.split{background:#101115;border-block:1px solid var(--line)}.split-inner{display:grid;grid-template-columns:1fr 1fr;gap:65px;align-items:center}.split h2{font-size:clamp(30px,4vw,48px);line-height:1.15;margin:0 0 18px}.split p{color:var(--muted)}
+.steps{display:grid;gap:16px}.step{display:flex;gap:16px;align-items:flex-start;padding:19px;background:#191b20;border-radius:13px;border:1px solid #34363b}.num{flex:0 0 37px;height:37px;border-radius:50%;background:var(--orange);color:#101010;display:grid;place-items:center;font-weight:900}.step b{display:block}.step small{display:block;color:var(--muted)}
+.cta{text-align:center;background:radial-gradient(ellipse at center,#472109 0,transparent 65%)}.cta h2{font-size:clamp(34px,5vw,54px);margin:0 0 13px}.cta p{color:var(--muted);margin:0 auto 25px;max-width:600px}
+footer{border-top:1px solid var(--line);padding:25px 0;color:var(--muted);font-size:14px}.foot{display:flex;justify-content:space-between;gap:18px;flex-wrap:wrap}.foot a{margin-left:18px}.foot a:hover{color:var(--orange)}
+@media(max-width:830px){.hero-grid,.split-inner{grid-template-columns:1fr}.hero-grid{padding:75px 0 75px}.visual{min-height:280px}.helmet{width:235px}.visual:before{width:235px;height:235px}.grid{grid-template-columns:repeat(2,1fr)}.navlinks a.sectionlink{display:none}}
+@media(max-width:580px){.container{width:min(100% - 28px,1120px)}.navinner{min-height:68px}.brand{font-size:15px}.brand img{height:33px;width:33px}.navlinks{gap:8px}.navlinks .btn{padding:10px 12px;font-size:12px}.hero-grid{padding:54px 0 65px;gap:18px}.lede{font-size:17px}.actions .btn{flex:1}.visual{min-height:240px}.helmet{width:205px}.grid{grid-template-columns:1fr}section{padding:62px 0}.foot a{margin:0 12px 0 0}.sectionintro{margin-bottom:28px}}
+@media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;transition:none!important}}
+</style>
+</head>
+<body>
+<nav><div class="container navinner"><a class="brand" href="landing.html" aria-label="Ride Garage home"><img src="icon-192.png" alt=""><span>RIDE <strong>GARAGE</strong></span></a><div class="navlinks"><a class="sectionlink" href="#features">Features</a><a class="sectionlink" href="#how-it-works">How it works</a><a class="btn" href="index.html">Open App →</a></div></div></nav>
+<main>
+<div class="hero"><div class="container hero-grid"><div><div class="eyebrow">Your bike. Your story.</div><h1>BUILT FOR<br>THE <span>RIDE.</span></h1><p class="lede">One place for your motorcycle builds, maintenance, trips and rider community. Built by riders, for riders.</p><div class="actions"><a class="btn" href="install.html">Install Free →</a><a class="btn outline" href="index.html">Try Ride Garage</a></div><p class="note">Free web app · iPhone &amp; Android · No app-store download needed</p></div><div class="visual" aria-hidden="true"><div class="helmet"><div class="corner top">GARAGE / 001</div><img src="icon-512.png" alt=""><div class="corner bottom">RIDE EVERY DAY</div></div></div></div></div>
+<section id="features"><div class="container"><div class="eyebrow" style="text-align:center">Everything for your ride</div><h2 class="sectiontitle">Your motorcycle life. Organized.</h2><p class="sectionintro">From first modification to the next road trip, keep track of what matters and connect with riders who get it.</p><div class="grid">
+<article class="feature"><div class="symbol">🏍️</div><h3>Build Garage</h3><p>Record motorcycle modifications and document how your build evolves.</p></article>
+<article class="feature"><div class="symbol">🔧</div><h3>Maintenance Log</h3><p>Track service and repairs to keep your motorcycle ready for the next ride.</p></article>
+<article class="feature"><div class="symbol">🛣️</div><h3>Trips &amp; Places</h3><p>Save rides and destinations worth remembering.</p></article>
+<article class="feature"><div class="symbol">⛽</div><h3>Fuel Tracking</h3><p>Keep a record of fill-ups and fuel activity in one convenient place.</p></article>
+<article class="feature"><div class="symbol">📸</div><h3>Rider Community</h3><p>Share updates and photos with other riders through the Social feed.</p></article>
+<article class="feature"><div class="symbol">📱</div><h3>Home-Screen App</h3><p>Install from your browser and launch Ride Garage like an app.</p></article>
+</div></div></section>
+<section id="how-it-works" class="split"><div class="container split-inner"><div><div class="eyebrow">Simple to get started</div><h2>No app-store wait.<br>Just ride.</h2><p>Ride Garage works in a browser and can be added to your phone's Home Screen. Get started for free in a few taps.</p><p>Garage records are saved on your device. Back up important data before clearing browser storage or switching phones. Social features require internet access.</p><a class="btn" href="install.html">How to Install →</a></div><div class="steps"><div class="step"><span class="num">1</span><div><b>Open Ride Garage</b><small>Visit the free app from Safari or Chrome.</small></div></div><div class="step"><span class="num">2</span><div><b>Add to Home Screen</b><small>Follow the simple iPhone or Android installation guide.</small></div></div><div class="step"><span class="num">3</span><div><b>Start your garage</b><small>Log a build, record service, or explore the rider community.</small></div></div></div></div></section>
+<section class="cta"><div class="container"><div class="eyebrow">Ride Garage public beta</div><h2>EVERY RIDE HAS A STORY.</h2><p>Be among the first to try Ride Garage. Install free, share it with friends and help shape the rider community.</p><div class="actions" style="justify-content:center"><a class="btn" href="install.html">Get Ride Garage Free →</a><a class="btn outline" href="mailto:ridegarageapp@gmail.com?subject=Ride%20Garage%20beta%20feedback">Send Feedback</a></div></div></section>
+</main>
+<footer><div class="container foot"><span>© Ride Garage · Built for riders</span><div><a href="index.html">App</a><a href="privacy.html">Privacy</a><a href="terms.html">Terms</a><a href="mailto:ridegarageapp@gmail.com">Contact</a></div></div></footer>
+</body></html>
