@@ -847,8 +847,12 @@ async function loadRideGarageAdminShortcut(uid){
   try{
     const {data,error}=await SB.rpc('is_ride_garage_admin');
     if(error||data!==true||!ME||ME.id!==uid||S.tab!=='social')return;
+    const countResult=await SB.from('beta_feedback').select('id',{count:'exact',head:true}).eq('status','new');
+    if(!ME||ME.id!==uid||S.tab!=='social')return;
     const current=$('rgAdminShortcut');
-    if(current)current.innerHTML='<div class="card"><a class="btn alt" href="admin.html">Admin Dashboard · Feedback</a></div>';
+    if(!current)return;
+    const badge=countResult.error?'':('<span style="display:inline-block;margin-left:8px;padding:2px 9px;border-radius:20px;background:#ff6a00;color:#101010;font-weight:800" aria-label="'+countResult.count+' new feedback reports">'+countResult.count+' New</span>');
+    current.innerHTML='<div class="card"><a class="btn alt" href="admin.html">Admin Dashboard · Feedback</a>'+badge+'</div>';
   }catch(e){/* No admin shortcut when authorization cannot be verified. */}
 }
 async function socDeleteAccount(){
