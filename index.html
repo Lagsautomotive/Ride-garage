@@ -455,7 +455,7 @@ header h1 {
 }
 
 
-</style><link rel="stylesheet" href="premium.css"></head><body class="rg-app">
+</style><link rel="stylesheet" href="premium.css"><link rel="stylesheet" href="welcome.css"></head><body class="rg-app">
 <main>
 <header><h1 style="display:flex;align-items:center;gap:8px"><img class="app-wordmark" src="ride-garage-premium-logo.png" alt="Ride Garage"></h1><div class="mu" id="bike"></div></header>
 <div class="tabs"><button id="t-build" onclick="tab('build')"><span class="ic">🛠️</span>Build</button><button id="t-trips" onclick="tab('trips')"><span class="ic">🏍️</span>Trips</button><button id="t-places" onclick="tab('places')"><span class="ic">📍</span>Places</button><button id="t-svc" onclick="tab('svc')"><span class="ic">🔧</span>Service</button><button id="t-fuel" onclick="tab('fuel')"><span class="ic">⛽</span>Fuel</button><button id="t-social" onclick="tab('social')"><span class="ic">👥</span>Social</button></div>
@@ -469,13 +469,14 @@ header h1 {
 <section class="card" aria-label="Share and support Ride Garage" style="margin:18px 0">
   <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
     <button type="button" class="btn" onclick="shareRideGarage()">Share Ride Garage</button>
-    <a class="btn alt" href="feedback.html">Report a bug / Suggest a feature</a>
+    <a class="btn alt" href="feedback.html">Report a bug / Suggest a feature</a><button type="button" class="btn alt" onclick="showRideGarageWelcome()">Quick start guide</button>
   </div>
   <p id="rgConnection" class="mu" role="status" aria-live="polite">Checking connection…</p>
   <p class="mu"><a href="install.html">Install instructions</a> · <a href="privacy.html">Privacy</a> · <a href="terms.html">Terms</a></p>
 </section>
 </main>
 <div id="lb" onclick="this.style.display='none'"><img id="lbi" alt=""></div>
+<script src="welcome.js"></script>
 <script>
 function updateRideGarageConnection(){
   const el=document.getElementById('rgConnection');
@@ -1038,7 +1039,7 @@ async function socDel(id){
   FEED=FEED.filter(x=>x.id!=id);drawFeed();
 }
 function shareMod(id){const m=S.mods.find(x=>x.id==id);draft={cap:m.title+(m.notes?' - '+m.notes:''),img:m.photos[0]||null};tab('social')}
-load().then(d=>{if(d)S=Object.assign(S,d);S.tab='build';render()});
+load().then(d=>{if(d)S=Object.assign(S,d);S.tab='build';render();if(window.initRideGarageWelcome)window.initRideGarageWelcome(d)});
 </script>
 <script>if('serviceWorker' in navigator)addEventListener('load',()=>navigator.serviceWorker.register('sw.js',{updateViaCache:'none'}).catch(()=>{}))</script>
 </body></html>
