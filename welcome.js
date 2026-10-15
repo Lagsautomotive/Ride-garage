@@ -25,7 +25,7 @@
         '<h2 class="rgw-title" id="rgw-title">Every ride has a story.<br><em>Keep yours together.</em></h2>',
         '<p class="rgw-description" id="rgw-description">Your personal motorcycle garage for builds, upkeep, and rides. Start with a bike, explore the tools, and help shape Ride Garage as a beta tester.</p>',
         '<div class="rgw-steps" aria-label="Three steps to get started">',
-          '<div class="rgw-step"><span class="rgw-number">01</span><strong>Add your motorcycle</strong><p>Enter your bike in Build to create your garage.</p></div>',
+          '<div class="rgw-step"><span class="rgw-number">01</span><strong>Add your motorcycle</strong><p>Enter your bike in Garage to create your garage.</p></div>',
           '<div class="rgw-step"><span class="rgw-number">02</span><strong>Keep a history</strong><p>Record mods, maintenance, fuel and costs as you go.</p></div>',
           '<div class="rgw-step"><span class="rgw-number">03</span><strong>Ride &amp; connect</strong><p>Log trips, save places and explore the rider community.</p></div>',
         '</div>',
