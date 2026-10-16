@@ -33,7 +33,7 @@
     return {
       id: 'native-' + s.id, nativeSessionId: s.id, source: 'ios-core-location',
       name: s.name || 'Ride ' + new Date(s.startedAt).toLocaleDateString(),
-      country: s.country || '', date: s.startedAt, dist,
+      country: s.country || '', date: s.startedAt, endedAt: s.endedAt, dist,
       dur: s.durationMs, max, pts: usable.map(p => [p.latitude, p.longitude]),
       segments, gps
     };
@@ -141,8 +141,9 @@
     publish(result.session);
   }); }
   function pause() { return act(async () => {
-    await captureMetadata();
-    publish((await plugin.pause()).session);
+    const metadata = host.readMetadata();
+    // Never delay turning GPS off for a cosmetic metadata write.
+    publish({ ...(await plugin.pause()).session, ...metadata });
   }); }
   function resume() { return act(async () => {
     await captureMetadata();
@@ -150,14 +151,15 @@
     publish((await plugin.resume()).session);
   }); }
   function stop() { return act(async () => {
-    await captureMetadata();
-    if (session && session.status !== 'stopped') publish((await plugin.stop()).session);
+    const metadata = host.readMetadata();
+    if (session && session.status !== 'stopped') publish({ ...(await plugin.stop()).session, ...metadata });
     await finish();
   }); }
   function retry() {
-    if (busy || !host) return;
+    if (busy || !host || !failed) return;
     const services = host;
     host = null; failed = false;
+    services.render();
     return init(services);
   }
   function controlsHTML() {

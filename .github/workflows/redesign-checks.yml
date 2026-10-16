@@ -6,6 +6,7 @@ on:
       - '*.css'
       - '*.js'
       - 'tests/**'
+      - 'package*.json'
       - '.github/workflows/redesign-checks.yml'
   workflow_dispatch:
 permissions:
@@ -19,10 +20,10 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
-      - run: npm install --no-save --package-lock=false playwright@1.51.1
+      - run: npm install
       - run: npx playwright install --with-deps chromium webkit
       - name: Test saved records and mobile shell
-        run: node tests/redesign.cjs
+        run: npm run test:web
       - uses: actions/upload-artifact@v4
         if: always()
         with:
