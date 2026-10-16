@@ -546,7 +546,15 @@ const $=id=>document.getElementById(id);
 const esc=s=>String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 function idb(){return new Promise((res,rej)=>{try{const r=indexedDB.open('ridegarage',1);r.onupgradeneeded=()=>r.result.createObjectStore('kv');r.onsuccess=()=>res(r.result);r.onerror=()=>rej(r.error)}catch(e){rej(e)}})}
 async function load(){try{const d=await idb();return await new Promise((res,rej)=>{const q=d.transaction('kv').objectStore('kv').get('s');q.onsuccess=()=>res(q.result);q.onerror=()=>rej(q.error)})}catch(e){return null}}
-async function save(){try{const d=await idb();d.transaction('kv','readwrite').objectStore('kv').put(JSON.parse(JSON.stringify(S)),'s')}catch(e){}}
+// Serialize local garage writes. A legacy edit queued during native import
+// takes its snapshot after the imported trip has updated in-memory state.
+let garageWrites=Promise.resolve();
+function garageWrite(operation){
+  const pending=garageWrites.then(operation);
+  garageWrites=pending.catch(()=>{});
+  return pending;
+}
+function save(){return garageWrite(()=>writeGarageState(JSON.parse(JSON.stringify(S)))).catch(()=>{})}
 function tab(t){S.tab=t;render();window.scrollTo(0,0);const v=$('v');v.classList.remove('fi');void v.offsetWidth;v.classList.add('fi');$('rg-section-heading').focus({preventScroll:true})}
 // Keep legacy tab names so existing callbacks, auth and backups remain compatible.
 function primaryTab(t){return t==='places'?'trips':['svc','fuel'].includes(t)?'profile':t}
@@ -726,23 +734,31 @@ function stopTrack(){
 function delTrip(id){if(confirm('Delete this trip?')){S.trips=S.trips.filter(t=>t.id!=id);save();render()}}
 // Read/append/odometer update share one transaction. A native session is only
 // acknowledged after oncomplete, and the deterministic ID makes recovery safe.
-async function importNativeTrip(trip){
+function importNativeTrip(trip){return garageWrite(()=>importNativeTripTransaction(trip))}
+async function importNativeTripTransaction(trip){
   const db=await idb();
   return new Promise((resolve,reject)=>{
     const tx=db.transaction('kv','readwrite'),store=tx.objectStore('kv');
-    let stored;
+    let stored,added=false,failure;
     const get=store.get('s');
-    get.onsuccess=()=>{
+    get.onsuccess=()=>{try{
       stored=get.result||JSON.parse(JSON.stringify(S));
       if(!stored.trips.some(t=>t.id===trip.id)){
+        added=true;
         stored.trips.push(trip);
         stored.odo=(Number(stored.odo)||0)+trip.dist;
         store.put(stored,'s');
       }
+    }catch(error){failure=error;tx.abort()}};
+    tx.oncomplete=()=>{
+      db.close();
+      if(added&&!S.trips.some(t=>t.id===trip.id)){
+        S.trips.push(trip);S.odo=(Number(S.odo)||0)+trip.dist;
+      }
+      resolve();
     };
-    tx.oncomplete=()=>{db.close();S.trips=stored.trips;S.odo=stored.odo;resolve()};
-    tx.onerror=()=>{db.close();reject(tx.error||Error('Could not save ride to garage storage.'))};
-    tx.onabort=()=>{db.close();reject(tx.error||Error('Garage storage transaction was interrupted.'))};
+    tx.onerror=()=>{db.close();reject(failure||tx.error||Error('Could not save ride to garage storage.'))};
+    tx.onabort=()=>{db.close();reject(failure||tx.error||Error('Garage storage transaction was interrupted.'))};
   });
 }
 /* ---------- PLACES ---------- */
@@ -922,7 +938,8 @@ function validBackup(txt){
     unit:d.unit||'km',bike:d.bike||'',tab:'build'
   };
 }
-function persistBackup(d){
+function persistBackup(d){return garageWrite(()=>writeGarageState(d))}
+function writeGarageState(d){
   return idb().then(db=>new Promise((resolve,reject)=>{
     const tx=db.transaction('kv','readwrite');
     tx.oncomplete=()=>{db.close();resolve()};
@@ -1255,7 +1272,7 @@ load().then(d=>{
     setCurrent:ride=>{cur=ride},
     readMetadata:()=>({name:$('tn')?$('tn').value.trim():(cur&&cur.name)||'',country:$('tc')?$('tc').value:(cur&&cur.country)||'🇲🇽 Mexico'}),
     render:()=>{if(S.tab==='trips'){if(window.RGMaps)RGMaps.destroy();renderTrips()}},
-    update:upd,
+    update:()=>{upd();if(S.tab==='trips'&&!rideNotice)msg(RGNativeRide.statusText())},
     notice:text=>{rideNotice=text;if(S.tab==='trips')msg(text||RGNativeRide.statusText());else if(text)toast(text)},
     importTrip:importNativeTrip
   });

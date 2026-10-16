@@ -5,8 +5,8 @@
   const cap = window.Capacitor;
   const available = !!(cap && cap.isNativePlatform() && cap.getPlatform() === 'ios');
   const plugin = available ? cap.registerPlugin('RideRecorder') : null;
-  let host, session = null, ready = false, busy = false, listener, refreshTimer;
-  let metadataQueue = Promise.resolve();
+  let host, session = null, ready = false, busy = false, failed = false, listener, refreshTimer;
+  let metadataQueue = Promise.resolve(), generation = 0;
   const distance = (a, b) => {
     const r = Math.PI / 180, x = (b[0] - a[0]) * r, y = (b[1] - a[1]) * r;
     return 12742 * Math.asin(Math.sqrt(Math.min(1, Math.sin(x / 2) ** 2 +
@@ -21,12 +21,13 @@
     let previous, dist = 0, max = 0;
     for (const p of usable) {
       const pt = [p.latitude, p.longitude];
-      const continuous = previous && p.segment === previous.segment &&
+      const step = previous ? distance([previous.latitude, previous.longitude], pt) : 0;
+      const continuous = previous && step * 1000 / ((p.timestamp - previous.timestamp) / 1000) <= 100 && p.segment === previous.segment &&
         p.timestamp > previous.timestamp && p.timestamp - previous.timestamp <= 30000;
       if (!continuous) segments.push([]);
-      else dist += distance([previous.latitude, previous.longitude], pt);
+      else dist += step;
       segments[segments.length - 1].push(pt);
-      if (Number.isFinite(p.speed) && p.speed >= 0) max = Math.max(max, p.speed * 3.6);
+      if (Number.isFinite(p.speed) && p.speed >= 0 && p.speed <= 100) max = Math.max(max, p.speed * 3.6);
       previous = p;
     }
     return {
@@ -42,7 +43,9 @@
     if (host) {
       if (session) {
         const trip = tripFromSession(session);
-        host.setCurrent({ ...trip, t0: session.startedAt, sp: 0, status: session.status,
+        const last = trip.gps[trip.gps.length - 1];
+        const speed = session.status === 'recording' && last && last.accuracy <= 60 && Number.isFinite(last.speed) && last.speed >= 0 && last.speed <= 100 ? last.speed * 3.6 : 0;
+        host.setCurrent({ ...trip, t0: session.startedAt, sp: speed, status: session.status,
           durationMs: session.durationMs, name: session.name, country: session.country });
       } else host.setCurrent(null);
       if (rerender) host.render();
@@ -52,7 +55,11 @@
   function statusText() {
     if (!ready) return 'Checking for a saved iPhone ride…';
     if (!session) return 'iPhone recording saves GPS on this device while the screen is locked. Start asks for precise location. Pause and Stop turn GPS off.';
-    if (session.status === 'recording') return 'Recording on iPhone. You can lock the screen. GPS uses battery; check the location indicator.';
+    if (session.status === 'recording') {
+      const last = session.points[session.points.length - 1];
+      return 'Recording on iPhone. You can lock the screen. GPS uses battery; check the location indicator. ' +
+        (last ? session.points.length + ' fixes saved. Last accuracy: ±' + Math.round(last.accuracy) + ' m.' : 'Waiting for GPS. Try outdoors with Precise Location enabled.');
+    }
     if (session.status === 'paused') return 'Paused. Location tracking is off. Resume when you are ready.';
     if (session.status === 'interrupted') return 'An interrupted ride was recovered. Tracking is off. Resume explicitly or Stop & save the recorded portion.' + (session.lastError ? ' ' + session.lastError : '');
     return 'Recording ended. The iPhone copy is kept until it is saved to your garage. Retry saving if needed.';
@@ -66,11 +73,13 @@
     await host.importTrip(trip);
     await plugin.acknowledge({ id: completed.id });
     publish(null);
-    notice('Ride saved on this device. Your normal backup and Cloud Garage Sync include its GPS route.');
+    notice(trip.pts.length < 2
+      ? 'Ride saved with fewer than two usable GPS fixes. The route may be empty. Check Precise Location and try outdoors; any captured accuracy data is kept in the ride.'
+      : 'Ride saved on this device. Your normal backup and Cloud Garage Sync include its GPS route.');
   }
   async function act(operation) {
     if (!ready || busy) return;
-    busy = true;
+    busy = true; generation++;
     try { await operation(); }
     catch (error) {
       notice((error.message || String(error)) + ' Any recorded iPhone data is kept. Try again from Rides.');
@@ -79,9 +88,11 @@
   async function refresh() {
     if (!host || busy) return;
     try {
+      const revision = ++generation;
       const result = await plugin.getSession();
+      if (busy || revision !== generation) return;
       const oldStatus = session && session.status;
-      const same = session && result.session && session.id === result.session.id && oldStatus === result.session.status;
+      const same = (!session && !result.session) || (session && result.session && session.id === result.session.id && oldStatus === result.session.status);
       publish(result.session, !same);
       if (same) host.update();
     } catch (e) { notice('Could not read the saved iPhone ride: ' + (e.message || String(e))); }
@@ -95,7 +106,8 @@
       // Subscribe for error/state changes; the native journal remains authoritative.
       listener = await plugin.addListener('sessionChanged', event => {
         if (!busy) {
-          const same = session && event.session && session.id === event.session.id && session.status === event.session.status;
+          generation++;
+          const same = (!session && !event.session) || (session && event.session && session.id === event.session.id && session.status === event.session.status);
           publish(event.session, !same);
           if (same) host.update();
           if (event.error) notice(event.error);
@@ -108,11 +120,12 @@
       refreshTimer = setInterval(() => { if (!document.hidden) refresh(); }, 3000);
       document.addEventListener('visibilitychange', () => { if (!document.hidden) refresh(); });
       window.addEventListener('pageshow', refresh);
-    } catch (e) { notice('iPhone recorder could not be opened: ' + (e.message || String(e))); }
+    } catch (e) { failed = true; notice('iPhone recorder could not be opened: ' + (e.message || String(e))); host.render(); }
   }
   function captureMetadata() {
     if (!session || !host) return metadataQueue;
     const metadata = host.readMetadata();
+    generation++;
     const id = session.id;
     session = { ...session, ...metadata };
     metadataQueue = metadataQueue.catch(() => {}).then(async () => {
@@ -141,7 +154,14 @@
     if (session && session.status !== 'stopped') publish((await plugin.stop()).session);
     await finish();
   }); }
+  function retry() {
+    if (busy || !host) return;
+    const services = host;
+    host = null; failed = false;
+    return init(services);
+  }
   function controlsHTML() {
+    if (failed) return '<button class="btn" onclick="RGNativeRide.retry()">Retry recorder</button>';
     const disabled = !ready || busy ? ' disabled' : '';
     if (!session) return '<button class="btn" onclick="startTrack()"' + disabled + '>Start ride</button>';
     if (session.status === 'stopped') return '<button class="btn" onclick="RGNativeRide.stop()"' + disabled + '>Retry saving</button>';
@@ -150,6 +170,6 @@
       : '<button class="btn alt" onclick="RGNativeRide.resume()"' + disabled + '>Resume</button>';
     return toggle + ' <button class="btn" onclick="stopTrack()"' + disabled + '>Stop &amp; save</button>';
   }
-  window.RGNativeRide = { available, init, start, pause, resume, stop, refresh,
+  window.RGNativeRide = { available, init, start, pause, resume, stop, refresh, retry,
     captureMetadata, controlsHTML, statusText, tripFromSession };
 })();
