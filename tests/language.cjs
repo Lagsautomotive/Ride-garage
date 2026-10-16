@@ -14,6 +14,7 @@ module.exports = async function checkLanguages(page, readStored) {
     await page.locator('[data-rg-language]').first().selectOption(language);
     await page.waitForFunction(language=>document.documentElement.lang===language&&window.RGI18n.language===language,language);
     assert.equal(await page.locator('[data-rg-language]').first().inputValue(),language);
+    if(await page.locator('#rg-profile-tools').count())assert.equal(await page.locator('#rg-profile-tools input[type="file"]').count(),1,'Translation must preserve the backup file input');
     assert.equal(await page.evaluate(key=>localStorage.getItem(key),preferenceKey),language);
   };
   const home=()=>page.locator('#t-home[aria-current="page"]').waitFor();

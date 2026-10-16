@@ -507,7 +507,7 @@
       if (scope.matches && scope.matches(selector)) operation(scope);
       scope.querySelectorAll(selector).forEach(operation);
     }
-    visit('[data-i18n]', node => { node.textContent = t(node.getAttribute('data-i18n')); });
+    visit('[data-i18n]', node => { if(!node.children.length)node.textContent = t(node.getAttribute('data-i18n')); });
     for (const attribute of ['aria-label', 'placeholder', 'title']) {
       visit('[data-i18n-' + attribute + ']', node => {
         node.setAttribute(attribute, t(node.getAttribute('data-i18n-' + attribute)));
