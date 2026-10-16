@@ -45,6 +45,28 @@ module.exports = async function checkLanguages(page, readStored) {
     assert((await page.locator('.rg-mod-card b').allTextContents()).includes('Save build step'));
     assert.match(await page.locator('#v').innerText(),/Start ride/);
     await checkPostData();await unchanged();
+    // Locale-only paints must not start account/network refreshes or lose drafts.
+    await page.evaluate(()=>{S.tab='social';authView();window.__languageOldSB=SB;SB=null;});
+    await page.locator('#ae').fill('rider@example.test');
+    await page.locator('#ap').fill('unsaved-language-password');
+    await page.locator('#at').check();
+    await choose('en');
+    assert.equal(await page.locator('#ae').inputValue(),'rider@example.test');
+    assert.equal(await page.locator('#ap').inputValue(),'unsaved-language-password');
+    assert.equal(await page.locator('#at').isChecked(),true);
+    await page.evaluate(()=>{
+      window.__languageSocial={ME,PROF,FEED,SB:window.__languageOldSB};
+      ME={id:'language-draft-rider'};PROF={username:'Home',bike:'Start ride'};FEED=[];
+      drawSocial(true);
+    });
+    await page.locator('#pc').fill('Delete');
+    await page.locator('#pb').fill('Home');
+    await choose('es-MX');
+    assert.equal(await page.locator('#pc').inputValue(),'Delete');
+    assert.equal(await page.locator('#pb').inputValue(),'Home');
+    await page.evaluate(()=>{const old=window.__languageSocial;ME=old.ME;PROF=old.PROF;FEED=old.FEED;SB=old.SB;});
+    await unchanged();
+
     await page.locator('#t-trips').click();assert.match(await page.locator('#v').innerText(),/Delete/);
     await page.locator('#t-profile').click();await choose('en');
     assert.match(await page.locator('#t-trips').innerText(),/Rides/);assert.match(await page.locator('#v').innerText(),/Ride preferences/);
