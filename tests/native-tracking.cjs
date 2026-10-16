@@ -130,6 +130,21 @@ module.exports = async function checkNativeTracking(page, readStored) {
     assert.equal(native.browserGeolocation,0);
     assert.deepEqual(await readStored(page),before,'Opening the native recorder must preserve stored records');
 
+    const quality=await page.evaluate(()=>{
+      const base={id:'quality',startedAt:1000,name:'Quality',country:'',durationMs:120000};
+      const stationary=Array.from({length:120},(_,i)=>({
+        latitude:32+(i%2)*.000045,longitude:-117,timestamp:1000+i*1000,accuracy:10,speed:0,segment:0
+      }));
+      const quiet=RGNativeRide.tripFromSession({...base,points:stationary});
+      const moving=RGNativeRide.tripFromSession({...base,points:stationary.map(p=>({...p,speed:2}))});
+      const unknown=RGNativeRide.tripFromSession({...base,points:stationary.map(p=>({...p,speed:null}))});
+      return {quiet:quiet.dist,raw:quiet.gps.length,geometry:quiet.pts.length,moving:moving.dist,unknown:unknown.dist};
+    });
+    assert.equal(quality.quiet,0,'Small zero-speed GPS jitter must not add odometer distance');
+    assert.equal(quality.raw,120);assert.equal(quality.geometry,120,'Distance filtering must retain route samples');
+    assert(quality.moving>0.5,'Reported movement must retain distance');
+    assert(quality.unknown>0.5,'Unavailable speed must retain geometric distance');
+
     await start();
     await page.getByRole('button',{name:'Pause',exact:true}).waitFor();
     assert.equal((await mock()).session.status,'recording');

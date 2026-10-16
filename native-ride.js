@@ -25,7 +25,12 @@
       const continuous = previous && step * 1000 / ((p.timestamp - previous.timestamp) / 1000) <= 100 && p.segment === previous.segment &&
         p.timestamp > previous.timestamp && p.timestamp - previous.timestamp <= 30000;
       if (!continuous) segments.push([]);
-      else dist += step;
+      else {
+        const stationary = Number.isFinite(previous.speed) && previous.speed >= 0 && previous.speed <= 0.5 &&
+          Number.isFinite(p.speed) && p.speed >= 0 && p.speed <= 0.5 &&
+          step * 1000 <= 2 * Math.max(previous.accuracy, p.accuracy);
+        if (!stationary) dist += step;
+      }
       segments[segments.length - 1].push(pt);
       if (Number.isFinite(p.speed) && p.speed >= 0 && p.speed <= 100) max = Math.max(max, p.speed * 3.6);
       previous = p;
