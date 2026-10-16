@@ -35,5 +35,5 @@ if (!generated.packageClassList?.includes('RideRecorderPlugin')) {
   throw new Error('RideRecorderPlugin was not discovered by Capacitor. Check the local npm dependency and run npm run ios:sync.');
 }
 const podfile = readFileSync(resolve(root, 'ios/App/Podfile'), 'utf8');
-if (!/pod ['"]RideRecorder['"]/.test(podfile)) throw new Error('RideRecorder CocoaPod was not linked.');
+if (!/pod ['"]RideGarageRideRecorder['"]/.test(podfile)) throw new Error('RideRecorder CocoaPod was not linked.');
 console.log('Configured location background mode and verified native RideRecorder registration.');

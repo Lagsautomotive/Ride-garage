@@ -34,9 +34,7 @@ jobs:
       - name: Install CocoaPods
         run: gem install cocoapods -v 1.16.2 --no-document
       - name: Install JavaScript dependencies
-        run: npm install
-      - name: Expose generated dependency lock for review
-        run: node -e 'process.stdout.write("RIDE_GARAGE_LOCK=" + JSON.stringify(require("./package-lock.json")) + "\n")'
+        run: npm ci
       - name: Test durable native journal
         run: npm run test:journal
       - name: Generate configured iOS app
