@@ -59,10 +59,12 @@ module.exports = async function checkLanguages(page, readStored) {
       ME={id:'language-draft-rider'};PROF={username:'Home',bike:'Start ride'};FEED=[];
       drawSocial(true);
     });
+    await page.locator('details:has(#pc) > summary').click();
     await page.locator('#pc').fill('Delete');
     await page.locator('#pb').fill('Home');
     await choose('es-MX');
     assert.equal(await page.locator('#pc').inputValue(),'Delete');
+    assert.equal(await page.locator('#pc').evaluate(el=>el.closest('details').open),true);
     assert.equal(await page.locator('#pb').inputValue(),'Home');
     await page.evaluate(()=>{const old=window.__languageSocial;ME=old.ME;PROF=old.PROF;FEED=old.FEED;SB=old.SB;});
     await unchanged();

@@ -1292,13 +1292,13 @@ window.addEventListener('rg-language-change',()=>{
     .filter(el=>el.type!=='file'&&!el.hasAttribute('data-rg-language'))
     .map(el=>({id:el.id,value:el.value,checked:el.checked}));
   const files=Array.from(document.querySelectorAll('#v input[type="file"][id]'));
-  const details=Array.from(document.querySelectorAll('#v details[id]')).map(el=>({id:el.id,open:el.open}));
+  const details=Array.from(document.querySelectorAll('#v details')).map((el,index)=>({id:el.id,index,open:el.open}));
   const focus=document.activeElement&&document.activeElement.id;
   rideNotice=RGI18n.message(rideNotice);
   render(true);
   for(const input of inputs){const el=$(input.id);if(el){el.value=input.value;if('checked' in el)el.checked=input.checked;}}
   for(const input of files){const el=$(input.id);if(el)el.replaceWith(input);}
-  for(const detail of details){const el=$(detail.id);if(el)el.open=detail.open;}
+  for(const detail of details){const el=detail.id?$(detail.id):document.querySelectorAll('#v details')[detail.index];if(el)el.open=detail.open;}
   RGI18n.apply();
   updateRideGarageConnection();
   if(focus&&$(focus))$(focus).focus({preventScroll:true});
