@@ -18,11 +18,11 @@
   function route(points){
     if(!Array.isArray(points))return [];
     const clean=points.map(coords).filter(Boolean);
-    if(clean.length<=4000)return clean;
-    const step=Math.ceil(clean.length/3999),sample=[];
-    for(let i=0;i<clean.length;i+=step)sample.push(clean[i]);
-    if(sample[sample.length-1]!==clean[clean.length-1])sample.push(clean[clean.length-1]);
-    return sample;
+    return clean;
+  }
+  function segments(record){
+    if(record&&Array.isArray(record.segments)&&record.segments.length)return record.segments.map(route).filter(p=>p.length);
+    return [route(record&&record.pts)];
   }
   function placeCoords(place){
     if(!place||typeof place.coords!=='string')return null;
@@ -94,9 +94,9 @@
     setTimeout(()=>{if(active===a&&a.map)map.invalidateSize();},150);
     return map;
   }
-  function paintRoute(a,L,pts,live){
+  function paintRoute(a,L,pts,live,paths){
     if(!pts.length)return;
-    a.line=L.polyline(pts,{color:'#dfaa57',weight:5,opacity:0.94,lineJoin:'round'}).addTo(a.map);
+    a.line=L.polyline(paths||pts,{color:'#dfaa57',weight:5,opacity:0.94,lineJoin:'round'}).addTo(a.map);
     L.circleMarker(pts[0],{radius:7,color:'#fff',weight:2,fillColor:'#2ab873',fillOpacity:1})
       .addTo(a.map).bindPopup('Ride start');
     a.last=L.circleMarker(pts[pts.length-1],{radius:7,color:'#fff',weight:2,fillColor:'#f18b43',fillOpacity:1})
@@ -116,7 +116,7 @@
       const L=await ensureLeaflet();
       if(token!==request||active!==a||!document.contains(host))return;
       mapBase(a,L,pts);
-      paintRoute(a,L,pts,false);
+      paintRoute(a,L,pts,false,segments(trip));
       if(a.preview)a.preview.hidden=true;
       message(status,'Drag to explore. Pinch or use + / − to zoom. Route data stays in your garage.');
     }catch(e){
@@ -136,9 +136,9 @@
       const L=await ensureLeaflet();
       if(token!==request||active!==a||!document.contains(host))return;
       mapBase(a,L,pts);
-      paintRoute(a,L,pts,true);
+      paintRoute(a,L,pts,true,segments(current));
       if(preview)preview.hidden=true;
-      message(status,'Live route is updating. Keep this screen open while recording.');
+      message(status,window.RGNativeRide&&RGNativeRide.available?'Live route is updating. iPhone recording continues with the screen locked.':'Live route is updating. Keep this screen open while recording.');
     }catch(e){
       if(active!==a)return;
       destroy();message(status,'Live map needs internet. GPS recording and route preview still work.');
@@ -149,7 +149,7 @@
     if(!a||a.key!=='live'||!a.map||!a.line||!a.last)return;
     const pts=route(current&&current.pts);
     if(!current||!Array.isArray(current.pts)||current.pts.length<=a.seen)return;
-    a.line.setLatLngs(pts);
+    a.line.setLatLngs(segments(current));
     const end=pts[pts.length-1];
     a.last.setLatLng(end);
     a.seen=current.pts.length;

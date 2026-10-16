@@ -511,6 +511,7 @@ header h1 {
 <div id="lb" onclick="this.style.display='none'"><img id="lbi" alt=""></div>
 <script src="welcome.js"></script>
 <script src="ride-maps.js"></script>
+<script src="native-ride.js"></script>
 <script>
 function updateRideGarageConnection(){
   const el=document.getElementById('rgConnection');
@@ -650,39 +651,46 @@ function hav(a,b){const r=Math.PI/180,dl=(b[0]-a[0])*r,dn=(b[1]-a[1])*r,x=Math.s
 const U=()=>S.unit=='km'?{k:1,d:'km',s:'km/h'}:{k:0.621371,d:'mi',s:'mph'};
 const fd=km=>(km*U().k).toFixed(1)+' '+U().d;
 const fdur=ms=>{const s=Math.floor(ms/1000),h=Math.floor(s/3600),m=Math.floor(s%3600/60);return h?h+'h '+m+'m':m+'m '+(s%60)+'s'};
-function trackSVG(p){
+function trackSVG(p,segments){
   if(!p||p.length<2)return '<svg class="trk" viewBox="0 0 300 160"><text x="150" y="85" text-anchor="middle" fill="currentColor" opacity=".5" font-size="13">Route appears here</text></svg>';
-  const la=p.map(a=>a[0]),lo=p.map(a=>a[1]),mnA=Math.min(...la),mxA=Math.max(...la),mnO=Math.min(...lo),mxO=Math.max(...lo);
+  const bounds=p.reduce((b,a)=>[Math.min(b[0],a[0]),Math.max(b[1],a[0]),Math.min(b[2],a[1]),Math.max(b[3],a[1])],[90,-90,180,-180]);
+  const [mnA,mxA,mnO,mxO]=bounds;
   const kx=Math.cos((mnA+mxA)/2*Math.PI/180),w=Math.max((mxO-mnO)*kx,1e-5),h=Math.max(mxA-mnA,1e-5),s=Math.min(270/w,130/h),ox=(300-w*s)/2,oy=(160-h*s)/2;
   const pt=a=>[(ox+(a[1]-mnO)*kx*s).toFixed(1),(oy+(mxA-a[0])*s).toFixed(1)];
-  const q=p.map(pt),e=q[q.length-1];
-  return `<svg class="trk" viewBox="0 0 300 160"><polyline points="${q.map(a=>a.join(',')).join(' ')}" fill="none" stroke="#1e6fff" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/><circle cx="${q[0][0]}" cy="${q[0][1]}" r="5" fill="#1f9d55"/><circle cx="${e[0]}" cy="${e[1]}" r="5" fill="#1e6fff"/></svg>`;
+  const q=p.map(pt),e=q[q.length-1],lines=(segments&&segments.length?segments:[p]).map(seg=>seg.map(pt));
+  return `<svg class="trk" viewBox="0 0 300 160">${lines.map(line=>`<polyline points="${line.map(a=>a.join(',')).join(' ')}" fill="none" stroke="#1e6fff" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>`).join('')}<circle cx="${q[0][0]}" cy="${q[0][1]}" r="5" fill="#1f9d55"/><circle cx="${e[0]}" cy="${e[1]}" r="5" fill="#1e6fff"/></svg>`;
 }
 function renderTrips(){
   const tot=S.trips.reduce((a,t)=>a+t.dist,0);
   $('v').innerHTML=`
   <div class="card">
     <div class="top"><b>Record a ride</b><button class="btn alt sm" onclick="S.unit=S.unit=='km'?'mi':'km';save();render()">Units: ${U().d}</button></div>
-    <div class="row" style="margin:6px 0 10px"><input id="tn" placeholder="Trip name (e.g. Copper Canyon run)"><select id="tc"><option>🇲🇽 Mexico</option><option>🇺🇸 USA</option><option>🇲🇽🇺🇸 Both</option></select></div>
+    <div class="row" style="margin:6px 0 10px"><input id="tn" placeholder="Trip name (e.g. Copper Canyon run)" oninput="if(RGNativeRide.available)RGNativeRide.captureMetadata()"><select id="tc" onchange="if(RGNativeRide.available)RGNativeRide.captureMetadata()"><option>🇲🇽 Mexico</option><option>🇺🇸 USA</option><option>🇲🇽🇺🇸 Both</option></select></div>
     <div id="live" class="stats"><div><div class="big" id="ld">0.0</div><div class="mu">${U().d}</div></div><div><div class="big" id="ls">0</div><div class="mu">${U().s}</div></div><div><div class="big" id="lt">0m</div><div class="mu">time</div></div></div>
-    <div id="map" style="margin:10px 0">${trackSVG(cur&&cur.pts)}</div>
+    <div id="map" style="margin:10px 0">${trackSVG(cur&&cur.pts,cur&&cur.segments)}</div>
     <div id="rgLiveMap" class="rg-map-host" hidden></div>
     <div class="row rg-map-row"><button type="button" id="rgLiveMapButton" class="btn alt sm" onclick="RGMaps.toggleLive(cur)">Interactive live map</button></div>
     <p id="rgLiveMapStatus" class="mu rg-map-status" role="status" aria-live="polite" hidden></p>
-    <div class="mu" id="msg" role="status" aria-live="polite" aria-atomic="true">${esc(rideNotice||(cur?'Recording… keep this screen open.':'GPS needs location permission and an open screen.'))}</div>
-    <div style="margin-top:10px">${cur?'<button class="btn" onclick="stopTrack()">Stop &amp; save</button>':'<button class="btn" onclick="startTrack()">Start ride</button>'}</div>
+    <div class="mu" id="msg" role="status" aria-live="polite" aria-atomic="true">${esc(rideNotice||(RGNativeRide.available?RGNativeRide.statusText():(cur?'Recording… keep this screen open.':'GPS needs location permission and an open screen.')))}</div>
+    <div style="margin-top:10px">${RGNativeRide.available?RGNativeRide.controlsHTML():(cur?'<button class="btn" onclick="stopTrack()">Stop &amp; save</button>':'<button class="btn" onclick="startTrack()">Start ride</button>')}</div>
   </div>
   <div class="mu" style="margin:4px 2px 8px">${S.trips.length} trips · ${fd(tot)} total</div>
   ${S.trips.slice().reverse().map((t,i)=>`<div class="card"><div class="top"><div><b>${esc(t.name)}</b><div class="mu">${esc(t.country)} · ${new Date(t.date).toLocaleDateString()}</div></div><button class="btn alt sm" onclick="delTrip('${t.id}')">Delete</button></div>
-  <div id="rgTripPreview${i}">${trackSVG(t.pts)}</div>
+  <div id="rgTripPreview${i}">${trackSVG(t.pts,t.segments)}</div>
   <div id="rgTripMap${i}" class="rg-map-host" hidden></div>
   <div class="row rg-map-row"><button type="button" id="rgTripButton${i}" class="btn alt sm" onclick="RGMaps.toggleTrip(${i},S.trips)">Interactive map</button></div>
   <p id="rgTripStatus${i}" class="mu rg-map-status" role="status" aria-live="polite" hidden></p>
   <div class="stats" style="margin-top:8px"><div><b>${fd(t.dist)}</b><div class="mu">distance</div></div><div><b>${fdur(t.dur)}</b><div class="mu">ride time</div></div><div><b>${(t.max*U().k).toFixed(0)} ${U().s}</b><div class="mu">top speed</div></div></div></div>`).join('')}`;
+  if(cur&&RGNativeRide.available){
+    $('tn').value=cur.name||'';
+    if(cur.country)$('tc').value=cur.country;
+    $('tn').disabled=cur.status==='stopped';$('tc').disabled=cur.status==='stopped';
+  }
   if(cur)upd();
 }
 function msg(t){const e=$('msg');if(e)e.textContent=t}
 function startTrack(){
+  if(RGNativeRide.available)return RGNativeRide.start();
   rideNotice='';
   if(!navigator.geolocation){msg('GPS is not available in this browser.');return}
   cur={pts:[],dist:0,max:0,sp:0,t0:Date.now()};
@@ -697,11 +705,12 @@ function onPos(p){
 }
 function upd(){
   if(!cur||S.tab!='trips'||!$('ld'))return;
-  $('ld').textContent=(cur.dist*U().k).toFixed(1);$('ls').textContent=Math.round(cur.sp*U().k);$('lt').textContent=fdur(Date.now()-cur.t0);
-  $('map').innerHTML=trackSVG(cur.pts);
+  $('ld').textContent=(cur.dist*U().k).toFixed(1);$('ls').textContent=Math.round(cur.sp*U().k);$('lt').textContent=fdur(RGNativeRide.available?cur.durationMs:Date.now()-cur.t0);
+  $('map').innerHTML=trackSVG(cur.pts,cur.segments);
   if(window.RGMaps)window.RGMaps.updateLive(cur);
 }
 function stopTrack(){
+  if(RGNativeRide.available)return RGNativeRide.stop();
   navigator.geolocation.clearWatch(watch);clearInterval(tick);
   if(cur.pts.length>1){
     const step=Math.ceil(cur.pts.length/400);
@@ -715,6 +724,27 @@ function stopTrack(){
   cur=null;renderTrips();
 }
 function delTrip(id){if(confirm('Delete this trip?')){S.trips=S.trips.filter(t=>t.id!=id);save();render()}}
+// Read/append/odometer update share one transaction. A native session is only
+// acknowledged after oncomplete, and the deterministic ID makes recovery safe.
+async function importNativeTrip(trip){
+  const db=await idb();
+  return new Promise((resolve,reject)=>{
+    const tx=db.transaction('kv','readwrite'),store=tx.objectStore('kv');
+    let stored;
+    const get=store.get('s');
+    get.onsuccess=()=>{
+      stored=get.result||JSON.parse(JSON.stringify(S));
+      if(!stored.trips.some(t=>t.id===trip.id)){
+        stored.trips.push(trip);
+        stored.odo=(Number(stored.odo)||0)+trip.dist;
+        store.put(stored,'s');
+      }
+    };
+    tx.oncomplete=()=>{db.close();S.trips=stored.trips;S.odo=stored.odo;resolve()};
+    tx.onerror=()=>{db.close();reject(tx.error||Error('Could not save ride to garage storage.'))};
+    tx.onabort=()=>{db.close();reject(tx.error||Error('Garage storage transaction was interrupted.'))};
+  });
+}
 /* ---------- PLACES ---------- */
 const PC=['Gas','Food','Hotel','Parts / mechanic','Scenic road','Border crossing','Other'];
 const COORD=/^-?\d+(\.\d+)?\s*,\s*-?\d+(\.\d+)?$/;
@@ -1221,8 +1251,16 @@ load().then(d=>{
   S.tab=location.hash==='#social'?'social':'home';
   if(location.hash==='#social'&&history.replaceState)history.replaceState(null,'',location.pathname+location.search);
   render();
+  if(RGNativeRide.available)RGNativeRide.init({
+    setCurrent:ride=>{cur=ride},
+    readMetadata:()=>({name:$('tn')?$('tn').value.trim():(cur&&cur.name)||'',country:$('tc')?$('tc').value:(cur&&cur.country)||'🇲🇽 Mexico'}),
+    render:()=>{if(S.tab==='trips'){if(window.RGMaps)RGMaps.destroy();renderTrips()}},
+    update:upd,
+    notice:text=>{rideNotice=text;if(S.tab==='trips')msg(text||RGNativeRide.statusText());else if(text)toast(text)},
+    importTrip:importNativeTrip
+  });
   if(window.initRideGarageWelcome)window.initRideGarageWelcome(d);
 });
 </script>
-<script>if('serviceWorker' in navigator)addEventListener('load',()=>navigator.serviceWorker.register('sw.js',{updateViaCache:'none'}).catch(()=>{}))</script>
+<script>if(!RGNativeRide.available&&'serviceWorker' in navigator)addEventListener('load',()=>navigator.serviceWorker.register('sw.js',{updateViaCache:'none'}).catch(()=>{}))</script>
 </body></html>
