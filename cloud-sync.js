@@ -3,9 +3,10 @@
  */
 (function(){
   'use strict';
+  const tr=(text,params)=>window.RGI18n?RGI18n.t(text,params):text;
   const KEYS=['mods','trips','places','svc','slog','fuel'];
   const MAX_BYTES=7800000; // allow room under the server's 8 MB JSONB limit
-  let api=null, busy=false, saved=[];
+  let api=null,busy=false,saved=[],listed=false,authChecked=false,currentUser=null;
   const $=id=>document.getElementById(id);
   const copy=x=>JSON.parse(JSON.stringify(x));
   // Postgres JSONB can reorder object keys; compare canonical JSON to avoid false conflicts.
@@ -17,7 +18,7 @@
   });
   const html=x=>String(x==null?'':x).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
   const size=x=>new TextEncoder().encode(JSON.stringify(x)).length;
-  function status(message){const el=$('rgCloudStatus');if(el)el.textContent=message;}
+  function status(message,params){const el=$('rgCloudStatus');if(el){el.removeAttribute('data-i18n');el._rgI18nStatus={text:message,params};el.textContent=tr(message,params);}}
   function setBusy(value){
     busy=value;
     ['rgCloudUpload','rgCloudRefresh'].forEach(id=>{const el=$(id);if(el)el.disabled=value});
@@ -35,7 +36,7 @@
   function counts(s){
     const r={};KEYS.forEach(k=>{r[k]=Array.isArray(s[k])?s[k].length:0});return r;
   }
-  function describe(c){return 'Builds '+(c.mods||0)+' · Trips '+(c.trips||0)+' · Places '+(c.places||0)+' · Service '+(c.svc||0)+' · Fuel '+(c.fuel||0);}
+  function describe(c){return tr('Builds {builds} · Trips {trips} · Places {places} · Service {service} · Fuel {fuel}',{builds:c.mods||0,trips:c.trips||0,places:c.places||0,service:c.svc||0,fuel:c.fuel||0});}
   async function auth(){
     if(!api)throw Error('Cloud Sync is not ready yet.');
     const client=await api.getClient();
@@ -45,27 +46,28 @@
     if(!user)throw Error('Sign in on the Social tab first. Then return here to save or restore cloud copies.');
     return {client,user};
   }
-  function clearList(){saved=[];const e=$('rgCloudCopies');if(e)e.innerHTML='';}
+  function clearList(){saved=[];listed=false;const e=$('rgCloudCopies');if(e)e.innerHTML='';}
+  function renderAuth(){const box=$('rgCloudAuth');if(!box||!authChecked)return;box.removeAttribute('data-i18n');box.textContent=currentUser?tr('Signed in as {account}. Cloud copies are private to this account.',{account:currentUser.email||tr('your rider account')}):tr('Not signed in. Use the Social tab to sign in or create an account.');}
   async function refreshAuth(){
     const box=$('rgCloudAuth');
     if(!box||!api)return;
     try{
       const {user}=await auth();
-      box.textContent='Signed in as '+(user.email||'your rider account')+'. Cloud copies are private to this account.';
+      currentUser=user;authChecked=true;renderAuth();
     }catch(e){
-      box.textContent='Not signed in. Use the Social tab to sign in or create an account.';
+      currentUser=null;authChecked=true;renderAuth();
       clearList();
     }
   }
   function makeList(rows){
-    saved=rows||[];
+    saved=rows||[];listed=true;
     const el=$('rgCloudCopies');if(!el)return;
-    if(!saved.length){el.innerHTML='<p class="mu">No cloud copies yet. Save your garage from this device first.</p>';return}
-    el.innerHTML='<p class="mu">Your 10 newest private cloud copies (newest first):</p>'+
+    if(!saved.length){el.innerHTML='<p class="mu">'+html(tr('No cloud copies yet. Save your garage from this device first.'))+'</p>';return}
+    el.innerHTML='<p class="mu">'+html(tr('Your 10 newest private cloud copies (newest first):'))+'</p>'+ 
       saved.map(r=>{
-        const date=new Date(r.created_at).toLocaleString();
+        const date=new Date(r.created_at).toLocaleString(window.RGI18n?RGI18n.locale:undefined);
         return '<div class="rg-cloud-copy"><div><b>'+html(date)+'</b><div class="mu">'+html(describe(r.summary||{}))+' · '+Math.ceil((r.byte_size||0)/1024)+' KB</div></div>'+
-          '<button type="button" class="btn alt sm" data-cloud-id="'+html(r.id)+'">Merge into this device</button></div>';
+          '<button type="button" class="btn alt sm" data-cloud-id="'+html(r.id)+'">'+html(tr('Merge into this device'))+'</button></div>';
       }).join('');
     el.querySelectorAll('button[data-cloud-id]').forEach(b=>{
       b.addEventListener('click',()=>mergeFromCloud(b.getAttribute('data-cloud-id')));
@@ -84,7 +86,7 @@
       makeList(data||[]);
       status('Cloud copies loaded. Your local garage has not been changed.');
       await refreshAuth();
-    }catch(e){status('Could not load cloud copies: '+(e.message||String(e)))}
+    }catch(e){status('Could not load cloud copies: {error}',{error:tr(e.message||String(e))})}
     finally{setBusy(false)}
   }
   async function upload(){
@@ -95,15 +97,15 @@
       const source=api.readState?await api.readState():api.getState();
       const garage=snapshot(source),json=JSON.stringify(garage);
       const bytes=new TextEncoder().encode(json).length;
-      if(bytes>MAX_BYTES)throw Error('Your garage is '+Math.ceil(bytes/1024/1024)+' MB, over the cloud beta limit. Your photos are safe locally. Use Download backup file until larger uploads are supported.');
-      const ok=confirm('Create a PRIVATE cloud copy of this device\'s garage?\n\nThis includes motorcycle records, maintenance, fuel, GPS trip points, saved places and embedded photos. It stays tied to your signed-in account.\n\nThis does not delete or replace anything on your device.');
+      if(bytes>MAX_BYTES)throw Error(tr('Your garage is {size} MB, over the cloud beta limit. Your photos are safe locally. Use Download backup file until larger uploads are supported.',{size:Math.ceil(bytes/1024/1024)}));
+      const ok=confirm(tr('Create a PRIVATE cloud copy of this device\'s garage?\n\nThis includes motorcycle records, maintenance, fuel, GPS trip points, saved places and embedded photos. It stays tied to your signed-in account.\n\nThis does not delete or replace anything on your device.'));
       if(!ok){status('Upload cancelled. Your garage was not changed.');return}
       status('Uploading a private garage copy…');
       const {error}=await client.from('ride_garage_cloud_snapshots')
         .insert({user_id:user.id,garage,summary:counts(garage),byte_size:bytes});
       if(error)throw error;
       status('Private cloud copy saved. Local data was not changed.');
-    }catch(e){status('Cloud upload failed (local garage is unchanged): '+(e.message||String(e)))}
+    }catch(e){status('Cloud upload failed (local garage is unchanged): {error}',{error:tr(e.message||String(e))})}
     finally{setBusy(false)}
     await listCloud();
   }
@@ -158,16 +160,15 @@
       const remote=api.validate(JSON.stringify(data.garage));
       const initialLocal=api.readState?await api.readState():api.getState();
       const {stats}=mergeGarages(initialLocal,remote,id);
-      const notice='Merge cloud copy into this device?\n\n'+describe(counts(remote))+
-        '\n\nAdds '+stats.added+' records, including '+stats.conflicts+' differing versions kept separately. Existing records are NEVER deleted or overwritten. Your local bike name and unit stay the same; the larger odometer is kept.\n\nDownload a backup file first for extra protection. Continue?';
+      const notice=tr('Merge cloud copy into this device?\n\n{summary}\n\nAdds {added} records, including {conflicts} differing versions kept separately. Existing records are NEVER deleted or overwritten. Your local bike name and unit stay the same; the larger odometer is kept.\n\nDownload a backup file first for extra protection. Continue?',{summary:describe(counts(remote)),added:stats.added,conflicts:stats.conflicts});
       if(!confirm(notice)){status('Merge cancelled. Local records are unchanged.');return}
       // Re-read after confirmation to avoid using a stale page-load snapshot.
       const latest=api.readState?await api.readState():api.getState();
       const merged=mergeGarages(latest,remote,id);
       await api.persist(merged.output);
       api.setState(merged.output);
-      status('Cloud merge saved locally. '+merged.stats.added+' records added; '+merged.stats.conflicts+' differing versions retained. Your cloud copy was not modified. Save a new cloud copy to share these changes with another device.');
-    }catch(e){status('Cloud merge failed (existing local data is unchanged): '+(e.message||String(e)))}
+      status('Cloud merge saved locally. {added} records added; {conflicts} differing versions retained. Your cloud copy was not modified. Save a new cloud copy to share these changes with another device.',{added:merged.stats.added,conflicts:merged.stats.conflicts});
+    }catch(e){status('Cloud merge failed (existing local data is unchanged): {error}',{error:tr(e.message||String(e))})}
     finally{setBusy(false)}
   }
   function init(services){
@@ -178,5 +179,6 @@
     if(login)login.addEventListener('click',()=>api.openSocial());
     refreshAuth();
   }
+  window.addEventListener('rg-language-change',()=>{renderAuth();if(listed){makeList(saved);if(busy)setBusy(true);}const el=$('rgCloudStatus'),last=el&&el._rgI18nStatus;if(last)status(last.text,last.params);});
   window.RideGarageCloud={init,refreshAuth};
 })();

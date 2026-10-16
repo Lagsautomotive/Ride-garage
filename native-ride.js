@@ -2,6 +2,7 @@
  * No location request or recording starts during initialization or recovery. */
 (function () {
   'use strict';
+  const t=(message,params={})=>window.RGI18n?RGI18n.t(message,params):message.replace(/\{(\w+)\}/g,(match,key)=>Object.prototype.hasOwnProperty.call(params,key)?String(params[key]):match);
   const cap = window.Capacitor;
   const available = !!(cap && cap.isNativePlatform() && cap.getPlatform() === 'ios');
   const plugin = available ? cap.registerPlugin('RideRecorder') : null;
@@ -37,7 +38,7 @@
     }
     return {
       id: 'native-' + s.id, nativeSessionId: s.id, source: 'ios-core-location',
-      name: s.name || 'Ride ' + new Date(s.startedAt).toLocaleDateString(),
+      name: s.name || t('Ride') + ' ' + new Date(s.startedAt).toLocaleDateString(window.RGI18n?.locale),
       country: s.country || '', date: s.startedAt, endedAt: s.endedAt, dist,
       dur: s.durationMs, max, pts: usable.map(p => [p.latitude, p.longitude]),
       segments, gps
@@ -57,17 +58,34 @@
     }
   }
   function notice(text) { if (host) host.notice(text); }
+  function errorText(error) {
+    const message=error&&error.message?error.message:String(error||'');
+    const translated=t(message);
+    if(!window.RGI18n||RGI18n.language==='en'||translated!==message)return translated;
+    const suffix=' Local storage also failed.';
+    if(message.endsWith(suffix))return errorText(message.slice(0,-suffix.length))+' '+t('Local storage also failed.');
+    const prefix='GPS recording was interrupted: ',tail=' Resume when location is available.';
+    if(message.startsWith(prefix)&&message.endsWith(tail))return t('GPS recording was interrupted. Resume when location is available.')+' '+t('Details: {details}',{details:message.slice(prefix.length,-tail.length)});
+    const help={
+      RIDE_STORAGE:'Ride storage failed. Tracking stopped. Free storage and reopen the app to recover the saved portion.',
+      LOCATION_PERMISSION:'Location access is required while recording. Allow location in iPhone Settings; no ride has started.',
+      LOCATION_PRECISE_REQUIRED:'Precise Location is required to preserve street turns. Enable Precise Location for Ride Garage in iPhone Settings, then try again.',
+      FOREGROUND_REQUIRED:'Open the app to start or resume recording.',
+      RECORDER_BUSY:'A location permission request is already in progress.'
+    }[error&&error.code]||'The iPhone recorder could not complete this action. Try again.';
+    return t(help)+(message?' '+t('Details: {details}',{details:message}):'');
+  }
   function statusText() {
-    if (!ready) return 'Checking for a saved iPhone ride…';
-    if (!session) return 'iPhone recording saves GPS on this device while the screen is locked. Start asks for precise location. Pause and Stop turn GPS off.';
-    if (session.status === 'recording') {
-      const last = session.points[session.points.length - 1];
-      return 'Recording on iPhone. You can lock the screen. GPS uses battery; check the location indicator. ' +
-        (last ? session.points.length + ' fixes saved. Last accuracy: ±' + Math.round(last.accuracy) + ' m.' : 'Waiting for GPS. Try outdoors with Precise Location enabled.');
+    if(!ready)return t('Checking for a saved iPhone ride…');
+    if(!session)return t('iPhone recording saves GPS on this device while the screen is locked. Start asks for precise location. Pause and Stop turn GPS off.');
+    if(session.status==='recording'){
+      const last=session.points[session.points.length-1];
+      return t('Recording on iPhone. You can lock the screen. GPS uses battery; check the location indicator.')+' '+
+        (last?t('{count} fixes saved. Last accuracy: ±{accuracy} m.',{count:session.points.length,accuracy:Math.round(last.accuracy)}):t('Waiting for GPS. Try outdoors with Precise Location enabled.'));
     }
-    if (session.status === 'paused') return 'Paused. Location tracking is off. Resume when you are ready.';
-    if (session.status === 'interrupted') return 'An interrupted ride was recovered. Tracking is off. Resume explicitly or Stop & save the recorded portion.' + (session.lastError ? ' ' + session.lastError : '');
-    return 'Recording ended. The iPhone copy is kept until it is saved to your garage. Retry saving if needed.';
+    if(session.status==='paused')return t('Paused. Location tracking is off. Resume when you are ready.');
+    if(session.status==='interrupted')return t('An interrupted ride was recovered. Tracking is off. Resume explicitly or Stop & save the recorded portion.')+(session.lastError?' '+errorText(session.lastError):'');
+    return t('Recording ended. The iPhone copy is kept until it is saved to your garage. Retry saving if needed.');
   }
   async function finish() {
     if (!session || session.status !== 'stopped') return;
@@ -79,15 +97,15 @@
     await plugin.acknowledge({ id: completed.id });
     publish(null);
     notice(trip.pts.length < 2
-      ? 'Ride saved with fewer than two usable GPS fixes. The route may be empty. Check Precise Location and try outdoors; any captured accuracy data is kept in the ride.'
-      : 'Ride saved on this device. Your normal backup and Cloud Garage Sync include its GPS route.');
+      ? t('Ride saved with fewer than two usable GPS fixes. The route may be empty. Check Precise Location and try outdoors; any captured accuracy data is kept in the ride.')
+      : t('Ride saved on this device. Your normal backup and Cloud Garage Sync include its GPS route.'));
   }
   async function act(operation) {
     if (!ready || busy) return;
     busy = true; generation++;
     try { await operation(); }
     catch (error) {
-      notice((error.message || String(error)) + ' Any recorded iPhone data is kept. Try again from Rides.');
+      notice(t('{error} Any recorded iPhone data is kept. Try again from Rides.',{error:errorText(error)}));
     } finally { busy = false; host.render(); }
   }
   async function refresh() {
@@ -100,7 +118,7 @@
       const same = (!session && !result.session) || (session && result.session && session.id === result.session.id && oldStatus === result.session.status);
       publish(result.session, !same);
       if (same) host.update();
-    } catch (e) { notice('Could not read the saved iPhone ride: ' + (e.message || String(e))); }
+    } catch(e){notice(t('Could not read the saved iPhone ride: {error}',{error:errorText(e)}));}
   }
   async function init(services) {
     if (!available || host) return;
@@ -115,7 +133,7 @@
           const same = (!session && !event.session) || (session && event.session && session.id === event.session.id && session.status === event.session.status);
           publish(event.session, !same);
           if (same) host.update();
-          if (event.error) notice(event.error);
+          if(event.error)notice(errorText(event.error));
         }
       });
       ready = true;
@@ -125,7 +143,7 @@
       refreshTimer = setInterval(() => { if (!document.hidden) refresh(); }, 3000);
       document.addEventListener('visibilitychange', () => { if (!document.hidden) refresh(); });
       window.addEventListener('pageshow', refresh);
-    } catch (e) { failed = true; notice('iPhone recorder could not be opened: ' + (e.message || String(e))); host.render(); }
+    } catch(e){failed=true;notice(t('iPhone recorder could not be opened: {error}',{error:errorText(e)}));host.render();}
   }
   function captureMetadata() {
     if (!session || !host) return metadataQueue;
@@ -137,7 +155,7 @@
       if (!session || session.id !== id || session.status === 'stopped') return;
       await plugin.updateMetadata(metadata);
     });
-    metadataQueue.catch(e => notice('Ride name could not be saved: ' + (e.message || String(e))));
+    metadataQueue.catch(e=>notice(t('Ride name could not be saved: {error}',{error:errorText(e)})));
     return metadataQueue;
   }
   function start() { return act(async () => {
@@ -168,14 +186,14 @@
     return init(services);
   }
   function controlsHTML() {
-    if (failed) return '<button class="btn" onclick="RGNativeRide.retry()">Retry recorder</button>';
+    if(failed)return '<button class="btn" onclick="RGNativeRide.retry()">'+t('Retry recorder')+'</button>';
     const disabled = !ready || busy ? ' disabled' : '';
-    if (!session) return '<button class="btn" onclick="startTrack()"' + disabled + '>Start ride</button>';
-    if (session.status === 'stopped') return '<button class="btn" onclick="RGNativeRide.stop()"' + disabled + '>Retry saving</button>';
+    if(!session)return '<button class="btn" onclick="startTrack()"'+disabled+'>'+t('Start ride')+'</button>';
+    if(session.status==='stopped')return '<button class="btn" onclick="RGNativeRide.stop()"'+disabled+'>'+t('Retry saving')+'</button>';
     const toggle = session.status === 'recording'
-      ? '<button class="btn alt" onclick="RGNativeRide.pause()"' + disabled + '>Pause</button>'
-      : '<button class="btn alt" onclick="RGNativeRide.resume()"' + disabled + '>Resume</button>';
-    return toggle + ' <button class="btn" onclick="stopTrack()"' + disabled + '>Stop &amp; save</button>';
+      ? '<button class="btn alt" onclick="RGNativeRide.pause()"'+disabled+'>'+t('Pause')+'</button>'
+      : '<button class="btn alt" onclick="RGNativeRide.resume()"'+disabled+'>'+t('Resume')+'</button>';
+    return toggle+' <button class="btn" onclick="stopTrack()"'+disabled+'>'+t('Stop & save').replace(/&/g,'&amp;')+'</button>';
   }
   window.RGNativeRide = { available, init, start, pause, resume, stop, refresh, retry,
     captureMetadata, controlsHTML, statusText, tripFromSession };

@@ -46,6 +46,16 @@ The native app and Safari/PWA have separate storage sandboxes. Installing the ap
 
 Download a backup from the PWA's Profile → Backup & restore and import it in the native app, or sign in to the same Supabase account and use the existing private Cloud Garage Sync merge. Keep a backup before transferring. WebView blob downloads may not save a file on every iOS version; Show backup text and copying the JSON provides a fallback. Sign in again inside the native app; existing email/password sign-in uses the same Supabase project and public configuration. Email confirmation and password-recovery links may open the configured website. No native OAuth/deep-link callback has been added, so any future native redirect flow must be configured and tested separately.
 
+## Language
+
+Use the **Language / Idioma** selector above the main screens to choose **English** or **Español (México)**. The Cloud Garage Sync page has the same selector. The choice is remembered on this device, separately from garage records and backups. Without a saved choice, a Spanish device/browser uses Mexican Spanish; other supported defaults use English. Recorded names, notes, posts, coordinates, country/category values and existing backups are never translated.
+
+Changing language redraws interface labels and dates without restarting, pausing or stopping GPS. Unsaved form text and selected files are preserved. The web PWA includes both languages in its offline shell.
+
+The generated native app bundles English and Spanish `InfoPlist.strings` resources. Apple chooses the system location dialog language from the iOS app/system language, independently of the in-app selector. To test both dialogs, use **iPhone Settings → Ride Garage → Language**, if available, or the device language. The configuration script uses the `xcodeproj` Ruby gem installed with CocoaPods; run it in that same Ruby environment.
+
+Physical language checks: verify a fresh Spanish iPhone receives the Spanish location purpose text; switch the app between English and Spanish during an active ride; verify no GPS restart or loss of entered ride name; relaunch and verify the selection persists. Existing legal/support documents and external service diagnostics may use their original language.
+
 ## Apple location permissions and limits
 
 The generated Info.plist contains:

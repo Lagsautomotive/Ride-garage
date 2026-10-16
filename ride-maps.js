@@ -5,6 +5,7 @@
  */
 (function(){
   'use strict';
+  const tr=(text,params)=>window.RGI18n?RGI18n.t(text,params):text;
   const LIB='https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/';
   const TILES='https://tile.openstreetmap.org/{z}/{x}/{y}.png';
   const $=id=>document.getElementById(id);
@@ -30,7 +31,7 @@
     return parts.length===2&&parts.every(p=>p.trim()!=='')?coords(parts):null;
   }
   function message(el,text){
-    if(el){el.textContent=text;el.hidden=false;}
+    if(el){el.textContent=tr(text);el.hidden=false;}
   }
   function ensureLeaflet(){
     if(window.L&&window.L.map&&document.querySelector('link[data-rg-leaflet]'))return Promise.resolve(window.L);
@@ -62,7 +63,7 @@
     if(a.map){try{a.map.remove();}catch(e){}}
     if(a.host){a.host.hidden=true;a.host.replaceChildren();}
     if(a.preview)a.preview.hidden=false;
-    if(a.button)a.button.textContent=a.label;
+    if(a.button)a.button.textContent=tr(a.label);
     if(a.status)a.status.hidden=true;
   }
   function begin(key,host,preview,button,status,label){
@@ -70,7 +71,7 @@
     destroy();
     if(!host)return null;
     host.hidden=false;
-    if(button)button.textContent='Close map';
+    if(button)button.textContent=tr('Close map');
     message(status,'Loading interactive map…');
     active={key,host,preview,button,status,label,map:null,line:null,last:null,seen:0};
     return {active,token:request};
@@ -98,9 +99,9 @@
     if(!pts.length)return;
     a.line=L.polyline(paths||pts,{color:'#dfaa57',weight:5,opacity:0.94,lineJoin:'round'}).addTo(a.map);
     L.circleMarker(pts[0],{radius:7,color:'#fff',weight:2,fillColor:'#2ab873',fillOpacity:1})
-      .addTo(a.map).bindPopup('Ride start');
+      .addTo(a.map).bindPopup(tr('Ride start'));
     a.last=L.circleMarker(pts[pts.length-1],{radius:7,color:'#fff',weight:2,fillColor:'#f18b43',fillOpacity:1})
-      .addTo(a.map).bindPopup(live?'Current ride position':'Ride finish');
+      .addTo(a.map).bindPopup(tr(live?'Current ride position':'Ride finish'));
     a.seen=pts.length;
   }
   async function showTrip(index,trips){
@@ -158,11 +159,11 @@
   }
   function placePopup(place,pt){
     const node=document.createElement('div');
-    const title=document.createElement('strong');title.textContent=String(place.name||'Saved place');node.appendChild(title);
+    const title=document.createElement('strong');title.textContent=String(place.name||tr('Saved place'));node.appendChild(title);
     if(place.cat){const row=document.createElement('div');row.textContent=String(place.cat);node.appendChild(row);}
     const link=document.createElement('a');
     link.href='https://www.google.com/maps/dir/?api=1&destination='+encodeURIComponent(pt[0]+','+pt[1])+'&travelmode=driving';
-    link.target='_blank';link.rel='noopener noreferrer';link.textContent='Directions';
+    link.target='_blank';link.rel='noopener noreferrer';link.textContent=tr('Directions');
     node.appendChild(link);return node;
   }
   async function showPlaces(places){
@@ -183,12 +184,12 @@
           .addTo(a.map).bindPopup(placePopup(item.p,item.pt));
       }
       const skipped=(Array.isArray(places)?places.length:0)-plotted.length;
-      message(status,plotted.length+' saved '+(plotted.length===1?'place':'places')+' on the map.'+
-        (skipped?' '+skipped+' address-only/invalid coordinate '+(skipped===1?'entry is':'entries are')+' not plotted.':''));
+      message(status,tr(plotted.length===1?'{count} saved place on the map.':'{count} saved places on the map.',{count:plotted.length})+(skipped?' '+tr(skipped===1?'{count} address-only/invalid coordinate entry is not plotted.':'{count} address-only/invalid coordinate entries are not plotted.',{count:skipped}):''));
     }catch(e){
       if(active!==a)return;
       destroy();message(status,'Could not load map tiles. Your saved places and navigation links are unchanged.');
     }
   }
+  window.addEventListener('rg-language-change',destroy);
   window.RGMaps={toggleTrip:showTrip,toggleLive:showLive,togglePlaces:showPlaces,updateLive,destroy};
 })();

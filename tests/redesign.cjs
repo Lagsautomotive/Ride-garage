@@ -103,6 +103,7 @@ async function stored(page){
   assert.deepEqual(exported.trips,fixture.trips);
   await require('./ride-tracking.cjs')(page,stored);
   await require('./native-tracking.cjs')(page,stored);
+  await require('./language.cjs')(page,stored);
   page.once('dialog',dialog=>dialog.accept());
   await page.evaluate(data=>applyBk(JSON.stringify(data)),fixture);
   await page.locator('#t-build[aria-current="page"]').waitFor();
