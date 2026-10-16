@@ -121,3 +121,6 @@ body.rg-app .rg-empty-build .mu{max-width:48ch}
 
 body.rg-app header .rg-brand span{color:#f2eee6}
 @media(max-width:380px){body.rg-app main{padding-left:max(12px,env(safe-area-inset-left,0px));padding-right:max(12px,env(safe-area-inset-right,0px))}}
+
+.rg-language-bar{display:flex;align-items:center;justify-content:flex-end;gap:8px;flex-wrap:wrap;padding:6px 0;font-size:.8rem}
+.rg-language-bar select{width:auto;min-width:0;max-width:190px;margin:0;padding:6px 10px;min-height:36px;font:inherit}

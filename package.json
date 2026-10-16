@@ -1,0 +1,21 @@
+{
+  "name": "ride-garage",
+  "version": "2.0.0",
+  "private": true,
+  "description": "Ride Garage PWA and Capacitor iOS ride recorder",
+  "engines": { "node": ">=22" },
+  "scripts": {
+    "build:native": "node scripts/build-native.mjs",
+    "ios:init": "node scripts/ios.mjs init",
+    "ios:sync": "node scripts/ios.mjs sync",
+    "ios:open": "cap open ios",
+    "test:web": "node tests/redesign.cjs",
+    "test:journal": "swift test --package-path native/ride-recorder"
+  },
+  "dependencies": {
+    "@capacitor/core": "8.5.3",
+    "@capacitor/ios": "8.5.3",
+    "@ride-garage/ride-recorder": "file:./native/ride-recorder"
+  },
+  "devDependencies": { "@capacitor/cli": "8.5.3", "playwright": "1.51.1" }
+}

@@ -1,5 +1,5 @@
-const CACHE = 'ride-garage-v28';
-const APP_SHELL = ['./', 'index.html', 'manifest.webmanifest', 'icon-192.png', 'icon-512.png', 'icon-premium-192.png', 'icon-premium-512.png', 'ride-garage-premium-logo.png', 'privacy.html', 'terms.html', 'install.html', 'landing.html', 'feedback.html', 'admin.html', 'premium.css', 'app-shell.css', 'welcome.css', 'welcome.js', 'cloud-sync.js', 'cloud.html', 'cloud-page.js', 'ride-maps.js'];
+const CACHE = 'ride-garage-v30';
+const APP_SHELL = ['./', 'index.html', 'manifest.webmanifest', 'icon-192.png', 'icon-512.png', 'icon-premium-192.png', 'icon-premium-512.png', 'ride-garage-premium-logo.png', 'privacy.html', 'terms.html', 'install.html', 'landing.html', 'feedback.html', 'admin.html', 'premium.css', 'app-shell.css', 'welcome.css', 'welcome.js', 'cloud-sync.js', 'cloud.html', 'cloud-page.js', 'ride-maps.js', 'native-ride.js', 'i18n.js'];
 
 self.addEventListener('install', event => {
   event.waitUntil(

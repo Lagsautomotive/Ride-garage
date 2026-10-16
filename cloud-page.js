@@ -4,12 +4,11 @@
  */
 (function(){
   'use strict';
+  const tr=(text,params)=>window.RGI18n?RGI18n.t(text,params):text;
   const $=id=>document.getElementById(id);
   const DEFAULT=()=>({mods:[],trips:[],places:[],svc:[],slog:[],fuel:[],odo:0,unit:'km',tab:'build',bike:''});
   let local=DEFAULT(),clientPending=null,scriptPending=null;
-  function message(text){
-    const el=$('rgCloudStatus');if(el)el.textContent=text;
-  }
+  function message(text,params){const el=$('rgCloudStatus');if(el){el.removeAttribute('data-i18n');el._rgI18nStatus={text,params};el.textContent=tr(text,params);}}
   function idb(){
     return new Promise((resolve,reject)=>{
       const req=indexedDB.open('ridegarage',1);
@@ -70,8 +69,7 @@
   function updateSummary(){
     const counts=['mods','trips','places','svc','fuel'].map(k=>(Array.isArray(local[k])?local[k].length:0));
     const bike=local.bike?local.bike+' · ':'';
-    const el=$('rgCloudLocal');if(el)el.textContent=bike+
-      counts[0]+' builds · '+counts[1]+' trips · '+counts[2]+' places · '+counts[3]+' service items · '+counts[4]+' fuel entries';
+    const el=$('rgCloudLocal');if(el){el.removeAttribute('data-i18n');el.textContent=bike+tr('{builds} builds · {trips} trips · {places} places · {service} service items · {fuel} fuel entries',{builds:counts[0],trips:counts[1],places:counts[2],service:counts[3],fuel:counts[4]});}
   }
   async function current(){
     local=await loadStorage();
@@ -91,7 +89,7 @@
       document.body.appendChild(a);a.click();a.remove();
       setTimeout(()=>URL.revokeObjectURL(url),60000);
       message('Backup download requested. Verify the file in your Downloads or Files app before relying on it.');
-    }catch(e){message('Backup failed. No records were changed: '+(e.message||String(e)));}
+    }catch(e){message('Backup failed. No records were changed: {error}',{error:tr(e.message||String(e))});}
     finally{if(btn)btn.disabled=false;}
   }
   function loadSDK(){
@@ -138,12 +136,13 @@
       });
       message('Your garage is still saved locally. Choose Save a cloud copy or View cloud copies.');
     }catch(e){
-      message('Could not read this device’s garage. No data was changed: '+(e.message||String(e)));
+      message('Could not read this device’s garage. No data was changed: {error}',{error:tr(e.message||String(e))});
       const status=$('rgCloudLocal');
-      if(status)status.textContent='Existing local storage could not be read safely.';
+      if(status){status.removeAttribute('data-i18n');status.textContent=tr('Existing local storage could not be read safely.');status.setAttribute('data-i18n','Existing local storage could not be read safely.');}
     }
   }
+  window.addEventListener('rg-language-change',()=>{const summary=$('rgCloudLocal');if(summary&&!summary.hasAttribute('data-i18n'))updateSummary();const status=$('rgCloudStatus');if(status&&status._rgI18nStatus){const last=status._rgI18nStatus;message(last.text,last.params);}});
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init,{once:true});
   else init();
-  window.addEventListener('pageshow',e=>{if(e.persisted)current().catch(err=>message('Could not refresh garage: '+err.message));});
+  window.addEventListener('pageshow',e=>{if(e.persisted)current().catch(err=>message('Could not refresh garage: {error}',{error:tr(err.message)}));});
 })();

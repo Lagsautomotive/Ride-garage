@@ -1,0 +1,7 @@
+{
+  "appId": "com.ridegarage.app",
+  "appName": "Ride Garage",
+  "webDir": "www",
+  "server": { "iosScheme": "capacitor" },
+  "ios": { "backgroundColor": "#101113", "contentInset": "never" }
+}

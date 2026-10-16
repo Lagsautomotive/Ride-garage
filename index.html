@@ -487,44 +487,46 @@ header h1 {
 }
 @media(max-width:350px){.rg-header-actions #bike{display:none}.rg-cloud-tab{font-size:12px}}
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;animation-duration:.01ms!important;transition-duration:.01ms!important}}
-</style><link rel="stylesheet" href="premium.css"><link rel="stylesheet" href="welcome.css"><link rel="stylesheet" href="app-shell.css"></head><body class="rg-app">
+</style><link rel="stylesheet" href="premium.css"><link rel="stylesheet" href="welcome.css"><link rel="stylesheet" href="app-shell.css"><script src="i18n.js"></script></head><body class="rg-app">
 <main>
-<header class="rg-app-header"><h1 class="rg-brand"><svg viewBox="0 0 32 36" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round" aria-hidden="true"><path d="m16 2 13 7v16L16 34 3 25V9zM3 9l13 7 13-7M16 16v18M7 12l9-5 9 5M9 5l7 4 7-4"/></svg><span>Ride <strong>Garage</strong></span></h1><div class="rg-header-actions"><span class="mu" id="bike"></span><button type="button" class="rg-account-button" onclick="tab('profile')" aria-label="Open your profile"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 22v-3a8 8 0 0 1 16 0v3"/></svg></button></div></header>
-<a class="rg-skip" href="#v">Skip to content</a><nav aria-label="Main navigation" class="rg-primary-nav"><div class="tabs"><button type="button" id="t-home" onclick="tab('home')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m3 10 9-7 9 7v11h-6v-7H9v7H3z"/></svg><span>Home</span></button><button type="button" id="t-build" onclick="tab('build')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m3 9 9-6 9 6v12H3zM7 21v-9h10v9M7 16h10"/></svg><span>Garage</span></button><button type="button" id="t-trips" onclick="tab('trips')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 21V5m0 0c5-6 9 6 14 0v10c-5 6-9-6-14 0"/></svg><span>Rides</span></button><button type="button" id="t-social" onclick="tab('social')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="8" r="4"/><path d="M2 21v-3a7 7 0 0 1 14 0v3M17 4a4 4 0 0 1 0 8m2 4a5 5 0 0 1 3 5"/></svg><span>Community</span></button><button type="button" id="t-profile" onclick="tab('profile')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21v-2a8 8 0 0 1 16 0v2"/></svg><span>Profile</span></button></div></nav>
-<div id="rg-section-heading" tabindex="-1" role="group" aria-label="Current section"></div><nav id="rg-section-tools" aria-label="Section tools"></nav><div id="v" tabindex="-1"></div><div id="rg-profile-tools" hidden>
+<header class="rg-app-header"><h1 class="rg-brand"><svg viewBox="0 0 32 36" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round" aria-hidden="true"><path d="m16 2 13 7v16L16 34 3 25V9zM3 9l13 7 13-7M16 16v18M7 12l9-5 9 5M9 5l7 4 7-4"/></svg><span>Ride <strong data-i18n="Garage">Garage</strong></span></h1><div class="rg-header-actions"><span class="mu" id="bike"></span><button type="button" class="rg-account-button" onclick="tab('profile')" aria-label="Open your profile" data-i18n-aria-label="Open your profile"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 22v-3a8 8 0 0 1 16 0v3"/></svg></button></div></header>
+<a class="rg-skip" href="#v" data-i18n="Skip to content">Skip to content</a><nav aria-label="Main navigation" data-i18n-aria-label="Main navigation" class="rg-primary-nav"><div class="tabs"><button type="button" id="t-home" onclick="tab('home')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m3 10 9-7 9 7v11h-6v-7H9v7H3z"/></svg><span data-i18n="Home">Home</span></button><button type="button" id="t-build" onclick="tab('build')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m3 9 9-6 9 6v12H3zM7 21v-9h10v9M7 16h10"/></svg><span data-i18n="Garage">Garage</span></button><button type="button" id="t-trips" onclick="tab('trips')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 21V5m0 0c5-6 9 6 14 0v10c-5 6-9-6-14 0"/></svg><span data-i18n="Rides">Rides</span></button><button type="button" id="t-social" onclick="tab('social')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="8" r="4"/><path d="M2 21v-3a7 7 0 0 1 14 0v3M17 4a4 4 0 0 1 0 8m2 4a5 5 0 0 1 3 5"/></svg><span data-i18n="Community">Community</span></button><button type="button" id="t-profile" onclick="tab('profile')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21v-2a8 8 0 0 1 16 0v2"/></svg><span data-i18n="Profile">Profile</span></button></div></nav>
+<div class="rg-language-bar"><label for="rg-language" data-i18n="Language">Language</label><select id="rg-language" data-rg-language aria-label="App language" data-i18n-aria-label="App language"><option value="en">English</option><option value="es-MX">Español (México)</option></select></div>
+<div id="rg-section-heading" tabindex="-1" role="group" aria-label="Current section" data-i18n-aria-label="Current section"></div><nav id="rg-section-tools" aria-label="Section tools" data-i18n-aria-label="Section tools"></nav><div id="v" tabindex="-1"></div><div id="rg-profile-tools" hidden>
 <details class="card" style="margin-top:8px"><summary><b>Backup &amp; restore</b></summary>
-<p class="mu">Your garage lives on this device by default. Cloud Garage Sync is optional and never runs automatically. Back up your local records before clearing your browser or moving to another device. Restoring from a file replaces local records after confirmation. Export your current garage first and check that the backup downloaded successfully. Photos make the backup large. Social accounts/posts are not included.</p>
-<div class="row"><button class="btn" onclick="expFile()">Download backup file</button><button class="btn alt" onclick="expText()">Show backup text</button></div>
-<textarea id="bt" rows="4" placeholder="Backup text appears here. To restore, paste it here and tap Restore from text." style="margin-top:10px"></textarea>
-<div class="row" style="margin-top:6px"><button class="btn alt" onclick="impText()">Restore from text</button><label class="btn alt" style="text-align:center">Restore from file<input type="file" accept=".json,application/json" hidden onchange="impFile(this.files[0])"></label></div>
+<p class="mu" data-i18n="Your garage lives on this device by default. Cloud Garage Sync is optional and never runs automatically. Back up your local records before clearing your browser or moving to another device. Restoring from a file replaces local records after confirmation. Export your current garage first and check that the backup downloaded successfully. Photos make the backup large. Social accounts/posts are not included.">Your garage lives on this device by default. Cloud Garage Sync is optional and never runs automatically. Back up your local records before clearing your browser or moving to another device. Restoring from a file replaces local records after confirmation. Export your current garage first and check that the backup downloaded successfully. Photos make the backup large. Social accounts/posts are not included.</p>
+<div class="row"><button class="btn" onclick="expFile()" data-i18n="Download backup file">Download backup file</button><button class="btn alt" onclick="expText()" data-i18n="Show backup text">Show backup text</button></div>
+<textarea id="bt" rows="4" placeholder="Backup text appears here. To restore, paste it here and tap Restore from text." data-i18n-placeholder="Backup text appears here. To restore, paste it here and tap Restore from text." style="margin-top:10px"></textarea>
+<div class="row" style="margin-top:6px"><button class="btn alt" onclick="impText()" data-i18n="Restore from text">Restore from text</button><label class="btn alt" style="text-align:center"><span data-i18n="Restore from file">Restore from file</span><input type="file" accept=".json,application/json" hidden onchange="impFile(this.files[0])"></label></div>
 <div class="mu" id="bm" style="margin-top:6px"></div></details>
-<section class="card" aria-label="Share and support Ride Garage" style="margin:18px 0">
+<section class="card" aria-label="Share and support Ride Garage" data-i18n-aria-label="Share and support Ride Garage" style="margin:18px 0">
   <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
-    <button type="button" class="btn" onclick="shareRideGarage()">Share Ride Garage</button>
-    <a class="btn alt" href="feedback.html">Report a bug / Suggest a feature</a><button type="button" class="btn alt" onclick="showRideGarageWelcome()">Quick start guide</button>
+    <button type="button" class="btn" onclick="shareRideGarage()" data-i18n="Share Ride Garage">Share Ride Garage</button>
+    <a class="btn alt" href="feedback.html" data-i18n="Report a bug / Suggest a feature">Report a bug / Suggest a feature</a><button type="button" class="btn alt" onclick="showRideGarageWelcome()" data-i18n="Quick start guide">Quick start guide</button>
   </div>
-  <p id="rgConnection" class="mu" role="status" aria-live="polite">Checking connection…</p>
-  <p class="mu"><a href="install.html">Install instructions</a> · <a href="privacy.html">Privacy</a> · <a href="terms.html">Terms</a></p>
+  <p id="rgConnection" class="mu" role="status" aria-live="polite" data-i18n="Checking connection…">Checking connection…</p>
+  <p class="mu"><a href="install.html" data-i18n="Install instructions">Install instructions</a> · <a href="privacy.html" data-i18n="Privacy">Privacy</a> · <a href="terms.html" data-i18n="Terms">Terms</a></p>
 </section>
 </div>
 </main>
 <div id="lb" onclick="this.style.display='none'"><img id="lbi" alt=""></div>
 <script src="welcome.js"></script>
 <script src="ride-maps.js"></script>
+<script src="native-ride.js"></script>
 <script>
 function updateRideGarageConnection(){
   const el=document.getElementById('rgConnection');
   if(!el)return;
   el.textContent=navigator.onLine
-    ? 'Online · Social features use your internet connection'
-    : 'Offline · Saved garage records may still be available; Social requires internet';
+    ? tr("Online · Social features use your internet connection")
+    : tr("Offline · Saved garage records may still be available; Social requires internet");
 }
 window.addEventListener('online',updateRideGarageConnection);
 window.addEventListener('offline',updateRideGarageConnection);
 async function shareRideGarage(){
   const url=new URL('install.html',location.href).href;
   const title='Ride Garage';
-  const text='Track your motorcycle builds, trips and maintenance with Ride Garage. Install it free!';
+  const text=tr("Track your motorcycle builds, trips and maintenance with Ride Garage. Install it free!");
   if(navigator.share){
     try{await navigator.share({title,text,url});return}
     catch(err){if(err && err.name==='AbortError')return}
@@ -532,11 +534,11 @@ async function shareRideGarage(){
   try{
     if(navigator.clipboard && window.isSecureContext){
       await navigator.clipboard.writeText(url);
-      alert('Ride Garage install link copied. Share it with your friends!');
+      alert(tr("Ride Garage install link copied. Share it with your friends!"));
     }else{
-      prompt('Copy and share this Ride Garage install link:',url);
+      prompt(tr("Copy and share this Ride Garage install link:"),url);
     }
-  }catch(err){prompt('Copy and share this Ride Garage install link:',url)}
+  }catch(err){prompt(tr("Copy and share this Ride Garage install link:"),url)}
 }
 updateRideGarageConnection();
 let S={mods:[],trips:[],places:[],svc:[],slog:[],fuel:[],odo:0,unit:'km',tab:'build',bike:''};
@@ -545,11 +547,19 @@ const $=id=>document.getElementById(id);
 const esc=s=>String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 function idb(){return new Promise((res,rej)=>{try{const r=indexedDB.open('ridegarage',1);r.onupgradeneeded=()=>r.result.createObjectStore('kv');r.onsuccess=()=>res(r.result);r.onerror=()=>rej(r.error)}catch(e){rej(e)}})}
 async function load(){try{const d=await idb();return await new Promise((res,rej)=>{const q=d.transaction('kv').objectStore('kv').get('s');q.onsuccess=()=>res(q.result);q.onerror=()=>rej(q.error)})}catch(e){return null}}
-async function save(){try{const d=await idb();d.transaction('kv','readwrite').objectStore('kv').put(JSON.parse(JSON.stringify(S)),'s')}catch(e){}}
+// Serialize local garage writes. A legacy edit queued during native import
+// takes its snapshot after the imported trip has updated in-memory state.
+let garageWrites=Promise.resolve();
+function garageWrite(operation){
+  const pending=garageWrites.then(operation);
+  garageWrites=pending.catch(()=>{});
+  return pending;
+}
+function save(){return garageWrite(()=>writeGarageState(JSON.parse(JSON.stringify(S)))).catch(()=>{})}
 function tab(t){S.tab=t;render();window.scrollTo(0,0);const v=$('v');v.classList.remove('fi');void v.offsetWidth;v.classList.add('fi');$('rg-section-heading').focus({preventScroll:true})}
 // Keep legacy tab names so existing callbacks, auth and backups remain compatible.
 function primaryTab(t){return t==='places'?'trips':['svc','fuel'].includes(t)?'profile':t}
-function render(){
+function render(languageOnly=false){
   if(window.RGMaps)window.RGMaps.destroy();
   const primary=primaryTab(S.tab);
   for(const name of ['home','build','trips','social','profile']){
@@ -557,12 +567,12 @@ function render(){
     el.className=active?'on':'';
     if(active)el.setAttribute('aria-current','page');else el.removeAttribute('aria-current');
   }
-  $('bike').textContent=S.bike||'Your riding life';
+  $('bike').textContent=S.bike||tr('Your riding life');
   const titles={home:['RIDER DASHBOARD','Make every ride count.'],build:['YOUR MOTORCYCLE','Garage'],trips:['OUT ON THE ROAD','Rides'],places:['OUT ON THE ROAD','Saved places'],social:['RIDE TOGETHER','Community'],profile:['YOUR RIDING LIFE','Profile'],svc:['CARE & MAINTENANCE','Service records'],fuel:['EVERY FILL-UP','Fuel tracking']};
   const title=titles[S.tab]||titles.home;
-  $('rg-section-heading').innerHTML='<p class="rg-eyebrow">'+title[0]+'</p><h2>'+title[1]+'</h2>';
+  $('rg-section-heading').innerHTML='<p class="rg-eyebrow">'+tr(title[0])+'</p><h2>'+tr(title[1])+'</h2>';
   const tools=primary==='trips'?[['trips','Ride tracking'],['places','Saved places']]:primary==='profile'?[['profile','Overview'],['svc','Service'],['fuel','Fuel']]:[];
-  $('rg-section-tools').innerHTML=tools.map(([id,label])=>'<button type="button" class="btn alt" '+(S.tab===id?'aria-current="page" ':'')+'onclick="tab(\''+id+'\')">'+label+'</button>').join('');
+  $('rg-section-tools').innerHTML=tools.map(([id,label])=>'<button type="button" class="btn alt" '+(S.tab===id?'aria-current="page" ':'')+'onclick="tab(\''+id+'\')">'+tr(label)+'</button>').join('');
   $('rg-profile-tools').hidden=primary!=='profile';
   if(S.tab==='home')renderHome();
   else if(S.tab==='build')renderGarage();
@@ -570,7 +580,7 @@ function render(){
   else if(S.tab==='places')renderPlaces();
   else if(S.tab==='svc')renderSvc();
   else if(S.tab==='fuel')renderFuel();
-  else if(S.tab==='social')renderSocial();
+  else if(S.tab==='social'){if(languageOnly)repaintSocialLanguage();else renderSocial();}
   else renderProfile();
 }
 const RG_ICON_PATHS={"road":"<path d=\"m8 3-5 18M16 3l5 18M12 3v3m0 4v4m0 4v3\"/>","pin":"<path d=\"M20 10c0 6-8 12-8 12S4 16 4 10a8 8 0 1 1 16 0Z\"/><circle cx=\"12\" cy=\"10\" r=\"2.5\"/>","wrench":"<path d=\"M21 3a6 6 0 0 1-8 8L5 19a2 2 0 0 1-3-3l8-8a6 6 0 0 1 8-8l-4 4 3 3Z\"/>","mountain":"<path d=\"m2 20 6-12 5 7 4-11 5 16M6 12l3 1 2-2\"/>"};
@@ -578,9 +588,9 @@ function rgIcon(name){return '<svg viewBox="0 0 24 24" fill="none" stroke="curre
 function garageHero(){
   const mod=S.mods.slice().reverse().find(m=>m.photos&&m.photos.length);
   const photo=mod&&mod.photos[0],home=S.tab==='home';
-  return '<section class="rg-bike-hero card '+(photo?'rg-has-photo':'rg-no-photo')+(home?' rg-home-hero':'')+'" aria-label="Your motorcycle">'+
-    (photo?'<img class="rg-bike-photo" src="'+esc(photo)+'" alt="Build photo of '+esc(S.bike||'your motorcycle')+'">':'<div class="rg-photo-empty">'+rgIcon('road')+'<p>Your next chapter starts here.</p><small>Add a photo to a build step to make this garage yours.</small><button type="button" class="btn alt" onclick="tab(\'build\');openBuildForm()">Add a build photo</button></div>')+
-    '<div class="rg-bike-caption"><span class="rg-eyebrow">YOUR MOTORCYCLE</span><h3>'+esc(S.bike||'Your motorcycle')+'</h3><p>'+(home?'Build it. Ride it. Remember it.':'Your motorcycle &amp; build history')+'</p></div></section>';
+  return '<section class="rg-bike-hero card '+(photo?'rg-has-photo':'rg-no-photo')+(home?' rg-home-hero':'')+'" aria-label="'+tr('Your motorcycle')+'">'+
+    (photo?'<img class="rg-bike-photo" src="'+esc(photo)+'" alt="'+esc(tr('Build photo of {motorcycle}',{motorcycle:S.bike||tr('Your motorcycle')}))+'">':'<div class="rg-photo-empty">'+rgIcon('road')+'<p>'+tr("Your next chapter starts here.")+'</p><small>'+tr("Add a photo to a build step to make this garage yours.")+'</small><button type="button" class="btn alt" onclick="tab(\'build\');openBuildForm()">'+tr("Add a build photo")+'</button></div>')+
+    '<div class="rg-bike-caption"><span class="rg-eyebrow">'+tr("YOUR MOTORCYCLE")+'</span><h3>'+esc(S.bike||tr('Your motorcycle'))+'</h3><p>'+(home?tr('Build it. Ride it. Remember it.'):esc(tr('Your motorcycle & build history')))+'</p></div></section>';
 }
 function renderHome(){
   const done=S.mods.filter(m=>m.status==='done').length;
@@ -588,17 +598,17 @@ function renderHome(){
   const total=S.trips.reduce((sum,t)=>sum+(Number(t.dist)||0),0);
   const last=S.trips[S.trips.length-1];
   $('v').innerHTML=garageHero()+
-    '<div class="rg-metrics" aria-label="Your riding overview"><div class="card">'+rgIcon('road')+'<strong>'+S.trips.length+'</strong><span>Rides recorded</span></div><div class="card">'+rgIcon('pin')+'<strong>'+esc(fd(total))+'</strong><span>Distance explored</span></div><div class="card">'+rgIcon('wrench')+'<strong>'+done+'</strong><span>Build steps done</span></div></div>'+
-    '<section class="card rg-ride-cta"><div class="rg-road-art" aria-hidden="true"><svg viewBox="0 0 300 220" fill="none"><path d="m0 120 70-90 55 80 75-95 100 110" stroke="currentColor"/><path d="M130 230c170-60-140-35 10-95s180-20 90-95" stroke="currentColor" stroke-width="28"/><path d="M130 230c170-60-140-35 10-95s180-20 90-95" stroke="#151617" stroke-width="20"/></svg></div><p class="rg-eyebrow">'+rgIcon('mountain')+' READY WHEN YOU ARE</p><h3>Find your next road.</h3><p class="mu">Record your route. Keep your story.</p><button type="button" class="btn" onclick="tab(\'trips\')">Open Rides <span aria-hidden="true">↗</span></button></section>'+
-    '<section class="card rg-checkin">'+rgIcon('wrench')+'<div><h3>Garage check-in</h3><p class="mu">'+(overdue?overdue+' service '+(overdue===1?'item needs':'items need')+' attention.':S.svc.length?'Nothing overdue. Keep riding.':'Keep your ride in top shape.')+'</p></div><button type="button" class="rg-text-button" onclick="tab(\'svc\')">View service records <span aria-hidden="true">→</span></button></section>'+
-    '<section class="card"><p class="rg-eyebrow">LAST RIDE</p><h3>'+esc(last?last.name:'The road is waiting.')+'</h3><p class="mu">'+(last?esc(fd(last.dist))+' · '+esc(fdur(last.dur)):'Your saved rides will appear here after you record a trip.')+'</p><div class="row"><button type="button" class="btn alt" onclick="tab(\'trips\')">View rides</button><button type="button" class="btn alt" onclick="tab(\'places\')">Saved places</button></div></section>';
+    '<div class="rg-metrics" aria-label="'+tr('Your riding overview')+'"><div class="card">'+rgIcon('road')+'<strong>'+S.trips.length+'</strong><span>'+tr("Rides recorded")+'</span></div><div class="card">'+rgIcon('pin')+'<strong>'+esc(fd(total))+'</strong><span>'+tr("Distance explored")+'</span></div><div class="card">'+rgIcon('wrench')+'<strong>'+done+'</strong><span>'+tr("Build steps done")+'</span></div></div>'+
+    '<section class="card rg-ride-cta"><div class="rg-road-art" aria-hidden="true"><svg viewBox="0 0 300 220" fill="none"><path d="m0 120 70-90 55 80 75-95 100 110" stroke="currentColor"/><path d="M130 230c170-60-140-35 10-95s180-20 90-95" stroke="currentColor" stroke-width="28"/><path d="M130 230c170-60-140-35 10-95s180-20 90-95" stroke="#151617" stroke-width="20"/></svg></div><p class="rg-eyebrow">'+rgIcon('mountain')+' '+tr('READY WHEN YOU ARE')+'</p><h3>'+tr("Find your next road.")+'</h3><p class="mu">'+tr("Record your route. Keep your story.")+'</p><button type="button" class="btn" onclick="tab(\'trips\')">'+tr('Open Rides')+' <span aria-hidden="true">↗</span></button></section>'+
+    '<section class="card rg-checkin">'+rgIcon('wrench')+'<div><h3>'+tr("Garage check-in")+'</h3><p class="mu">'+(overdue?tr(overdue===1?'{count} service item needs attention.':'{count} service items need attention.',{count:overdue}):S.svc.length?tr('Nothing overdue. Keep riding.'):tr('Keep your ride in top shape.'))+'</p></div><button type="button" class="rg-text-button" onclick="tab(\'svc\')">'+tr('View service records')+' <span aria-hidden="true">→</span></button></section>'+
+    '<section class="card"><p class="rg-eyebrow">'+tr("LAST RIDE")+'</p><h3>'+esc(last?last.name:tr('The road is waiting.'))+'</h3><p class="mu">'+(last?esc(fd(last.dist))+' · '+esc(fdur(last.dur)):tr('Your saved rides will appear here after you record a trip.'))+'</p><div class="row"><button type="button" class="btn alt" onclick="tab(\'trips\')">'+tr("View rides")+'</button><button type="button" class="btn alt" onclick="tab(\'places\')">'+tr("Saved places")+'</button></div></section>';
 }
 function renderGarage(){renderBuild();$('v').insertAdjacentHTML('afterbegin',garageHero())}
 function openBuildForm(){const form=$('rg-build-form');if(!form)return;form.open=true;$('mt').focus()}
 function renderProfile(){
-  $('v').innerHTML='<section class="card"><p class="rg-eyebrow">RIDER & MOTORCYCLE</p><h3>'+esc(S.bike||'Make this garage yours.')+'</h3><p class="mu">Your motorcycle, records and riding preferences in one place.</p><div class="row"><button class="btn alt" onclick="tab(\'build\')">Edit motorcycle</button><button class="btn alt" onclick="tab(\'social\')">Rider account</button></div></section>'+
-  '<section class="card"><h3>Ride preferences</h3><p class="mu">Odometer: '+esc(fd(S.odo||0))+'</p><button class="btn alt" onclick="S.unit=S.unit===\'km\'?\'mi\':\'km\';save();render()">Distance units: '+esc(U().d)+'</button></section>'+
-  '<section class="card"><p class="rg-eyebrow">CLOUD GARAGE SYNC</p><h3>Your garage, along for the ride.</h3><p class="mu">Save or merge a private cloud copy when you choose. Your garage stays on this device by default.</p><a class="btn" href="cloud.html">Open Cloud Garage Sync ↗</a></section>';
+  $('v').innerHTML='<section class="card"><p class="rg-eyebrow">'+tr("RIDER & MOTORCYCLE")+'</p><h3>'+esc(S.bike||tr('Make this garage yours.'))+'</h3><p class="mu">'+tr("Your motorcycle, records and riding preferences in one place.")+'</p><div class="row"><button class="btn alt" onclick="tab(\'build\')">'+tr("Edit motorcycle")+'</button><button class="btn alt" onclick="tab(\'social\')">'+tr("Rider account")+'</button></div></section>'+
+  '<section class="card"><h3>'+tr("Ride preferences")+'</h3><p class="mu">'+tr('Odometer:')+' '+esc(fd(S.odo||0))+'</p><button class="btn alt" onclick="S.unit=S.unit===\'km\'?\'mi\':\'km\';save();render()">'+tr('Distance units:')+' '+esc(U().d)+'</button></section>'+
+  '<section class="card"><p class="rg-eyebrow">'+tr("CLOUD GARAGE SYNC")+'</p><h3>'+tr("Your garage, along for the ride.")+'</h3><p class="mu">'+tr("Save or merge a private cloud copy when you choose. Your garage stays on this device by default.")+'</p><a class="btn" href="cloud.html">'+tr("Open Cloud Garage Sync ↗")+'</a></section>';
 }
 /* ---------- BUILD ---------- */
 function resize(file){return new Promise(res=>{const r=new FileReader();r.onload=()=>{const im=new Image();im.onload=()=>{const m=1000,k=Math.min(1,m/Math.max(im.width,im.height));const c=document.createElement('canvas');c.width=im.width*k;c.height=im.height*k;c.getContext('2d').drawImage(im,0,0,c.width,c.height);res(c.toDataURL('image/jpeg',.72))};im.onerror=()=>res(null);im.src=r.result};r.onerror=()=>res(null);r.readAsDataURL(file)})}
@@ -607,31 +617,31 @@ function renderBuild(){
   const m=S.mods,done=m.filter(x=>x.status=='done').length,pct=m.length?Math.round(done/m.length*100):0;
   const spent=m.reduce((a,x)=>a+(+x.cost||0),0);
   $('v').innerHTML=`
-  <section class="card rg-build-overview" aria-label="Build progress">
-    <div class="stats"><div><div class="big">${pct}%</div><div class="mu">complete</div></div><div><div class="big">${done} / ${m.length}</div><div class="mu">done</div></div><div><div class="big">$${spent.toLocaleString()}</div><div class="mu">spent</div></div></div>
-    <div class="bar" role="progressbar" aria-label="Completed build steps" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${pct}"><i style="width:${pct}%"></i></div>
-    <label class="rg-field-label" for="bk">Motorcycle name</label><input id="bk" placeholder="e.g. 2019 Yamaha R6" value="${esc(S.bike)}" onchange="S.bike=this.value;save();render()">
+  <section class="card rg-build-overview" aria-label="${tr("Build progress")}">
+    <div class="stats"><div><div class="big">${pct}%</div><div class="mu">${tr("complete")}</div></div><div><div class="big">${done} / ${m.length}</div><div class="mu">${tr("done")}</div></div><div><div class="big">$${spent.toLocaleString(RGI18n.locale)}</div><div class="mu">${tr("spent")}</div></div></div>
+    <div class="bar" role="progressbar" aria-label="${tr("Completed build steps")}" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${pct}"><i style="width:${pct}%"></i></div>
+    <label class="rg-field-label" for="bk">${tr("Motorcycle name")}</label><input id="bk" placeholder="${tr("e.g. 2019 Yamaha R6")}" value="${esc(S.bike)}" onchange="S.bike=this.value;save();render()">
   </section>
-  <button type="button" class="btn rg-add-build" onclick="openBuildForm()">+ Add build step</button>
-  <details class="card rg-build-form" id="rg-build-form"><summary><b>Build step details</b></summary>
-    <label class="rg-field-label" for="mt">Build step</label><input id="mt" placeholder="e.g. Slip-on exhaust">
-    <div class="row"><div><label class="rg-field-label" for="mc">Category</label><select id="mc">${CATS.map(c=>`<option>${c}</option>`).join('')}</select></div>
-    <div><label class="rg-field-label" for="ms">Status</label><select id="ms"><option value="planned">Planned</option><option value="doing">In progress</option><option value="done">Done</option></select></div>
-    <div><label class="rg-field-label" for="mp">Cost ($)</label><input id="mp" type="number" inputmode="decimal" placeholder="0.00"></div></div>
-    <label class="rg-field-label" for="mn">Build notes</label><textarea id="mn" rows="2" placeholder="Parts, torque specs, tips"></textarea>
-    <label class="rg-field-label" for="mf">Build photos</label><input id="mf" type="file" accept="image/*" multiple>
-    <button type="button" class="btn" style="margin-top:10px" onclick="addMod()">Save build step</button>
+  <button type="button" class="btn rg-add-build" onclick="openBuildForm()">${tr("+ Add build step")}</button>
+  <details class="card rg-build-form" id="rg-build-form"><summary><b>${tr("Build step details")}</b></summary>
+    <label class="rg-field-label" for="mt">${tr("Build step")}</label><input id="mt" placeholder="${tr("e.g. Slip-on exhaust")}">
+    <div class="row"><div><label class="rg-field-label" for="mc">${tr("Category")}</label><select id="mc">${CATS.map(c=>`<option value="${esc(c)}">${tr(c)}</option>`).join('')}</select></div>
+    <div><label class="rg-field-label" for="ms">${tr("Status")}</label><select id="ms"><option value="planned">${tr("Planned")}</option><option value="doing">${tr("In progress")}</option><option value="done">${tr("Done")}</option></select></div>
+    <div><label class="rg-field-label" for="mp">${tr("Cost ($)")}</label><input id="mp" type="number" inputmode="decimal" placeholder="0.00"></div></div>
+    <label class="rg-field-label" for="mn">${tr("Build notes")}</label><textarea id="mn" rows="2" placeholder="${tr("Parts, torque specs, tips")}"></textarea>
+    <label class="rg-field-label" for="mf">${tr("Build photos")}</label><input id="mf" type="file" accept="image/*" multiple>
+    <button type="button" class="btn" style="margin-top:10px" onclick="addMod()">${tr("Save build step")}</button>
   </details>
-  <div class="rg-build-heading"><h3>Your build</h3><span class="mu">${m.length} ${m.length===1?'step':'steps'}</span></div>
-  ${m.length?m.slice().reverse().map(modCard).join(''):'<section class="card rg-empty-build"><h3>Every build starts somewhere.</h3><p class="mu">Log a planned upgrade, an ongoing project or a finished modification. Add photos to tell the story.</p><button type="button" class="btn alt" onclick="openBuildForm()">Add your first step</button></section>'}`;
+  <div class="rg-build-heading"><h3>${tr("Your build")}</h3><span class="mu">${tr(m.length===1?'{count} step':'{count} steps',{count:m.length})}</span></div>
+  ${m.length?m.slice().reverse().map(modCard).join(''):'<section class="card rg-empty-build"><h3>'+tr("Every build starts somewhere.")+'</h3><p class="mu">'+tr("Log a planned upgrade, an ongoing project or a finished modification. Add photos to tell the story.")+'</p><button type="button" class="btn alt" onclick="openBuildForm()">'+tr("Add your first step")+'</button></section>'}`;
 }
 function modCard(x){
-  return `<article class="card rg-mod-card"><div class="top"><div><b>${esc(x.title)}</b><div class="mu">${esc(x.cat)} · ${new Date(x.date).toLocaleDateString()}${x.cost?' · $'+esc(x.cost):''}</div></div>
-  <select aria-label="Build step status" style="width:auto;margin:0" onchange="setSt('${x.id}',this.value)">${[['planned','Planned'],['doing','In progress'],['done','Done']].map(o=>`<option value="${o[0]}"${x.status==o[0]?' selected':''}>${o[1]}</option>`).join('')}</select></div>
+  return `<article class="card rg-mod-card"><div class="top"><div><b>${esc(x.title)}</b><div class="mu">${esc(CATS.includes(x.cat)?tr(x.cat):x.cat)} · ${new Date(x.date).toLocaleDateString(RGI18n.locale)}${x.cost?' · $'+esc(x.cost):''}</div></div>
+  <select aria-label="${tr("Build step status")}" style="width:auto;margin:0" onchange="setSt('${x.id}',this.value)">${[['planned','Planned'],['doing','In progress'],['done','Done']].map(o=>`<option value="${o[0]}"${x.status==o[0]?' selected':''}>${tr(o[1])}</option>`).join('')}</select></div>
   ${x.notes?`<p style="margin:8px 0">${esc(x.notes)}</p>`:''}
-  ${x.photos.length?`<div class="ph">${x.photos.map((p,i)=>`<button type="button" class="rg-photo-button" onclick="zoom('${x.id}',${i})" aria-label="View photo ${i+1} of ${esc(x.title)}"><img src="${esc(p)}" alt="Build photo ${i+1}" loading="lazy"></button>`).join('')}</div>`:''}
-  <label class="btn alt sm" style="display:inline-block">+ Photos<input type="file" accept="image/*" multiple hidden onchange="addPh('${x.id}',this.files)"></label>
-  <button class="btn alt sm" onclick="delMod('${x.id}')">Delete</button> <button class="btn alt sm" onclick="shareMod('${x.id}')">Share</button></article>`;
+  ${x.photos.length?`<div class="ph">${x.photos.map((p,i)=>`<button type="button" class="rg-photo-button" onclick="zoom('${x.id}',${i})" aria-label="${esc(tr('View photo {number} of {title}',{number:i+1,title:x.title}))}"><img src="${esc(p)}" alt="${tr('Build photo {number}',{number:i+1})}" loading="lazy"></button>`).join('')}</div>`:''}
+  <label class="btn alt sm" style="display:inline-block">${tr("+ Photos")}<input type="file" accept="image/*" multiple hidden onchange="addPh('${x.id}',this.files)"></label>
+  <button class="btn alt sm" onclick="delMod('${x.id}')">${tr("Delete")}</button> <button class="btn alt sm" onclick="shareMod('${x.id}')">${tr("Share")}</button></article>`;
 }
 async function addMod(){
   const t=$('mt').value.trim();if(!t){$('mt').focus();return}
@@ -641,7 +651,7 @@ async function addMod(){
 }
 async function addPh(id,files){const m=S.mods.find(x=>x.id==id);m.photos.push(...await readPhotos(files));save();render()}
 function setSt(id,v){S.mods.find(x=>x.id==id).status=v;save();render()}
-function delMod(id){if(confirm('Delete this entry?')){S.mods=S.mods.filter(x=>x.id!=id);save();render()}}
+function delMod(id){if(confirm(tr('Delete this entry?'))){S.mods=S.mods.filter(x=>x.id!=id);save();render()}}
 function zoom(id,i){$('lbi').src=S.mods.find(x=>x.id==id).photos[i];$('lb').style.display='flex'}
 /* ---------- TRIPS ---------- */
 let cur=null,watch=null,tick=null,rideNotice='';
@@ -650,43 +660,50 @@ function hav(a,b){const r=Math.PI/180,dl=(b[0]-a[0])*r,dn=(b[1]-a[1])*r,x=Math.s
 const U=()=>S.unit=='km'?{k:1,d:'km',s:'km/h'}:{k:0.621371,d:'mi',s:'mph'};
 const fd=km=>(km*U().k).toFixed(1)+' '+U().d;
 const fdur=ms=>{const s=Math.floor(ms/1000),h=Math.floor(s/3600),m=Math.floor(s%3600/60);return h?h+'h '+m+'m':m+'m '+(s%60)+'s'};
-function trackSVG(p){
-  if(!p||p.length<2)return '<svg class="trk" viewBox="0 0 300 160"><text x="150" y="85" text-anchor="middle" fill="currentColor" opacity=".5" font-size="13">Route appears here</text></svg>';
-  const la=p.map(a=>a[0]),lo=p.map(a=>a[1]),mnA=Math.min(...la),mxA=Math.max(...la),mnO=Math.min(...lo),mxO=Math.max(...lo);
+function trackSVG(p,segments){
+  if(!p||p.length<2)return '<svg class="trk" viewBox="0 0 300 160"><text x="150" y="85" text-anchor="middle" fill="currentColor" opacity=".5" font-size="13">'+tr('Route appears here')+'</text></svg>';
+  const bounds=p.reduce((b,a)=>[Math.min(b[0],a[0]),Math.max(b[1],a[0]),Math.min(b[2],a[1]),Math.max(b[3],a[1])],[90,-90,180,-180]);
+  const [mnA,mxA,mnO,mxO]=bounds;
   const kx=Math.cos((mnA+mxA)/2*Math.PI/180),w=Math.max((mxO-mnO)*kx,1e-5),h=Math.max(mxA-mnA,1e-5),s=Math.min(270/w,130/h),ox=(300-w*s)/2,oy=(160-h*s)/2;
   const pt=a=>[(ox+(a[1]-mnO)*kx*s).toFixed(1),(oy+(mxA-a[0])*s).toFixed(1)];
-  const q=p.map(pt),e=q[q.length-1];
-  return `<svg class="trk" viewBox="0 0 300 160"><polyline points="${q.map(a=>a.join(',')).join(' ')}" fill="none" stroke="#1e6fff" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/><circle cx="${q[0][0]}" cy="${q[0][1]}" r="5" fill="#1f9d55"/><circle cx="${e[0]}" cy="${e[1]}" r="5" fill="#1e6fff"/></svg>`;
+  const q=p.map(pt),e=q[q.length-1],lines=(segments&&segments.length?segments:[p]).map(seg=>seg.map(pt));
+  return `<svg class="trk" viewBox="0 0 300 160">${lines.map(line=>`<polyline points="${line.map(a=>a.join(',')).join(' ')}" fill="none" stroke="#1e6fff" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>`).join('')}<circle cx="${q[0][0]}" cy="${q[0][1]}" r="5" fill="#1f9d55"/><circle cx="${e[0]}" cy="${e[1]}" r="5" fill="#1e6fff"/></svg>`;
 }
 function renderTrips(){
   const tot=S.trips.reduce((a,t)=>a+t.dist,0);
   $('v').innerHTML=`
   <div class="card">
-    <div class="top"><b>Record a ride</b><button class="btn alt sm" onclick="S.unit=S.unit=='km'?'mi':'km';save();render()">Units: ${U().d}</button></div>
-    <div class="row" style="margin:6px 0 10px"><input id="tn" placeholder="Trip name (e.g. Copper Canyon run)"><select id="tc"><option>🇲🇽 Mexico</option><option>🇺🇸 USA</option><option>🇲🇽🇺🇸 Both</option></select></div>
-    <div id="live" class="stats"><div><div class="big" id="ld">0.0</div><div class="mu">${U().d}</div></div><div><div class="big" id="ls">0</div><div class="mu">${U().s}</div></div><div><div class="big" id="lt">0m</div><div class="mu">time</div></div></div>
-    <div id="map" style="margin:10px 0">${trackSVG(cur&&cur.pts)}</div>
+    <div class="top"><b>${tr("Record a ride")}</b><button class="btn alt sm" onclick="S.unit=S.unit=='km'?'mi':'km';save();render()">${tr('Units:')} ${U().d}</button></div>
+    <div class="row" style="margin:6px 0 10px"><input id="tn" placeholder="${tr("Trip name (e.g. Copper Canyon run)")}" oninput="if(RGNativeRide.available)RGNativeRide.captureMetadata()"><select id="tc" onchange="if(RGNativeRide.available)RGNativeRide.captureMetadata()"><option value="🇲🇽 Mexico">${tr("🇲🇽 Mexico")}</option><option value="🇺🇸 USA">${tr("🇺🇸 USA")}</option><option value="🇲🇽🇺🇸 Both">${tr("🇲🇽🇺🇸 Both")}</option></select></div>
+    <div id="live" class="stats"><div><div class="big" id="ld">0.0</div><div class="mu">${U().d}</div></div><div><div class="big" id="ls">0</div><div class="mu">${U().s}</div></div><div><div class="big" id="lt">0m</div><div class="mu">${tr("time")}</div></div></div>
+    <div id="map" style="margin:10px 0">${trackSVG(cur&&cur.pts,cur&&cur.segments)}</div>
     <div id="rgLiveMap" class="rg-map-host" hidden></div>
-    <div class="row rg-map-row"><button type="button" id="rgLiveMapButton" class="btn alt sm" onclick="RGMaps.toggleLive(cur)">Interactive live map</button></div>
+    <div class="row rg-map-row"><button type="button" id="rgLiveMapButton" class="btn alt sm" onclick="RGMaps.toggleLive(cur)">${tr("Interactive live map")}</button></div>
     <p id="rgLiveMapStatus" class="mu rg-map-status" role="status" aria-live="polite" hidden></p>
-    <div class="mu" id="msg" role="status" aria-live="polite" aria-atomic="true">${esc(rideNotice||(cur?'Recording… keep this screen open.':'GPS needs location permission and an open screen.'))}</div>
-    <div style="margin-top:10px">${cur?'<button class="btn" onclick="stopTrack()">Stop &amp; save</button>':'<button class="btn" onclick="startTrack()">Start ride</button>'}</div>
+    <div class="mu" id="msg" role="status" aria-live="polite" aria-atomic="true">${esc(rideNotice||(RGNativeRide.available?RGNativeRide.statusText():(cur?tr('Recording… keep this screen open.'):tr('GPS needs location permission and an open screen.'))))}</div>
+    <div style="margin-top:10px">${RGNativeRide.available?RGNativeRide.controlsHTML():(cur?'<button class="btn" onclick="stopTrack()">'+tr('Stop & save')+'</button>':'<button class="btn" onclick="startTrack()">'+tr('Start ride')+'</button>')}</div>
   </div>
-  <div class="mu" style="margin:4px 2px 8px">${S.trips.length} trips · ${fd(tot)} total</div>
-  ${S.trips.slice().reverse().map((t,i)=>`<div class="card"><div class="top"><div><b>${esc(t.name)}</b><div class="mu">${esc(t.country)} · ${new Date(t.date).toLocaleDateString()}</div></div><button class="btn alt sm" onclick="delTrip('${t.id}')">Delete</button></div>
-  <div id="rgTripPreview${i}">${trackSVG(t.pts)}</div>
+  <div class="mu" style="margin:4px 2px 8px">${tr(S.trips.length===1?'{count} trip · {distance} total':'{count} trips · {distance} total',{count:S.trips.length,distance:fd(tot)})}</div>
+  ${S.trips.slice().reverse().map((t,i)=>`<div class="card"><div class="top"><div><b>${esc(t.name)}</b><div class="mu">${esc(['🇲🇽 Mexico','🇺🇸 USA','🇲🇽🇺🇸 Both'].includes(t.country)?tr(t.country):t.country)} · ${new Date(t.date).toLocaleDateString(RGI18n.locale)}</div></div><button class="btn alt sm" onclick="delTrip('${t.id}')">${tr("Delete")}</button></div>
+  <div id="rgTripPreview${i}">${trackSVG(t.pts,t.segments)}</div>
   <div id="rgTripMap${i}" class="rg-map-host" hidden></div>
-  <div class="row rg-map-row"><button type="button" id="rgTripButton${i}" class="btn alt sm" onclick="RGMaps.toggleTrip(${i},S.trips)">Interactive map</button></div>
+  <div class="row rg-map-row"><button type="button" id="rgTripButton${i}" class="btn alt sm" onclick="RGMaps.toggleTrip(${i},S.trips)">${tr("Interactive map")}</button></div>
   <p id="rgTripStatus${i}" class="mu rg-map-status" role="status" aria-live="polite" hidden></p>
-  <div class="stats" style="margin-top:8px"><div><b>${fd(t.dist)}</b><div class="mu">distance</div></div><div><b>${fdur(t.dur)}</b><div class="mu">ride time</div></div><div><b>${(t.max*U().k).toFixed(0)} ${U().s}</b><div class="mu">top speed</div></div></div></div>`).join('')}`;
+  <div class="stats" style="margin-top:8px"><div><b>${fd(t.dist)}</b><div class="mu">${tr("distance")}</div></div><div><b>${fdur(t.dur)}</b><div class="mu">${tr("ride time")}</div></div><div><b>${(t.max*U().k).toFixed(0)} ${U().s}</b><div class="mu">${tr("top speed")}</div></div></div></div>`).join('')}`;
+  if(cur&&RGNativeRide.available){
+    $('tn').value=cur.name||'';
+    if(cur.country)$('tc').value=cur.country;
+    $('tn').disabled=cur.status==='stopped';$('tc').disabled=cur.status==='stopped';
+  }
   if(cur)upd();
 }
 function msg(t){const e=$('msg');if(e)e.textContent=t}
 function startTrack(){
+  if(RGNativeRide.available)return RGNativeRide.start();
   rideNotice='';
-  if(!navigator.geolocation){msg('GPS is not available in this browser.');return}
+  if(!navigator.geolocation){msg(tr("GPS is not available in this browser."));return}
   cur={pts:[],dist:0,max:0,sp:0,t0:Date.now()};
-  watch=navigator.geolocation.watchPosition(onPos,e=>{msg(e.code==1?'Location permission denied. Allow it in your browser settings.':'Could not get GPS signal.')},{enableHighAccuracy:true,maximumAge:2000,timeout:20000});
+  watch=navigator.geolocation.watchPosition(onPos,e=>{msg(e.code==1?tr("Location permission denied. Allow it in your browser settings."):tr("Could not get GPS signal."))},{enableHighAccuracy:true,maximumAge:2000,timeout:20000});
   tick=setInterval(upd,1000);renderTrips();
 }
 function onPos(p){
@@ -697,24 +714,54 @@ function onPos(p){
 }
 function upd(){
   if(!cur||S.tab!='trips'||!$('ld'))return;
-  $('ld').textContent=(cur.dist*U().k).toFixed(1);$('ls').textContent=Math.round(cur.sp*U().k);$('lt').textContent=fdur(Date.now()-cur.t0);
-  $('map').innerHTML=trackSVG(cur.pts);
+  $('ld').textContent=(cur.dist*U().k).toFixed(1);$('ls').textContent=Math.round(cur.sp*U().k);$('lt').textContent=fdur(RGNativeRide.available?cur.durationMs:Date.now()-cur.t0);
+  $('map').innerHTML=trackSVG(cur.pts,cur.segments);
   if(window.RGMaps)window.RGMaps.updateLive(cur);
 }
 function stopTrack(){
+  if(RGNativeRide.available)return RGNativeRide.stop();
   navigator.geolocation.clearWatch(watch);clearInterval(tick);
   if(cur.pts.length>1){
     const step=Math.ceil(cur.pts.length/400);
-    S.trips.push({id:'t'+Date.now(),name:($('tn').value.trim()||'Ride '+new Date().toLocaleDateString()),country:$('tc').value,date:cur.t0,dist:cur.dist,dur:Date.now()-cur.t0,max:cur.max,pts:cur.pts.filter((_,i)=>i%step==0)});S.odo=(S.odo||0)+cur.dist;
+    S.trips.push({id:'t'+Date.now(),name:($('tn').value.trim()||tr('Ride {date}',{date:new Date().toLocaleDateString(RGI18n.locale)})),country:$('tc').value,date:cur.t0,dist:cur.dist,dur:Date.now()-cur.t0,max:cur.max,pts:cur.pts.filter((_,i)=>i%step==0)});S.odo=(S.odo||0)+cur.dist;
     save();
   }else{
     rideNotice=cur.pts.length===0
-      ? 'Ride not saved: no usable GPS locations were recorded. GPS can be weak indoors. Allow location access and precise location, then try outdoors with the app open and the screen unlocked.'
-      : 'Ride not saved: only one usable GPS location was recorded. The tracker needs two usable locations about 10 metres (33 feet) apart. Try moving outdoors with the app open and the screen unlocked.';
+      ? tr("Ride not saved: no usable GPS locations were recorded. GPS can be weak indoors. Allow location access and precise location, then try outdoors with the app open and the screen unlocked.")
+      : tr("Ride not saved: only one usable GPS location was recorded. The tracker needs two usable locations about 10 metres (33 feet) apart. Try moving outdoors with the app open and the screen unlocked.");
   }
   cur=null;renderTrips();
 }
-function delTrip(id){if(confirm('Delete this trip?')){S.trips=S.trips.filter(t=>t.id!=id);save();render()}}
+function delTrip(id){if(confirm(tr("Delete this trip?"))){S.trips=S.trips.filter(t=>t.id!=id);save();render()}}
+// Read/append/odometer update share one transaction. A native session is only
+// acknowledged after oncomplete, and the deterministic ID makes recovery safe.
+function importNativeTrip(trip){return garageWrite(()=>importNativeTripTransaction(trip))}
+async function importNativeTripTransaction(trip){
+  const db=await idb();
+  return new Promise((resolve,reject)=>{
+    const tx=db.transaction('kv','readwrite'),store=tx.objectStore('kv');
+    let stored,added=false,failure;
+    const get=store.get('s');
+    get.onsuccess=()=>{try{
+      stored=get.result||JSON.parse(JSON.stringify(S));
+      if(!stored.trips.some(t=>t.id===trip.id)){
+        added=true;
+        stored.trips.push(trip);
+        stored.odo=(Number(stored.odo)||0)+trip.dist;
+        store.put(stored,'s');
+      }
+    }catch(error){failure=error;tx.abort()}};
+    tx.oncomplete=()=>{
+      db.close();
+      if(added&&!S.trips.some(t=>t.id===trip.id)){
+        S.trips.push(trip);S.odo=(Number(S.odo)||0)+trip.dist;
+      }
+      resolve();
+    };
+    tx.onerror=()=>{db.close();reject(failure||tx.error||Error(tr("Could not save ride to garage storage.")))};
+    tx.onabort=()=>{db.close();reject(failure||tx.error||Error(tr("Garage storage transaction was interrupted.")))};
+  });
+}
 /* ---------- PLACES ---------- */
 const PC=['Gas','Food','Hotel','Parts / mechanic','Scenic road','Border crossing','Other'];
 const COORD=/^-?\d+(\.\d+)?\s*,\s*-?\d+(\.\d+)?$/;
@@ -726,31 +773,31 @@ function navURL(p,app){
 }
 function renderPlaces(){
   $('v').innerHTML=`
-  <section class="card" aria-label="Saved places interactive map">
-    <div class="top"><div><b>🗺️ Your saved places map</b>
-      <p class="mu" style="margin:6px 0">Explore your favorite stops. Places saved with latitude and longitude appear as map pins; address-only places still work with navigation links.</p>
+  <section class="card" aria-label="${tr('Saved places interactive map')}">
+    <div class="top"><div><b>${tr("🗺️ Your saved places map")}</b>
+      <p class="mu" style="margin:6px 0">${tr("Explore your favorite stops. Places saved with latitude and longitude appear as map pins; address-only places still work with navigation links.")}</p>
     </div></div>
-    <div class="row rg-map-row"><button type="button" class="btn alt sm" id="rgPlacesMapButton" onclick="RGMaps.togglePlaces(S.places)">Show places map</button></div>
+    <div class="row rg-map-row"><button type="button" class="btn alt sm" id="rgPlacesMapButton" onclick="RGMaps.togglePlaces(S.places)">${tr("Show places map")}</button></div>
     <div id="rgPlacesMap" class="rg-map-host" hidden></div>
     <p id="rgPlacesMapStatus" class="mu rg-map-status" role="status" aria-live="polite" hidden></p>
   </section>
-  <details class="card"${S.places.length?'':' open'}><summary><b>+ Save a place</b></summary>
-    <input id="pn" placeholder="Name (e.g. Pemex Ciudad Delicias)">
-    <div class="row"><input id="pa" placeholder="Address or coordinates (28.19,-105.47)"><button class="btn alt" style="margin-top:6px" onclick="myLoc()">📍 Use my location</button></div>
-    <div class="row"><select id="pt">${PC.map(c=>`<option>${c}</option>`).join('')}</select><select id="pc"><option>🇲🇽 Mexico</option><option>🇺🇸 USA</option></select></div>
-    <textarea id="pk" rows="2" placeholder="Notes: hours, fuel type, road conditions"></textarea>
-    <button class="btn" style="margin-top:10px" onclick="addPlace()">Save place</button>
+  <details class="card"${S.places.length?'':' open'}><summary><b>${tr("+ Save a place")}</b></summary>
+    <input id="pn" placeholder="${tr("Name (e.g. Pemex Ciudad Delicias)")}">
+    <div class="row"><input id="pa" placeholder="${tr("Address or coordinates (28.19,-105.47)")}"><button class="btn alt" style="margin-top:6px" onclick="myLoc()">${tr("📍 Use my location")}</button></div>
+    <div class="row"><select id="pt">${PC.map(c=>`<option value="${esc(c)}">${tr(c)}</option>`).join('')}</select><select id="pc"><option value="🇲🇽 Mexico">${tr("🇲🇽 Mexico")}</option><option value="🇺🇸 USA">${tr("🇺🇸 USA")}</option></select></div>
+    <textarea id="pk" rows="2" placeholder="${tr("Notes: hours, fuel type, road conditions")}"></textarea>
+    <button class="btn" style="margin-top:10px" onclick="addPlace()">${tr("Save place")}</button>
     <div class="mu" id="pm" style="margin-top:6px"></div>
   </details>
-  ${S.places.length?S.places.slice().reverse().map(p=>`<div class="card"><div class="top"><div><b>${esc(p.name)}</b><div class="mu">${esc(p.cat)} · ${esc(p.country)}</div></div><button class="btn alt sm" onclick="delPlace('${p.id}')">Delete</button></div>
+  ${S.places.length?S.places.slice().reverse().map(p=>`<div class="card"><div class="top"><div><b>${esc(p.name)}</b><div class="mu">${esc(PC.includes(p.cat)?tr(p.cat):p.cat)} · ${esc(['🇲🇽 Mexico','🇺🇸 USA'].includes(p.country)?tr(p.country):p.country)}</div></div><button class="btn alt sm" onclick="delPlace('${p.id}')">${tr("Delete")}</button></div>
   <div class="mu" style="margin:6px 0">${esc(p.coords||p.addr)}</div>${p.notes?`<p style="margin:6px 0">${esc(p.notes)}</p>`:''}
-  <div class="row" style="gap:6px"><a class="btn sm" href="${navURL(p,'g')}" target="_blank" rel="noopener">Google Maps</a><a class="btn alt sm" href="${navURL(p,'w')}" target="_blank" rel="noopener">Waze</a><a class="btn alt sm" href="${navURL(p,'a')}" target="_blank" rel="noopener">Apple Maps</a></div></div>`).join(''):'<p class="mu" style="text-align:center">Save gas stops, hotels, shops and favorite roads, then tap Navigate to ride there.</p>'}`;
+  <div class="row" style="gap:6px"><a class="btn sm" href="${navURL(p,'g')}" target="_blank" rel="noopener">Google Maps</a><a class="btn alt sm" href="${navURL(p,'w')}" target="_blank" rel="noopener">Waze</a><a class="btn alt sm" href="${navURL(p,'a')}" target="_blank" rel="noopener">Apple Maps</a></div></div>`).join(''):'<p class="mu" style="text-align:center">'+tr('Save gas stops, hotels, shops and favorite roads, then tap Navigate to ride there.')+'</p>'}`;
 }
 function myLoc(){
   const m=$('pm');
-  if(!navigator.geolocation){m.textContent='GPS is not available in this browser.';return}
-  m.textContent='Getting location…';
-  navigator.geolocation.getCurrentPosition(p=>{$('pa').value=p.coords.latitude.toFixed(5)+','+p.coords.longitude.toFixed(5);m.textContent='Location filled in.'},e=>{m.textContent=e.code==1?'Location permission denied.':'Could not get GPS signal.'},{enableHighAccuracy:true,timeout:15000});
+  if(!navigator.geolocation){m.textContent=tr("GPS is not available in this browser.");return}
+  m.textContent=tr("Getting location…");
+  navigator.geolocation.getCurrentPosition(p=>{$('pa').value=p.coords.latitude.toFixed(5)+','+p.coords.longitude.toFixed(5);m.textContent=tr("Location filled in.")},e=>{m.textContent=e.code==1?tr("Location permission denied."):tr("Could not get GPS signal.")},{enableHighAccuracy:true,timeout:15000});
 }
 function addPlace(){
   const n=$('pn').value.trim(),a=$('pa').value.trim();
@@ -759,35 +806,35 @@ function addPlace(){
   S.places.push({id:'p'+Date.now(),name:n,cat:$('pt').value,country:$('pc').value,notes:$('pk').value.trim(),coords:COORD.test(a)?a.replace(/\s+/g,''):'',addr:COORD.test(a)?'':a});
   save();render();
 }
-function delPlace(id){if(confirm('Delete this place?')){S.places=S.places.filter(p=>p.id!=id);save();render()}}
+function delPlace(id){if(confirm(tr("Delete this place?"))){S.places=S.places.filter(p=>p.id!=id);save();render()}}
 /* ---------- SERVICE ---------- */
 const PRE=[['Oil & filter',6000,6],['Chain clean & lube',600,0],['Chain adjust / wear check',1500,0],['Brake pads check',10000,12],['Brake fluid',0,24],['Coolant',0,24],['Air filter',12000,12],['Spark plugs',20000,0],['Valve clearance check',24000,0],['Tires check / replace',10000,24]];
 const DAY=864e5;
 function svcStat(t){
   const r=[];let bad=0,soon=0;
-  if(t.km){const left=t.lastOdo+t.km-(S.odo||0),v=Math.round(Math.abs(left)*U().k).toLocaleString()+' '+U().d;r.push(left<0?'overdue by '+v:'in '+v);if(left<0)bad=1;else if(left<=t.km*.15)soon=1}
-  if(t.mo){const d=Math.round((t.lastDate+t.mo*30.44*DAY-Date.now())/DAY);r.push(d<0?'overdue by '+(-d)+' days':'in '+d+' days');if(d<0)bad=1;else if(d<=30)soon=1}
-  return {txt:r.join(' · ')||'no interval',cls:bad?'s-bad':soon?'s-doing':'s-done',bad,soon};
+  if(t.km){const left=t.lastOdo+t.km-(S.odo||0),v=Math.round(Math.abs(left)*U().k).toLocaleString(RGI18n.locale)+' '+U().d;r.push(tr(left<0?'overdue by {distance}':'in {distance}',{distance:v}));if(left<0)bad=1;else if(left<=t.km*.15)soon=1}
+  if(t.mo){const d=Math.round((t.lastDate+t.mo*30.44*DAY-Date.now())/DAY);r.push(tr(d<0?'overdue by {count} days':'in {count} days',{count:Math.abs(d)}));if(d<0)bad=1;else if(d<=30)soon=1}
+  return {txt:r.join(' · ')||tr('no interval'),cls:bad?'s-bad':soon?'s-doing':'s-done',bad,soon};
 }
 function renderSvc(){
   const rows=S.svc.map(t=>({t,s:svcStat(t)})).sort((a,b)=>(b.s.bad-a.s.bad)||(b.s.soon-a.s.soon));
   const nb=rows.filter(r=>r.s.bad).length;
   $('v').innerHTML=`
-  <div class="card"><b>Odometer</b>
-    <div class="row"><input id="od" type="number" inputmode="decimal" value="${Math.round((S.odo||0)*U().k)}"><button class="btn" style="margin-top:6px" onclick="setOdo()">Update (${U().d})</button></div>
-    <div class="mu" style="margin-top:6px">${nb?nb+' overdue.':'Nothing overdue.'} Recorded trips add to your odometer automatically.</div>
+  <div class="card"><b>${tr("Odometer")}</b>
+    <div class="row"><input id="od" type="number" inputmode="decimal" value="${Math.round((S.odo||0)*U().k)}"><button class="btn" style="margin-top:6px" onclick="setOdo()">${tr('Update ({unit})',{unit:U().d})}</button></div>
+    <div class="mu" style="margin-top:6px">${nb?tr('{count} overdue.',{count:nb}):tr('Nothing overdue.')} ${tr('Recorded trips add to your odometer automatically.')}</div>
   </div>
-  ${S.svc.length?'':`<div class="card"><p style="margin-top:0">Start with common sport-bike items. They count from your current odometer and today, so edit each one to when you actually did it last.</p><button class="btn" onclick="seedSvc()">Add common items</button></div>`}
-  <details class="card"><summary><b>+ Add service item</b></summary>
-    <input id="sn" placeholder="Item (e.g. Fork oil)">
-    <div class="row"><input id="si" type="number" inputmode="decimal" placeholder="Every (${U().d}), blank = none"><input id="sm" type="number" inputmode="numeric" placeholder="Every (months), blank = none"></div>
-    <button class="btn" style="margin-top:10px" onclick="addSvc()">Save item</button>
+  ${S.svc.length?'':`<div class="card"><p style="margin-top:0">${tr("Start with common sport-bike items. They count from your current odometer and today, so edit each one to when you actually did it last.")}</p><button class="btn" onclick="seedSvc()">${tr("Add common items")}</button></div>`}
+  <details class="card"><summary><b>${tr("+ Add service item")}</b></summary>
+    <input id="sn" placeholder="${tr("Item (e.g. Fork oil)")}">
+    <div class="row"><input id="si" type="number" inputmode="decimal" placeholder="${tr('Every ({unit}), blank = none',{unit:U().d})}"><input id="sm" type="number" inputmode="numeric" placeholder="${tr("Every (months), blank = none")}"></div>
+    <button class="btn" style="margin-top:10px" onclick="addSvc()">${tr("Save item")}</button>
   </details>
-  ${rows.map(({t,s})=>`<div class="card"><div class="top"><div><b>${esc(t.name)}</b><div class="mu">${t.km?'every '+Math.round(t.km*U().k).toLocaleString()+' '+U().d:''}${t.km&&t.mo?' / ':''}${t.mo?'every '+t.mo+' mo':''}</div></div><span class="pill ${s.cls}">${s.txt}</span></div>
-  <div class="mu" style="margin:6px 0">Last done: ${Math.round(t.lastOdo*U().k).toLocaleString()} ${U().d} · ${new Date(t.lastDate).toLocaleDateString()}</div>
-  <button class="btn sm" onclick="doneSvc('${t.id}')">Mark done now</button> <button class="btn alt sm" onclick="delSvc('${t.id}')">Delete</button>
-  <details style="margin-top:8px"><summary class="mu">Edit last service</summary><div class="row"><input id="lo_${t.id}" type="number" inputmode="decimal" placeholder="Odometer (${U().d})" value="${Math.round(t.lastOdo*U().k)}"><input id="ld_${t.id}" type="date" value="${new Date(t.lastDate).toISOString().slice(0,10)}"></div><button class="btn alt sm" style="margin-top:8px" onclick="saveLast('${t.id}')">Save</button></details></div>`).join('')}
-  ${S.slog.length?`<div class="card"><b>Service history</b>${S.slog.slice(-10).reverse().map(l=>`<div class="mu" style="margin-top:6px">${new Date(l.date).toLocaleDateString()} · ${esc(l.n)} · ${Math.round(l.odo*U().k).toLocaleString()} ${U().d}</div>`).join('')}</div>`:''}`;
+  ${rows.map(({t,s})=>`<div class="card"><div class="top"><div><b>${esc(t.name)}</b><div class="mu">${t.km?tr('every {distance}',{distance:Math.round(t.km*U().k).toLocaleString(RGI18n.locale)+' '+U().d}):''}${t.km&&t.mo?' / ':''}${t.mo?tr('every {count} mo',{count:t.mo}):''}</div></div><span class="pill ${s.cls}">${s.txt}</span></div>
+  <div class="mu" style="margin:6px 0">${tr('Last done: {odometer} · {date}',{odometer:Math.round(t.lastOdo*U().k).toLocaleString(RGI18n.locale)+' '+U().d,date:new Date(t.lastDate).toLocaleDateString(RGI18n.locale)})}</div>
+  <button class="btn sm" onclick="doneSvc('${t.id}')">${tr("Mark done now")}</button> <button class="btn alt sm" onclick="delSvc('${t.id}')">${tr("Delete")}</button>
+  <details style="margin-top:8px"><summary class="mu">${tr("Edit last service")}</summary><div class="row"><input id="lo_${t.id}" type="number" inputmode="decimal" placeholder="${tr('Odometer ({unit})',{unit:U().d})}" value="${Math.round(t.lastOdo*U().k)}"><input id="ld_${t.id}" type="date" value="${new Date(t.lastDate).toISOString().slice(0,10)}"></div><button class="btn alt sm" style="margin-top:8px" onclick="saveLast('${t.id}')">${tr("Save")}</button></details></div>`).join('')}
+  ${S.slog.length?`<div class="card"><b>${tr("Service history")}</b>${S.slog.slice(-10).reverse().map(l=>`<div class="mu" style="margin-top:6px">${new Date(l.date).toLocaleDateString(RGI18n.locale)} · ${esc(l.n)} · ${Math.round(l.odo*U().k).toLocaleString(RGI18n.locale)} ${U().d}</div>`).join('')}</div>`:''}`;
 }
 function setOdo(){S.odo=(+$('od').value||0)/U().k;save();render()}
 function seedSvc(){PRE.forEach((p,i)=>S.svc.push({id:'s'+Date.now()+i,name:p[0],km:p[1],mo:p[2],lastOdo:S.odo||0,lastDate:Date.now()}));save();render()}
@@ -832,17 +879,17 @@ function renderFuel(){
   const fm=v=>v.toFixed(1)+' '+effU();
   $('v').innerHTML=`
   <div class="card">
-    <div class="stats"><div><div class="big">${series.length?fm(effN(td,tl)).split(' ')[0]:'—'}</div><div class="mu">avg ${effU()}</div></div><div><div class="big">${series.length?series[series.length-1].toFixed(1):'—'}</div><div class="mu">last tank</div></div><div><div class="big">${series.length?Math.max(...series).toFixed(1):'—'}</div><div class="mu">best</div></div></div>
+    <div class="stats"><div><div class="big">${series.length?fm(effN(td,tl)).split(' ')[0]:'—'}</div><div class="mu">${tr('avg')} ${effU()}</div></div><div><div class="big">${series.length?series[series.length-1].toFixed(1):'—'}</div><div class="mu">${tr("last tank")}</div></div><div><div class="big">${series.length?Math.max(...series).toFixed(1):'—'}</div><div class="mu">${tr("best")}</div></div></div>
     ${bars(series.slice(-20))}
-    <div class="mu" style="margin-top:8px">${Object.keys(sp).length?'Spent: '+Object.entries(sp).map(([k,v])=>k+' '+Math.round(v).toLocaleString()).join(' · '):'Log two full-tank fill-ups to see your mileage.'}</div>
+    <div class="mu" style="margin-top:8px">${Object.keys(sp).length?tr('Spent:')+' '+Object.entries(sp).map(([k,v])=>k+' '+Math.round(v).toLocaleString(RGI18n.locale)).join(' · '):tr('Log two full-tank fill-ups to see your mileage.')}</div>
   </div>
-  <details class="card"${S.fuel.length?'':' open'}><summary><b>+ Log a fill-up</b></summary>
-    <div class="row"><input id="fd" type="date" value="${new Date().toISOString().slice(0,10)}"><input id="fo" type="number" inputmode="decimal" placeholder="Odometer (${U().d})" value="${S.odo?Math.round(S.odo*U().k):''}"></div>
-    <div class="row"><input id="fv" type="number" inputmode="decimal" placeholder="${S.unit=='km'?'Liters':'Gallons'}"><input id="fc" type="number" inputmode="decimal" placeholder="Total cost"><select id="fr"><option>MXN</option><option>USD</option></select></div>
-    <label class="mu" style="display:block;margin-top:8px"><input type="checkbox" id="fu" checked style="width:auto;margin-right:6px">Filled to full (needed to calculate mileage)</label>
-    <button class="btn" style="margin-top:10px" onclick="addFuel()">Save fill-up</button>
+  <details class="card"${S.fuel.length?'':' open'}><summary><b>${tr("+ Log a fill-up")}</b></summary>
+    <div class="row"><input id="fd" type="date" value="${new Date().toISOString().slice(0,10)}"><input id="fo" type="number" inputmode="decimal" placeholder="${tr('Odometer ({unit})',{unit:U().d})}" value="${S.odo?Math.round(S.odo*U().k):''}"></div>
+    <div class="row"><input id="fv" type="number" inputmode="decimal" placeholder="${tr(S.unit=='km'?'Liters':'Gallons')}"><input id="fc" type="number" inputmode="decimal" placeholder="${tr("Total cost")}"><select id="fr"><option>MXN</option><option>USD</option></select></div>
+    <label class="mu" style="display:block;margin-top:8px"><input type="checkbox" id="fu" checked style="width:auto;margin-right:6px">${tr("Filled to full (needed to calculate mileage)")}</label>
+    <button class="btn" style="margin-top:10px" onclick="addFuel()">${tr("Save fill-up")}</button>
   </details>
-  ${ord.slice().reverse().map(e=>`<div class="card"><div class="top"><div><b>${(e.l*VU().f).toFixed(2)} ${VU().n}</b> · ${esc(e.cur)} ${e.cost.toFixed(2)}<div class="mu">${new Date(e.date).toLocaleDateString()} · ${Math.round(e.odo*U().k).toLocaleString()} ${U().d}${e.full?'':' · partial'}</div></div><button class="btn alt sm" onclick="delFuel('${e.id}')">Delete</button></div>
+  ${ord.slice().reverse().map(e=>`<div class="card"><div class="top"><div><b>${(e.l*VU().f).toFixed(2)} ${VU().n}</b> · ${esc(e.cur)} ${e.cost.toFixed(2)}<div class="mu">${new Date(e.date).toLocaleDateString(RGI18n.locale)} · ${Math.round(e.odo*U().k).toLocaleString(RGI18n.locale)} ${U().d}${e.full?'':' · '+tr('partial')}</div></div><button class="btn alt sm" onclick="delFuel('${e.id}')">${tr("Delete")}</button></div>
   <div class="mu" style="margin-top:6px">${e.cost&&e.l?esc(e.cur)+' '+(e.cost/(e.l*VU().f)).toFixed(2)+'/'+VU().n:''}${c[e.id]?' · <b>'+fm(effN(c[e.id].d,c[e.id].l))+'</b>'+(S.unit=='km'?' ('+(100*c[e.id].l/c[e.id].d).toFixed(1)+' L/100km)':''):''}</div></div>`).join('')}`;
 }
 function addFuel(){
@@ -866,74 +913,75 @@ function expFile(){
     a.href=url;a.download='ride-garage-backup-'+new Date().toISOString().slice(0,10)+'.json';
     document.body.appendChild(a);a.click();a.remove();
     setTimeout(()=>URL.revokeObjectURL(url),60000);
-    bmsg('Backup download requested ('+Math.ceil(b.size/1024)+' KB). Check your Files/Downloads before relying on it. If nothing saved, use Show backup text.');
-  }catch(e){bmsg('Download unavailable. Use Show backup text.')}
+    bmsg(tr('Backup download requested ({size} KB). Check your Files/Downloads before relying on it. If nothing saved, use Show backup text.',{size:Math.ceil(b.size/1024)}));
+  }catch(e){bmsg(tr("Download unavailable. Use Show backup text."))}
 }
 function expText(){
   const t=$('bt');t.value=bkJSON();t.focus();t.select();
-  bmsg('Backup text ready ('+Math.ceil(t.value.length/1024)+' KB). Copy all of it and save it somewhere safe.');
+  bmsg(tr('Backup text ready ({size} KB). Copy all of it and save it somewhere safe.',{size:Math.ceil(t.value.length/1024)}));
 }
 function validBackup(txt){
-  if(typeof txt!=='string'||!txt.trim()||txt.length>50*1024*1024)throw Error('The file is empty or exceeds 50 MB.');
+  if(typeof txt!=='string'||!txt.trim()||txt.length>50*1024*1024)throw Error(tr("The file is empty or exceeds 50 MB."));
   const d=JSON.parse(txt);
-  if(!d||typeof d!=='object'||Array.isArray(d))throw Error('Not a Ride Garage backup.');
+  if(!d||typeof d!=='object'||Array.isArray(d))throw Error(tr("Not a Ride Garage backup."));
   const fields=['mods','trips','places','svc','slog','fuel'];
-  if(!Array.isArray(d.mods))throw Error('Missing motorcycle build records.');
+  if(!Array.isArray(d.mods))throw Error(tr("Missing motorcycle build records."));
   for(const k of fields){
-    if(d[k]!==undefined&&!Array.isArray(d[k]))throw Error('Invalid '+k+' records.');
-    if(Array.isArray(d[k])&&!d[k].every(x=>x&&typeof x==='object'&&!Array.isArray(x)))throw Error('Invalid '+k+' item.');
+    if(d[k]!==undefined&&!Array.isArray(d[k]))throw Error(tr('Invalid {type} records.',{type:k}));
+    if(Array.isArray(d[k])&&!d[k].every(x=>x&&typeof x==='object'&&!Array.isArray(x)))throw Error(tr('Invalid {type} item.',{type:k}));
   }
-  if(d.unit!==undefined&&!['km','mi'].includes(d.unit))throw Error('Invalid distance unit.');
-  if(d.bike!==undefined&&typeof d.bike!=='string')throw Error('Invalid bike name.');
-  if(d.odo!==undefined&&(!Number.isFinite(d.odo)||d.odo<0))throw Error('Invalid odometer.');
+  if(d.unit!==undefined&&!['km','mi'].includes(d.unit))throw Error(tr("Invalid distance unit."));
+  if(d.bike!==undefined&&typeof d.bike!=='string')throw Error(tr("Invalid bike name."));
+  if(d.odo!==undefined&&(!Number.isFinite(d.odo)||d.odo<0))throw Error(tr("Invalid odometer."));
   return {
     mods:d.mods,trips:d.trips||[],places:d.places||[],svc:d.svc||[],
     slog:d.slog||[],fuel:d.fuel||[],odo:d.odo??0,
     unit:d.unit||'km',bike:d.bike||'',tab:'build'
   };
 }
-function persistBackup(d){
+function persistBackup(d){return garageWrite(()=>writeGarageState(d))}
+function writeGarageState(d){
   return idb().then(db=>new Promise((resolve,reject)=>{
     const tx=db.transaction('kv','readwrite');
     tx.oncomplete=()=>{db.close();resolve()};
-    tx.onerror=()=>{db.close();reject(tx.error||Error('Storage error'))};
-    tx.onabort=()=>{db.close();reject(tx.error||Error('Storage aborted'))};
+    tx.onerror=()=>{db.close();reject(tx.error||Error(tr("Storage error")))};
+    tx.onabort=()=>{db.close();reject(tx.error||Error(tr("Storage aborted")))};
     tx.objectStore('kv').put(d,'s');
   }));
 }
 async function applyBk(txt){
   let restored;
   try{restored=validBackup(txt)}
-  catch(e){bmsg('Backup not restored: '+(e.message||'invalid backup'));return}
-  const summary='Builds: '+restored.mods.length+', trips: '+restored.trips.length+', places: '+restored.places.length+', service: '+restored.svc.length+', fuel: '+restored.fuel.length+'.';
-  if(!confirm('This will REPLACE your current garage records on this device.\n\nImported backup: '+summary+'\n\nDownload a copy of your current garage first. Continue?')){
-    bmsg('Restore cancelled. Your current garage was not replaced.');return;
+  catch(e){bmsg(tr('Backup not restored: {error}',{error:e.message||tr('invalid backup')}));return}
+  const summary=tr('Builds: {builds}, trips: {trips}, places: {places}, service: {service}, fuel: {fuel}.',{builds:restored.mods.length,trips:restored.trips.length,places:restored.places.length,service:restored.svc.length,fuel:restored.fuel.length});
+  if(!confirm(tr('This will REPLACE your current garage records on this device.\n\nImported backup: {summary}\n\nDownload a copy of your current garage first. Continue?',{summary}))){
+    bmsg(tr("Restore cancelled. Your current garage was not replaced."));return;
   }
   try{
     await persistBackup(restored);
-    S=restored;render();bmsg('Backup restored and saved. '+summary);
-  }catch(e){bmsg('Restore failed: unable to save to device storage. Your current garage was kept.')}
+    S=restored;render();bmsg(tr('Backup restored and saved. {summary}',{summary}));
+  }catch(e){bmsg(tr("Restore failed: unable to save to device storage. Your current garage was kept."))}
 }
 function impText(){applyBk($('bt').value)}
 function impFile(f){
   if(!f)return;
-  if(f.size>50*1024*1024){bmsg('File is larger than the 50 MB restore limit.');return}
+  if(f.size>50*1024*1024){bmsg(tr("File is larger than the 50 MB restore limit."));return}
   const r=new FileReader();
   r.onload=()=>applyBk(r.result);
-  r.onerror=()=>bmsg('Could not read the selected backup file.');
+  r.onerror=()=>bmsg(tr("Could not read the selected backup file."));
   r.readAsText(f);
 }
 /* ---------- SOCIAL ---------- */
 let SB=null,lastUid,ME=null,PROF=null,FEED=[],MYLIKES=new Set(),BLOCKS=new Set(),OPEN=null,MENU=null,ARM=null,CMTS={},draft=null;
 const RULES="Community rules: Post motorcycle-related content only. No harassment, hate, nudity, violence or illegal activity. Do not post other people's private information or your home address. You can report posts and block riders. Posts or accounts that break these rules may be removed. You keep ownership of what you post and allow this app to show it to other riders.";
-function loadSB(){return new Promise((res,rej)=>{if(window.supabase)return res();const x=document.createElement('script');x.src='https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.49.4/dist/umd/supabase.js';x.onload=res;x.onerror=()=>rej(new Error('Could not load the community service. Check your connection.'));document.head.appendChild(x)})}
+function loadSB(){return new Promise((res,rej)=>{if(window.supabase)return res();const x=document.createElement('script');x.src='https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.49.4/dist/umd/supabase.js';x.onload=res;x.onerror=()=>rej(new Error(tr("Could not load the community service. Check your connection.")));document.head.appendChild(x)})}
 
 let rgClientPending=null;
 async function rgGetClient(){
   if(SB)return SB;
   if(rgClientPending)return rgClientPending;
   const C=window.RG_CONFIG||{};
-  if(!C.SUPABASE_URL||!C.SUPABASE_KEY)throw Error('Cloud features are not configured.');
+  if(!C.SUPABASE_URL||!C.SUPABASE_KEY)throw Error(tr("Cloud features are not configured."));
   rgClientPending=(async()=>{
     await loadSB();
     const client=window.supabase.createClient(C.SUPABASE_URL,C.SUPABASE_KEY);
@@ -950,13 +998,13 @@ async function rgGetClient(){
 }
 function toast(t){let e=$('toast');if(!e){e=document.createElement('div');e.id='toast';e.style.cssText='position:fixed;left:50%;transform:translateX(-50%);bottom:calc(96px + env(safe-area-inset-bottom,0px));background:rgba(0,0,0,.85);color:#fff;padding:10px 16px;border-radius:12px;z-index:20;max-width:90%;font-size:14px';document.body.appendChild(e)}e.textContent=t;e.style.display='block';clearTimeout(e._t);e._t=setTimeout(()=>{e.style.display='none'},3500)}
 function smsg(t){const m=$('sm');if(m&&m.offsetParent)m.textContent=t;else toast(t)}
-function ago(t){const s=(Date.now()-new Date(t))/1000;if(s<60)return 'now';if(s<3600)return Math.floor(s/60)+'m';if(s<86400)return Math.floor(s/3600)+'h';return Math.floor(s/86400)+'d'}
+function ago(t){const s=(Date.now()-new Date(t))/1000;if(s<60)return tr('now');if(s<3600)return Math.floor(s/60)+'m';if(s<86400)return Math.floor(s/3600)+'h';return Math.floor(s/86400)+'d'}
 const cnt=a=>a&&a[0]?a[0].count:0;
-function socErr(e){$('v').innerHTML=`<div class="card"><b>Community error</b><p class="mu">${esc((e&&e.message)||e)}</p><p class="mu">If this mentions a missing table, run community.sql in Supabase. If you are offline, try again with a connection.</p><button class="btn" onclick="renderSocial()">Try again</button></div>`}
+function socErr(e){$('v').innerHTML=`<div class="card"><b>${tr("Community error")}</b><p class="mu">${esc((e&&e.message)||e)}</p><p class="mu">${tr("If this mentions a missing table, run community.sql in Supabase. If you are offline, try again with a connection.")}</p><button class="btn" onclick="renderSocial()">${tr("Try again")}</button></div>`}
 async function renderSocial(){
   const C=window.RG_CONFIG||{};
-  if(!C.SUPABASE_URL||!C.SUPABASE_KEY){$('v').innerHTML='<div class="card"><b>Community is not set up yet</b><p class="mu">Put your Supabase URL and public key in config.js and upload it.</p></div>';return}
-  $('v').innerHTML='<p class="mu" style="text-align:center">Loading...</p>';
+  if(!C.SUPABASE_URL||!C.SUPABASE_KEY){$('v').innerHTML=`<div class="card"><b>${tr("Community is not set up yet")}</b><p class="mu">${tr("Put your Supabase URL and public key in config.js and upload it.")}</p></div>`;return}
+  $('v').innerHTML=`<p class="mu" style="text-align:center">${tr("Loading...")}</p>`;
   try{
     await rgGetClient();
     const {data:{session}}=await SB.auth.getSession();
@@ -976,55 +1024,77 @@ async function renderSocial(){
   }catch(e){socErr(e)}
 }
 function authView(){
-  $('v').innerHTML=`<div class="card"><b>Join the community</b><p class="mu">Share your build, follow other riders and swap routes.</p>
-  <input id="ae" type="email" placeholder="Email" autocomplete="email"><input id="ap" type="password" placeholder="Password (6+ characters)" autocomplete="current-password">
-  <label class="mu" style="display:block;margin-top:8px"><input type="checkbox" id="at" style="width:auto;margin-right:6px">I am 18 or older and agree to the <a href="terms.html">Terms</a> and <a href="privacy.html">Privacy Policy</a></label>
-  <details class="mu" style="margin-top:6px"><summary>Read the rules</summary><p>${esc(RULES)}</p></details>
-  <div class="row" style="margin-top:10px"><button class="btn" onclick="socAuth('in')">Sign in</button><button class="btn alt" onclick="socAuth('up')">Create account</button></div>
+  $('v').innerHTML=`<div class="card"><b>${tr("Join the community")}</b><p class="mu">${tr("Share your build, follow other riders and swap routes.")}</p>
+  <input id="ae" type="email" placeholder="${tr("Email")}" autocomplete="email"><input id="ap" type="password" placeholder="${tr("Password (6+ characters)")}" autocomplete="current-password">
+  <label class="mu" style="display:block;margin-top:8px"><input type="checkbox" id="at" style="width:auto;margin-right:6px">${tr('I am 18 or older and agree to the')} <a href="terms.html">${tr("Terms")}</a> ${tr('and')} <a href="privacy.html">${tr("Privacy Policy")}</a></label>
+  <details class="mu" style="margin-top:6px"><summary>${tr("Read the rules")}</summary><p>${esc(tr(RULES))}</p></details>
+  <div class="row" style="margin-top:10px"><button class="btn" onclick="socAuth('in')">${tr("Sign in")}</button><button class="btn alt" onclick="socAuth('up')">${tr("Create account")}</button></div>
   <div class="mu" id="sm" style="margin-top:8px"></div></div>`;
 }
 async function socAuth(mode){
   const e=$('ae').value.trim(),p=$('ap').value;
-  if(!e||p.length<6){smsg('Enter your email and a password of at least 6 characters.');return}
-  if(mode=='up'&&!$('at').checked){smsg('Please confirm you are 18 or older and agree to the Terms and Privacy Policy.');return}
-  smsg('Working...');
+  if(!e||p.length<6){smsg(tr("Enter your email and a password of at least 6 characters."));return}
+  if(mode=='up'&&!$('at').checked){smsg(tr("Please confirm you are 18 or older and agree to the Terms and Privacy Policy."));return}
+  smsg(tr("Working..."));
   try{
     const r=mode=='up'?await SB.auth.signUp({email:e,password:p}):await SB.auth.signInWithPassword({email:e,password:p});
     if(r.error){smsg(r.error.message);return}
-    if(mode=='up'&&!r.data.session){smsg('Check your email to confirm your account, then sign in.')}
+    if(mode=='up'&&!r.data.session){smsg(tr("Check your email to confirm your account, then sign in."))}
   }catch(x){smsg(x.message)}
 }
 function setupView(){
-  $('v').innerHTML=`<div class="card"><b>Pick your rider name</b><input id="un" placeholder="username (letters, numbers, _)" maxlength="20" autocapitalize="none" autocorrect="off"><input id="ub" placeholder="Your bike (optional)" maxlength="80" value="${esc(S.bike)}"><button class="btn" style="margin-top:10px" onclick="socProfile()">Continue</button><div class="mu" id="sm" style="margin-top:8px"></div></div>`;
+  $('v').innerHTML=`<div class="card"><b>${tr("Pick your rider name")}</b><input id="un" placeholder="${tr("username (letters, numbers, _)")}" maxlength="20" autocapitalize="none" autocorrect="off"><input id="ub" placeholder="${tr("Your bike (optional)")}" maxlength="80" value="${esc(S.bike)}"><button class="btn" style="margin-top:10px" onclick="socProfile()">${tr("Continue")}</button><div class="mu" id="sm" style="margin-top:8px"></div></div>`;
 }
 async function socProfile(){
   const u=$('un').value.trim().toLowerCase();
-  if(!/^[a-z0-9_]{3,20}$/.test(u)){smsg('Use 3 to 20 letters, numbers or underscores.');return}
+  if(!/^[a-z0-9_]{3,20}$/.test(u)){smsg(tr("Use 3 to 20 letters, numbers or underscores."));return}
   const r=await SB.from('profiles').insert({id:ME.id,username:u,bike:$('ub').value.trim()});
-  if(r.error){smsg(r.error.code=='23505'?'That name is taken.':r.error.message);return}
+  if(r.error){smsg(r.error.code=='23505'?tr("That name is taken."):r.error.message);return}
   renderSocial();
 }
-function drawSocial(){
-  $('v').innerHTML=`<div class="card"><div class="top"><div><b>@${esc(PROF.username)}</b><div class="mu">${esc(PROF.bike||'')}</div></div><button class="btn alt sm" onclick="SB.auth.signOut()">Sign out</button></div></div>
-  <section class="card" id="rgBetaSection" aria-label="Volunteer beta tester program" hidden>
-    <div class="top"><div><b>🏍️ Help build Ride Garage</b><p class="mu" style="margin:6px 0">Join the beta program to help us measure participation and improve the app. Optional and free.</p></div></div>
-    <div id="rgBetaStatus" class="mu" role="status" aria-live="polite">Checking enrollment…</div>
+function drawSocial(languageOnly=false){
+  $('v').innerHTML=`<div class="card"><div class="top"><div><b>@${esc(PROF.username)}</b><div class="mu">${esc(PROF.bike||'')}</div></div><button class="btn alt sm" onclick="SB.auth.signOut()">${tr("Sign out")}</button></div></div>
+  <section class="card" id="rgBetaSection" aria-label="${tr("Volunteer beta tester program")}" hidden>
+    <div class="top"><div><b>${tr("🏍️ Help build Ride Garage")}</b><p class="mu" style="margin:6px 0">${tr("Join the beta program to help us measure participation and improve the app. Optional and free.")}</p></div></div>
+    <div id="rgBetaStatus" class="mu" role="status" aria-live="polite">${tr("Checking enrollment…")}</div>
     <div id="rgBetaActions" class="row" style="margin-top:10px"></div>
-    <p class="mu" style="margin:8px 0 0">Only your account ID, enrollment date and occasional Social check-ins are recorded. Your private garage stays on this device. <a href="privacy.html">Privacy</a></p>
+    <p class="mu" style="margin:8px 0 0">${tr('Only your account ID, enrollment date and occasional Social check-ins are recorded. Your private garage stays on this device.')} <a href="privacy.html">${tr("Privacy")}</a></p>
   </section>
   <div id="rgAdminShortcut"></div>
-  <details class="card"${draft?' open':''}><summary><b>+ New post</b></summary>
+  <details class="card"${draft?' open':''}><summary><b>${tr("+ New post")}</b></summary>
     ${draft&&draft.img?`<img src="${draft.img}" alt="" style="width:100%;border-radius:10px;margin-top:8px">`:''}
     <input id="pf" type="file" accept="image/*">
-    <textarea id="pc" rows="3" maxlength="1000" placeholder="What are you working on?">${esc(draft?draft.cap:'')}</textarea>
-    <input id="pb" placeholder="Bike" maxlength="80" value="${esc(PROF.bike||'')}">
-    <button class="btn" style="margin-top:10px" onclick="postSubmit()">Post</button>
+    <textarea id="pc" rows="3" maxlength="1000" placeholder="${tr("What are you working on?")}">${esc(draft?draft.cap:'')}</textarea>
+    <input id="pb" placeholder="${tr("Bike")}" maxlength="80" value="${esc(PROF.bike||'')}">
+    <button class="btn" style="margin-top:10px" onclick="postSubmit()">${tr("Post")}</button>
     <div class="mu" id="sm" style="margin-top:8px"></div></details>
   <div id="feed"></div>
-  <details class="card"><summary class="mu">Rules, terms and blocked riders</summary><p class="mu">${esc(RULES)}</p><p class="mu"><a href="terms.html">Terms of Use</a> \u00b7 <a href="privacy.html">Privacy Policy</a> \u00b7 ridegarageapp@gmail.com</p><button class="btn alt sm" onclick="socBlocked()">Show blocked riders</button><div id="bl"></div></details><details class="card"><summary><b>Account &amp; privacy</b></summary><p class="mu">Request deletion of your community account, posts and associated account data. Deletion is permanent once confirmed and the secure service is enabled. Local garage entries stay on this device unless you remove them separately. Cloud Garage Sync copies associated with your account are deleted when the account is deleted.</p><p class="mu"><a href="privacy.html">Privacy Policy</a> · <a href="terms.html">Terms</a></p><button class="btn alt" onclick="socDeleteAccount()">Delete my community account</button><p class="mu" id="delStatus"></p><a href="mailto:ridegarageapp@gmail.com?subject=Ride%20Garage%20account%20deletion%20request">Request deletion by email</a></details>`;
+  <details class="card"><summary class="mu">${tr("Rules, terms and blocked riders")}</summary><p class="mu">${esc(tr(RULES))}</p><p class="mu"><a href="terms.html">${tr("Terms of Use")}</a> \u00b7 <a href="privacy.html">${tr("Privacy Policy")}</a> \u00b7 ridegarageapp@gmail.com</p><button class="btn alt sm" onclick="socBlocked()">${tr("Show blocked riders")}</button><div id="bl"></div></details><details class="card"><summary><b>${tr('Account & privacy')}</b></summary><p class="mu">${tr("Request deletion of your community account, posts and associated account data. Deletion is permanent once confirmed and the secure service is enabled. Local garage entries stay on this device unless you remove them separately. Cloud Garage Sync copies associated with your account are deleted when the account is deleted.")}</p><p class="mu"><a href="privacy.html">${tr("Privacy Policy")}</a> · <a href="terms.html">${tr("Terms")}</a></p><button class="btn alt" onclick="socDeleteAccount()">${tr("Delete my community account")}</button><p class="mu" id="delStatus"></p><a href="mailto:ridegarageapp@gmail.com?subject=Ride%20Garage%20account%20deletion%20request">${tr("Request deletion by email")}</a></details>`;
   drawFeed();
-  loadRideGarageAdminShortcut(ME.id);
-  rgBetaRenderEnrollment(ME.id);
+  if(!languageOnly){loadRideGarageAdminShortcut(ME.id);rgBetaRenderEnrollment(ME.id);}
+}
+// A language change repaints cached community UI without authentication or
+// beta-program requests. The outer language handler restores all form drafts.
+function repaintSocialLanguage(){
+  if($('ae')){authView();return}
+  if($('un')){setupView();return}
+  if(!$('feed')||!ME||!PROF)return; // An existing async load will use the new language.
+  const beta=$('rgBetaSection'),visible=beta&&!beta.hidden;
+  const status=$('rgBetaStatus')?.textContent||'';
+  const actions=$('rgBetaActions')?.innerHTML||'';
+  const admin=$('rgAdminShortcut')?.innerHTML||'';
+  drawSocial(true);
+  if(beta){
+    $('rgBetaSection').hidden=!visible;
+    $('rgBetaStatus').textContent=RGI18n.message(status);
+    $('rgBetaActions').innerHTML=actions;
+    for(const [selector,key] of [['[onclick="rgBetaLeave()"]','Leave beta'],['[onclick="rgBetaJoin()"]','Join beta testing'],['a[href="feedback.html"]','Send feedback']]){
+      const button=$('rgBetaActions').querySelector(selector);if(button)button.textContent=tr(key);
+    }
+  }
+  $('rgAdminShortcut').innerHTML=admin;
+  const link=$('rgAdminShortcut').querySelector('a[href="admin.html"]');
+  if(link&&link.firstChild?.nodeType===Node.TEXT_NODE)link.firstChild.textContent=tr('Beta Control Center');
 }
 async function rgBetaRenderEnrollment(uid){
   const status=$('rgBetaStatus'),actions=$('rgBetaActions');
@@ -1039,13 +1109,13 @@ async function rgBetaRenderEnrollment(uid){
     }
     const section=$('rgBetaSection');if(section)section.hidden=false;
     if(data===true){
-      status.textContent='You are an enrolled beta tester. Thanks for helping! Check-ins happen when you open Social, at most once every 30 minutes.';
-      actions.innerHTML='<a class="btn alt sm" href="feedback.html">Send feedback</a><button type="button" class="btn alt sm" onclick="rgBetaLeave()">Leave beta</button>';
+      status.textContent=tr("You are an enrolled beta tester. Thanks for helping! Check-ins happen when you open Social, at most once every 30 minutes.");
+      actions.innerHTML=`<a class="btn alt sm" href="feedback.html">${tr("Send feedback")}</a><button type="button" class="btn alt sm" onclick="rgBetaLeave()">${tr("Leave beta")}</button>`;
       // The server updates activity only for enrolled accounts and throttles check-ins.
       SB.rpc('rg_beta_check_in').then(()=>{}).catch(()=>{});
     }else{
-      status.textContent='Your participation is optional. An account is required; no private garage data will be shared.';
-      actions.innerHTML='<button type="button" class="btn sm" onclick="rgBetaJoin()">Join beta testing</button><a class="btn alt sm" href="feedback.html">Send feedback</a>';
+      status.textContent=tr("Your participation is optional. An account is required; no private garage data will be shared.");
+      actions.innerHTML=`<button type="button" class="btn sm" onclick="rgBetaJoin()">${tr("Join beta testing")}</button><a class="btn alt sm" href="feedback.html">${tr("Send feedback")}</a>`;
     }
   }catch(e){const section=$('rgBetaSection');if(section)section.hidden=true;actions.innerHTML=''}
 }
@@ -1053,24 +1123,24 @@ async function rgBetaJoin(){
   if(!SB||!ME)return;
   const uid=ME.id,status=$('rgBetaStatus'),actions=$('rgBetaActions');
   if(actions)actions.querySelectorAll('button').forEach(b=>b.disabled=true);
-  if(status)status.textContent='Joining the beta…';
+  if(status)status.textContent=tr("Joining the beta…");
   try{
     const {data,error}=await SB.rpc('rg_beta_join');
-    if(error||data!==true)throw Error('Beta enrollment is not active yet.');
+    if(error||data!==true)throw Error(tr("Beta enrollment is not active yet."));
     if(ME&&ME.id===uid&&S.tab==='social')await rgBetaRenderEnrollment(uid);
-  }catch(e){if(status)status.textContent='Could not join yet. Please try again later.';if(actions)actions.querySelectorAll('button').forEach(b=>b.disabled=false)}
+  }catch(e){if(status)status.textContent=tr("Could not join yet. Please try again later.");if(actions)actions.querySelectorAll('button').forEach(b=>b.disabled=false)}
 }
 async function rgBetaLeave(){
   if(!SB||!ME)return;
-  if(!confirm('Leave beta testing? Your motorcycle records and community account will remain unchanged.'))return;
+  if(!confirm(tr("Leave beta testing? Your motorcycle records and community account will remain unchanged.")))return;
   const uid=ME.id,status=$('rgBetaStatus'),actions=$('rgBetaActions');
   if(actions)actions.querySelectorAll('button').forEach(b=>b.disabled=true);
-  if(status)status.textContent='Leaving the beta…';
+  if(status)status.textContent=tr("Leaving the beta…");
   try{
     const {error}=await SB.rpc('rg_beta_leave');
     if(error)throw error;
     if(ME&&ME.id===uid&&S.tab==='social')await rgBetaRenderEnrollment(uid);
-  }catch(e){if(status)status.textContent='Could not leave the beta right now. Please try again.';if(actions)actions.querySelectorAll('button').forEach(b=>b.disabled=false)}
+  }catch(e){if(status)status.textContent=tr("Could not leave the beta right now. Please try again.");if(actions)actions.querySelectorAll('button').forEach(b=>b.disabled=false)}
 }
 async function loadRideGarageAdminShortcut(uid){
   const target=$('rgAdminShortcut');
@@ -1083,7 +1153,7 @@ async function loadRideGarageAdminShortcut(uid){
     const current=$('rgAdminShortcut');
     if(!current)return;
     const badge=countResult.error?'':('<span style="display:inline-block;margin-left:8px;padding:2px 9px;border-radius:20px;background:#d3b47e;color:#101010;font-weight:800" aria-label="'+countResult.count+' new feedback reports">'+countResult.count+' New</span>');
-    current.innerHTML='<div class="card"><a class="btn alt" href="admin.html">Beta Control Center</a>'+badge+'</div>';
+    current.innerHTML=`<div class="card"><a class="btn alt" href="admin.html">${tr("Beta Control Center")}</a>`+badge+'</div>';
   }catch(e){/* No admin shortcut when authorization cannot be verified. */}
 }
 async function socDeleteAccount(){
@@ -1091,37 +1161,37 @@ async function socDeleteAccount(){
   const cfg=window.RG_CONFIG||{};
   // Public rollout remains off until Supabase deployment and checks finish.
   if(!cfg.ACCOUNT_DELETION_ENABLED){
-    if(status)status.textContent='Automatic deletion is not active yet. Please use the email request link below.';
+    if(status)status.textContent=tr("Automatic deletion is not active yet. Please use the email request link below.");
     return;
   }
-  if(!SB||!ME){if(status)status.textContent='Sign in to delete your account.';return}
-  if(!confirm('Permanently delete your Ride Garage community account, posts, comments and uploaded photos? This cannot be undone. Local garage records remain on this device.'))return;
-  const confirmation=prompt('To confirm, type DELETE MY ACCOUNT exactly:');
-  if(confirmation!=='DELETE MY ACCOUNT'){if(status)status.textContent='Deletion cancelled: confirmation did not match.';return}
-  if(status)status.textContent='Deleting community account...';
+  if(!SB||!ME){if(status)status.textContent=tr("Sign in to delete your account.");return}
+  if(!confirm(tr("Permanently delete your Ride Garage community account, posts, comments and uploaded photos? This cannot be undone. Local garage records remain on this device.")))return;
+  const confirmation=prompt(tr("To confirm, type DELETE MY ACCOUNT exactly:"));
+  if(confirmation!=='DELETE MY ACCOUNT'){if(status)status.textContent=tr("Deletion cancelled: confirmation did not match.");return}
+  if(status)status.textContent=tr("Deleting community account...");
   try{
     const {data:{session},error:sessionError}=await SB.auth.getSession();
-    if(sessionError||!session)throw new Error('Please sign in again.');
+    if(sessionError||!session)throw new Error(tr("Please sign in again."));
     const {data,error}=await SB.functions.invoke('delete-account',{body:{confirm:confirmation}});
-    if(error||!data?.success)throw new Error(data?.error||error?.message||'Deletion did not complete.');
+    if(error||!data?.success)throw new Error(data?.error||error?.message||tr("Deletion did not complete."));
     await SB.auth.signOut();
     ME=null;PROF=null;
-    toast('Community account deleted. Your local garage records were not changed.');
+    toast(tr("Community account deleted. Your local garage records were not changed."));
     if(S.tab==='social')renderSocial();
   }catch(e){
-    if(status)status.textContent='Could not finish deletion. Please email ridegarageapp@gmail.com. '+(e?.message||'');
+    if(status)status.textContent=tr('Could not finish deletion. Please email ridegarageapp@gmail.com. {error}',{error:e?.message||''});
   }
 }
 function drawFeed(){
   const f=$('feed');if(!f)return;
   const posts=FEED.filter(p=>!BLOCKS.has(p.user_id));
-  f.innerHTML=posts.length?posts.map(postCard).join(''):'<p class="mu" style="text-align:center">No posts yet. Be the first to share your build.</p>';
+  f.innerHTML=posts.length?posts.map(postCard).join(''):`<p class="mu" style="text-align:center">${tr("No posts yet. Be the first to share your build.")}</p>`;
 }
 function postCard(p){
   const un=p.profiles?p.profiles.username:'rider',mine=p.user_id==ME.id,liked=MYLIKES.has(p.id);
   const url=p.image_path?SB.storage.from('post-images').getPublicUrl(p.image_path).data.publicUrl:'';
   return `<div class="card"><div class="top"><div><b>@${esc(un)}</b><div class="mu">${esc(p.bike||'')}${p.bike?' \u00b7 ':''}${ago(p.created_at)}</div></div>
-  ${mine?`<button class="btn alt sm" style="flex:none" onclick="socDel('${p.id}')">${ARM==p.id?'Tap again to delete':'Delete'}</button>`:`<button class="btn alt sm" style="flex:none" onclick="socMenu('${p.id}')">\u22ef</button>`}</div>
+  ${mine?`<button class="btn alt sm" style="flex:none" onclick="socDel('${p.id}')">${ARM==p.id?tr("Tap again to delete"):tr("Delete")}</button>`:`<button class="btn alt sm" style="flex:none" onclick="socMenu('${p.id}')">\u22ef</button>`}</div>
   ${url?`<img src="${esc(url)}" alt="" loading="lazy" style="width:100%;border-radius:10px;margin-top:8px">`:''}
   ${p.caption?`<p style="margin:8px 0">${esc(p.caption)}</p>`:''}
   <div style="display:flex;gap:6px;margin-top:6px"><button class="btn alt sm" onclick="socLike('${p.id}')">${liked?'\u2665':'\u2661'} ${cnt(p.likes)}</button><button class="btn alt sm" onclick="socCmts('${p.id}')">\ud83d\udcac ${cnt(p.comments)}</button></div>
@@ -1130,19 +1200,19 @@ function postCard(p){
 function cmtBox(p){
   const c=(CMTS[p.id]||[]).filter(x=>!BLOCKS.has(x.user_id));
   return `<div style="margin-top:8px">${c.map(x=>`<div style="padding:6px 0;border-top:1px solid var(--bd)"><b>@${esc(x.profiles?x.profiles.username:'rider')}</b> ${esc(x.body)} <span class="mu">${ago(x.created_at)}</span>${x.user_id==ME.id?` <button class="btn alt sm" style="flex:none" onclick="socDelC('${x.id}','${p.id}')">\u2715</button>`:''}</div>`).join('')}
-  <div style="display:flex;gap:6px;margin-top:6px"><input id="ci_${p.id}" placeholder="Add a comment" maxlength="500" style="margin-top:0"><button class="btn sm" style="flex:none" onclick="socSend('${p.id}')">Send</button></div></div>`;
+  <div style="display:flex;gap:6px;margin-top:6px"><input id="ci_${p.id}" placeholder="${tr("Add a comment")}" maxlength="500" style="margin-top:0"><button class="btn sm" style="flex:none" onclick="socSend('${p.id}')">${tr("Send")}</button></div></div>`;
 }
 function menuBox(p){
   const un=p.profiles?p.profiles.username:'rider';
-  return `<div style="margin-top:8px;padding:10px;border:1px solid var(--bd);border-radius:10px"><select id="rr_${p.id}"><option>Spam</option><option>Offensive or harassing</option><option>Not motorcycle related</option><option>Shares private info</option><option>Other</option></select>
-  <div style="display:flex;gap:6px;margin-top:8px;flex-wrap:wrap"><button class="btn alt sm" onclick="socReport('${p.id}')">Report post</button><button class="btn alt sm" onclick="socBlock('${p.user_id}')">${ARM==p.user_id?'Tap again to block @'+esc(un):'Block @'+esc(un)}</button></div></div>`;
+  return `<div style="margin-top:8px;padding:10px;border:1px solid var(--bd);border-radius:10px"><select id="rr_${p.id}"><option value="Spam">${tr('Spam')}</option><option value="Offensive or harassing">${tr('Offensive or harassing')}</option><option value="Not motorcycle related">${tr('Not motorcycle related')}</option><option value="Shares private info">${tr('Shares private info')}</option><option value="Other">${tr('Other')}</option></select>
+  <div style="display:flex;gap:6px;margin-top:8px;flex-wrap:wrap"><button class="btn alt sm" onclick="socReport('${p.id}')">${tr("Report post")}</button><button class="btn alt sm" onclick="socBlock('${p.user_id}')">${esc(ARM==p.user_id?tr('Tap again to block @{name}',{name:un}):tr('Block @{name}',{name:un}))}</button></div></div>`;
 }
 async function postSubmit(){
   const cap=$('pc').value.trim();let img=draft&&draft.img;
   const f=$('pf').files;
   if(f&&f.length){const a=await readPhotos([f[0]]);if(a[0])img=a[0]}
-  if(!img&&!cap){smsg('Add a photo or a caption.');return}
-  smsg('Posting...');
+  if(!img&&!cap){smsg(tr("Add a photo or a caption."));return}
+  smsg(tr("Posting..."));
   try{
     let path=null;
     if(img){
@@ -1186,21 +1256,21 @@ async function socDelC(cid,pid){
 function socMenu(id){MENU=MENU==id?null:id;ARM=null;drawFeed()}
 async function socReport(id){
   const r=await SB.from('reports').insert({post_id:id,reporter_id:ME.id,reason:$('rr_'+id).value});
-  MENU=null;drawFeed();toast(r.error?r.error.message:'Thanks. We will review this post.');
+  MENU=null;drawFeed();toast(r.error?r.error.message:tr("Thanks. We will review this post."));
 }
 async function socBlock(uid){
   if(ARM!=uid){ARM=uid;drawFeed();return}
   const r=await SB.from('blocks').insert({blocker_id:ME.id,blocked_id:uid});
   ARM=null;MENU=null;
   if(r.error){toast(r.error.message);drawFeed();return}
-  BLOCKS.add(uid);drawFeed();toast('Rider blocked.');
+  BLOCKS.add(uid);drawFeed();toast(tr("Rider blocked."));
 }
 async function socBlocked(){
   const b=await SB.from('blocks').select('blocked_id').eq('blocker_id',ME.id);
   const ids=(b.data||[]).map(x=>x.blocked_id);
-  if(!ids.length){$('bl').innerHTML='<p class="mu">No blocked riders.</p>';return}
+  if(!ids.length){$('bl').innerHTML=`<p class="mu">${tr("No blocked riders.")}</p>`;return}
   const p=await SB.from('profiles').select('id,username').in('id',ids);
-  $('bl').innerHTML=(p.data||[]).map(x=>`<div class="top" style="margin-top:6px"><span>@${esc(x.username)}</span><button class="btn alt sm" onclick="socUnblock('${x.id}')">Unblock</button></div>`).join('');
+  $('bl').innerHTML=(p.data||[]).map(x=>`<div class="top" style="margin-top:6px"><span>@${esc(x.username)}</span><button class="btn alt sm" onclick="socUnblock('${x.id}')">${tr("Unblock")}</button></div>`).join('');
 }
 async function socUnblock(id){
   await SB.from('blocks').delete().match({blocker_id:ME.id,blocked_id:id});
@@ -1215,14 +1285,40 @@ async function socDel(id){
   FEED=FEED.filter(x=>x.id!=id);drawFeed();
 }
 function shareMod(id){const m=S.mods.find(x=>x.id==id);draft={cap:m.title+(m.notes?' - '+m.notes:''),img:m.photos[0]||null};tab('social')}
+// Repaint translated UI without starting/stopping location, submitting forms,
+ // changing stored records, or discarding unsaved rider input.
+window.addEventListener('rg-language-change',()=>{
+  const inputs=Array.from(document.querySelectorAll('#v input[id], #v textarea[id], #v select[id]'))
+    .filter(el=>el.type!=='file'&&!el.hasAttribute('data-rg-language'))
+    .map(el=>({id:el.id,value:el.value,checked:el.checked}));
+  const files=Array.from(document.querySelectorAll('#v input[type="file"][id]'));
+  const details=Array.from(document.querySelectorAll('#v details')).map((el,index)=>({id:el.id,index,open:el.open}));
+  const focus=document.activeElement&&document.activeElement.id;
+  rideNotice=RGI18n.message(rideNotice);
+  render(true);
+  for(const input of inputs){const el=$(input.id);if(el){el.value=input.value;if('checked' in el)el.checked=input.checked;}}
+  for(const input of files){const el=$(input.id);if(el)el.replaceWith(input);}
+  for(const detail of details){const el=detail.id?$(detail.id):document.querySelectorAll('#v details')[detail.index];if(el)el.open=detail.open;}
+  RGI18n.apply();
+  updateRideGarageConnection();
+  if(focus&&$(focus))$(focus).focus({preventScroll:true});
+});
 load().then(d=>{
   if(d)S=Object.assign(S,d);
   // Preserve the Cloud page sign-in link; normal launches open the rider dashboard.
   S.tab=location.hash==='#social'?'social':'home';
   if(location.hash==='#social'&&history.replaceState)history.replaceState(null,'',location.pathname+location.search);
   render();
+  if(RGNativeRide.available)RGNativeRide.init({
+    setCurrent:ride=>{cur=ride},
+    readMetadata:()=>({name:$('tn')?$('tn').value.trim():(cur&&cur.name)||'',country:$('tc')?$('tc').value:(cur&&cur.country)||'🇲🇽 Mexico'}),
+    render:()=>{if(S.tab==='trips'){if(window.RGMaps)RGMaps.destroy();renderTrips()}},
+    update:()=>{upd();if(S.tab==='trips'&&!rideNotice)msg(RGNativeRide.statusText())},
+    notice:text=>{rideNotice=text;if(S.tab==='trips')msg(text||RGNativeRide.statusText());else if(text)toast(text)},
+    importTrip:importNativeTrip
+  });
   if(window.initRideGarageWelcome)window.initRideGarageWelcome(d);
 });
 </script>
-<script>if('serviceWorker' in navigator)addEventListener('load',()=>navigator.serviceWorker.register('sw.js',{updateViaCache:'none'}).catch(()=>{}))</script>
+<script>if(!RGNativeRide.available&&'serviceWorker' in navigator)addEventListener('load',()=>navigator.serviceWorker.register('sw.js',{updateViaCache:'none'}).catch(()=>{}))</script>
 </body></html>

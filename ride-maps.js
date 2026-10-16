@@ -5,6 +5,7 @@
  */
 (function(){
   'use strict';
+  const tr=(text,params)=>window.RGI18n?RGI18n.t(text,params):text;
   const LIB='https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/';
   const TILES='https://tile.openstreetmap.org/{z}/{x}/{y}.png';
   const $=id=>document.getElementById(id);
@@ -18,11 +19,11 @@
   function route(points){
     if(!Array.isArray(points))return [];
     const clean=points.map(coords).filter(Boolean);
-    if(clean.length<=4000)return clean;
-    const step=Math.ceil(clean.length/3999),sample=[];
-    for(let i=0;i<clean.length;i+=step)sample.push(clean[i]);
-    if(sample[sample.length-1]!==clean[clean.length-1])sample.push(clean[clean.length-1]);
-    return sample;
+    return clean;
+  }
+  function segments(record){
+    if(record&&Array.isArray(record.segments)&&record.segments.length)return record.segments.map(route).filter(p=>p.length);
+    return [route(record&&record.pts)];
   }
   function placeCoords(place){
     if(!place||typeof place.coords!=='string')return null;
@@ -30,7 +31,7 @@
     return parts.length===2&&parts.every(p=>p.trim()!=='')?coords(parts):null;
   }
   function message(el,text){
-    if(el){el.textContent=text;el.hidden=false;}
+    if(el){el.textContent=tr(text);el.hidden=false;}
   }
   function ensureLeaflet(){
     if(window.L&&window.L.map&&document.querySelector('link[data-rg-leaflet]'))return Promise.resolve(window.L);
@@ -62,7 +63,7 @@
     if(a.map){try{a.map.remove();}catch(e){}}
     if(a.host){a.host.hidden=true;a.host.replaceChildren();}
     if(a.preview)a.preview.hidden=false;
-    if(a.button)a.button.textContent=a.label;
+    if(a.button)a.button.textContent=tr(a.label);
     if(a.status)a.status.hidden=true;
   }
   function begin(key,host,preview,button,status,label){
@@ -70,7 +71,7 @@
     destroy();
     if(!host)return null;
     host.hidden=false;
-    if(button)button.textContent='Close map';
+    if(button)button.textContent=tr('Close map');
     message(status,'Loading interactive map…');
     active={key,host,preview,button,status,label,map:null,line:null,last:null,seen:0};
     return {active,token:request};
@@ -94,13 +95,13 @@
     setTimeout(()=>{if(active===a&&a.map)map.invalidateSize();},150);
     return map;
   }
-  function paintRoute(a,L,pts,live){
+  function paintRoute(a,L,pts,live,paths){
     if(!pts.length)return;
-    a.line=L.polyline(pts,{color:'#dfaa57',weight:5,opacity:0.94,lineJoin:'round'}).addTo(a.map);
+    a.line=L.polyline(paths||pts,{color:'#dfaa57',weight:5,opacity:0.94,lineJoin:'round'}).addTo(a.map);
     L.circleMarker(pts[0],{radius:7,color:'#fff',weight:2,fillColor:'#2ab873',fillOpacity:1})
-      .addTo(a.map).bindPopup('Ride start');
+      .addTo(a.map).bindPopup(tr('Ride start'));
     a.last=L.circleMarker(pts[pts.length-1],{radius:7,color:'#fff',weight:2,fillColor:'#f18b43',fillOpacity:1})
-      .addTo(a.map).bindPopup(live?'Current ride position':'Ride finish');
+      .addTo(a.map).bindPopup(tr(live?'Current ride position':'Ride finish'));
     a.seen=pts.length;
   }
   async function showTrip(index,trips){
@@ -116,7 +117,7 @@
       const L=await ensureLeaflet();
       if(token!==request||active!==a||!document.contains(host))return;
       mapBase(a,L,pts);
-      paintRoute(a,L,pts,false);
+      paintRoute(a,L,pts,false,segments(trip));
       if(a.preview)a.preview.hidden=true;
       message(status,'Drag to explore. Pinch or use + / − to zoom. Route data stays in your garage.');
     }catch(e){
@@ -136,9 +137,9 @@
       const L=await ensureLeaflet();
       if(token!==request||active!==a||!document.contains(host))return;
       mapBase(a,L,pts);
-      paintRoute(a,L,pts,true);
+      paintRoute(a,L,pts,true,segments(current));
       if(preview)preview.hidden=true;
-      message(status,'Live route is updating. Keep this screen open while recording.');
+      message(status,window.RGNativeRide&&RGNativeRide.available?'Live route is updating. iPhone recording continues with the screen locked.':'Live route is updating. Keep this screen open while recording.');
     }catch(e){
       if(active!==a)return;
       destroy();message(status,'Live map needs internet. GPS recording and route preview still work.');
@@ -149,7 +150,7 @@
     if(!a||a.key!=='live'||!a.map||!a.line||!a.last)return;
     const pts=route(current&&current.pts);
     if(!current||!Array.isArray(current.pts)||current.pts.length<=a.seen)return;
-    a.line.setLatLngs(pts);
+    a.line.setLatLngs(segments(current));
     const end=pts[pts.length-1];
     a.last.setLatLng(end);
     a.seen=current.pts.length;
@@ -158,11 +159,11 @@
   }
   function placePopup(place,pt){
     const node=document.createElement('div');
-    const title=document.createElement('strong');title.textContent=String(place.name||'Saved place');node.appendChild(title);
+    const title=document.createElement('strong');title.textContent=String(place.name||tr('Saved place'));node.appendChild(title);
     if(place.cat){const row=document.createElement('div');row.textContent=String(place.cat);node.appendChild(row);}
     const link=document.createElement('a');
     link.href='https://www.google.com/maps/dir/?api=1&destination='+encodeURIComponent(pt[0]+','+pt[1])+'&travelmode=driving';
-    link.target='_blank';link.rel='noopener noreferrer';link.textContent='Directions';
+    link.target='_blank';link.rel='noopener noreferrer';link.textContent=tr('Directions');
     node.appendChild(link);return node;
   }
   async function showPlaces(places){
@@ -183,12 +184,12 @@
           .addTo(a.map).bindPopup(placePopup(item.p,item.pt));
       }
       const skipped=(Array.isArray(places)?places.length:0)-plotted.length;
-      message(status,plotted.length+' saved '+(plotted.length===1?'place':'places')+' on the map.'+
-        (skipped?' '+skipped+' address-only/invalid coordinate '+(skipped===1?'entry is':'entries are')+' not plotted.':''));
+      message(status,tr(plotted.length===1?'{count} saved place on the map.':'{count} saved places on the map.',{count:plotted.length})+(skipped?' '+tr(skipped===1?'{count} address-only/invalid coordinate entry is not plotted.':'{count} address-only/invalid coordinate entries are not plotted.',{count:skipped}):''));
     }catch(e){
       if(active!==a)return;
       destroy();message(status,'Could not load map tiles. Your saved places and navigation links are unchanged.');
     }
   }
+  window.addEventListener('rg-language-change',destroy);
   window.RGMaps={toggleTrip:showTrip,toggleLive:showLive,togglePlaces:showPlaces,updateLive,destroy};
 })();
