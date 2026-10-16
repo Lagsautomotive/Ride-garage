@@ -83,9 +83,11 @@ module.exports=async function checkRideSpeed(page,readStored){
   await emit(32,at);
   await emit(32.0002,at+2000);
   await emit(32.002,at+2000,100);
+  await emit(32.00025,undefined); // Invalid timing must not erase the ordering watermark.
   await emit(32.003,at+1000,100);
   closeTo((await state()).max,40.03);
   await emit(32.0004,at+4000);
+  await emit(32.0006,at+6000);
   closeTo((await state()).max,40.03);
   await stop();
 

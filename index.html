@@ -694,7 +694,7 @@ function recordRideSpeed(p,point){
   const time=Number.isFinite(p.timestamp)&&p.timestamp>0?p.timestamp:null;
   // Ignore cached or out-of-order samples for speed, without using callback timing.
   if(time!==null&&Number.isFinite(cur.speedTime)&&time<=cur.speedTime)return;
-  cur.speedTime=time;
+  if(time!==null)cur.speedTime=time;
   const native=Number.isFinite(c.speed)&&c.speed>=0?c.speed*3.6:null;
   let speed=Number.isFinite(native)?native:null;
   const accuracy=Number.isFinite(c.accuracy)&&c.accuracy>=0?c.accuracy:60;
