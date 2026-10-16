@@ -685,19 +685,54 @@ function msg(t){const e=$('msg');if(e)e.textContent=t}
 function startTrack(){
   rideNotice='';
   if(!navigator.geolocation){msg('GPS is not available in this browser.');return}
-  cur={pts:[],dist:0,max:0,sp:0,t0:Date.now()};
+  cur={pts:[],dist:0,max:0,sp:null,speedAt:0,speedFix:null,speedTime:null,t0:Date.now()};
   watch=navigator.geolocation.watchPosition(onPos,e=>{msg(e.code==1?'Location permission denied. Allow it in your browser settings.':'Could not get GPS signal.')},{enableHighAccuracy:true,maximumAge:2000,timeout:20000});
   tick=setInterval(upd,1000);renderTrips();
 }
+function recordRideSpeed(p,point){
+  const c=p.coords;
+  const time=Number.isFinite(p.timestamp)&&p.timestamp>0?p.timestamp:null;
+  // Ignore cached or out-of-order samples for speed, without using callback timing.
+  if(time!==null&&Number.isFinite(cur.speedTime)&&time<=cur.speedTime)return;
+  if(time!==null)cur.speedTime=time;
+  const native=Number.isFinite(c.speed)&&c.speed>=0?c.speed*3.6:null;
+  let speed=Number.isFinite(native)?native:null;
+  const accuracy=Number.isFinite(c.accuracy)&&c.accuracy>=0?c.accuracy:60;
+  const previous=cur.speedFix;
+  const sample={point,time,accuracy};
+  if(time===null){
+    cur.speedFix=null;
+  }else if(!previous||time-previous.time>30000){
+    // Never infer an instantaneous speed across a long GPS/background gap.
+    cur.speedFix=sample;
+  }else{
+    const elapsed=time-previous.time;
+    const distance=hav(previous.point,point);
+    // Accumulate a baseline until movement clears both fixes' uncertainty.
+    if(elapsed>=1000&&distance*1000>=Math.max(10,previous.accuracy+accuracy)){
+      if(speed===null)speed=distance*3600000/elapsed;
+      cur.speedFix=sample;
+    }
+  }
+  if(speed!==null&&Number.isFinite(speed)){
+    cur.sp=speed;cur.speedAt=Date.now();cur.max=Math.max(cur.max,speed);
+  }
+}
 function onPos(p){
-  const c=p.coords;if(c.accuracy>60)return;
+  if(!cur||!p||!p.coords)return;
+  const c=p.coords;
+  if(c.accuracy>60||!Number.isFinite(c.latitude)||!Number.isFinite(c.longitude)||
+    Math.abs(c.latitude)>90||Math.abs(c.longitude)>180)return;
   const pt=[c.latitude,c.longitude],l=cur.pts[cur.pts.length-1];
-  if(l){const d=hav(l,pt);if(d<0.01)return;cur.dist+=d}
-  cur.pts.push(pt);cur.sp=c.speed!=null?c.speed*3.6:0;cur.max=Math.max(cur.max,cur.sp);upd();
+  recordRideSpeed(p,pt);
+  if(l){const d=hav(l,pt);if(d<0.01){upd();return}cur.dist+=d}
+  cur.pts.push(pt);upd();
 }
 function upd(){
   if(!cur||S.tab!='trips'||!$('ld'))return;
-  $('ld').textContent=(cur.dist*U().k).toFixed(1);$('ls').textContent=Math.round(cur.sp*U().k);$('lt').textContent=fdur(Date.now()-cur.t0);
+  $('ld').textContent=(cur.dist*U().k).toFixed(1);
+  $('ls').textContent=Number.isFinite(cur.sp)&&Date.now()-cur.speedAt<=5000?Math.round(cur.sp*U().k):'—';
+  $('lt').textContent=fdur(Date.now()-cur.t0);
   $('map').innerHTML=trackSVG(cur.pts);
   if(window.RGMaps)window.RGMaps.updateLive(cur);
 }
