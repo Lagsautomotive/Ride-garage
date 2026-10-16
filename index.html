@@ -685,27 +685,41 @@ function msg(t){const e=$('msg');if(e)e.textContent=t}
 function startTrack(){
   rideNotice='';
   if(!navigator.geolocation){msg('GPS is not available in this browser.');return}
-  cur={pts:[],dist:0,max:0,sp:0,t0:Date.now()};
-  watch=navigator.geolocation.watchPosition(onPos,e=>{msg(e.code==1?'Location permission denied. Allow it in your browser settings.':'Could not get GPS signal.')},{enableHighAccuracy:true,maximumAge:2000,timeout:20000});
+  cur={pts:[],dist:0,max:0,sp:0,t0:Date.now(),lastGpsTime:0};
+  watch=navigator.geolocation.watchPosition(onPos,e=>{msg(e.code==1?'Location permission denied. Allow it in your browser settings.':'Could not get GPS signal.')},{enableHighAccuracy:true,maximumAge:0,timeout:20000});
   tick=setInterval(upd,1000);renderTrips();
 }
 function onPos(p){
-  const c=p.coords;if(c.accuracy>60)return;
+  if(!cur)return;
+  const c=p.coords;
+  if(!Number.isFinite(c.latitude)||!Number.isFinite(c.longitude)||!Number.isFinite(c.accuracy)||c.accuracy>60)return;
+  const now=Number.isFinite(p.timestamp)?p.timestamp:Date.now();
+  if(now<=cur.lastGpsTime)return;
   const pt=[c.latitude,c.longitude],l=cur.pts[cur.pts.length-1];
-  if(l){const d=hav(l,pt);if(d<0.01)return;cur.dist+=d}
-  cur.pts.push(pt);cur.sp=c.speed!=null?c.speed*3.6:0;cur.max=Math.max(cur.max,cur.sp);upd();
+  if(l){
+    const d=hav(l,pt);
+    // Accept short, accurate movements to capture turns; reject stationary GPS jitter.
+    if(d<(c.accuracy<=15?0.003:0.006))return;
+    const elapsed=(now-cur.lastGpsTime)/1000;
+    if(elapsed>0&&d/(elapsed/3600)>220)return;
+    cur.dist+=d;
+  }
+  cur.pts.push(pt);cur.lastGpsTime=now;
+  cur.sp=c.speed!=null?Math.max(0,c.speed*3.6):0;
+  cur.max=Math.max(cur.max,cur.sp);upd();
 }
 function upd(){
   if(!cur||S.tab!='trips'||!$('ld'))return;
   $('ld').textContent=(cur.dist*U().k).toFixed(1);$('ls').textContent=Math.round(cur.sp*U().k);$('lt').textContent=fdur(Date.now()-cur.t0);
   $('map').innerHTML=trackSVG(cur.pts);
   if(window.RGMaps)window.RGMaps.updateLive(cur);
+  msg('Recording '+cur.pts.length+' GPS points. Keep the app open and Precise Location enabled.');
 }
 function stopTrack(){
   navigator.geolocation.clearWatch(watch);clearInterval(tick);
   if(cur.pts.length>1){
     const step=Math.ceil(cur.pts.length/400);
-    S.trips.push({id:'t'+Date.now(),name:($('tn').value.trim()||'Ride '+new Date().toLocaleDateString()),country:$('tc').value,date:cur.t0,dist:cur.dist,dur:Date.now()-cur.t0,max:cur.max,pts:cur.pts.filter((_,i)=>i%step==0)});S.odo=(S.odo||0)+cur.dist;
+    S.trips.push({id:'t'+Date.now(),name:($('tn').value.trim()||'Ride '+new Date().toLocaleDateString()),country:$('tc').value,date:cur.t0,dist:cur.dist,dur:Date.now()-cur.t0,max:cur.max,pts:cur.pts.filter((_,i)=>i%step==0||i===cur.pts.length-1)});S.odo=(S.odo||0)+cur.dist;
     save();
   }else{
     rideNotice=cur.pts.length===0
