@@ -52,6 +52,12 @@ jobs:
           -derivedDataPath .native-build
           CODE_SIGNING_ALLOWED=NO
           build
+      - name: Verify bundled English and Spanish permissions
+        run: |
+          plutil -lint .native-build/Build/Products/Debug-iphonesimulator/App.app/en.lproj/InfoPlist.strings
+          plutil -lint .native-build/Build/Products/Debug-iphonesimulator/App.app/es.lproj/InfoPlist.strings
+          plutil -extract NSLocationWhenInUseUsageDescription raw .native-build/Build/Products/Debug-iphonesimulator/App.app/en.lproj/InfoPlist.strings
+          plutil -extract NSLocationWhenInUseUsageDescription raw .native-build/Build/Products/Debug-iphonesimulator/App.app/es.lproj/InfoPlist.strings
       - uses: actions/upload-artifact@v4
         if: always()
         with:
